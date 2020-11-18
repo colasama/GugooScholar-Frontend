@@ -12,6 +12,24 @@ Vue.use(VueRouter)
     component:() => import('../views/Home.vue')
   },
   {
+    path: '/login',
+    name: '404',
+    meta: {title:'登录 - 咕鸽学术'},
+    component:() => import('../views/Login.vue')
+  },
+  {
+    path: '/register',
+    name: '404',
+    meta: {title:'注册 - 咕鸽学术'},
+    component:() => import('../views/Register.vue')
+  },
+  {
+    path: '/regt',
+    name: '404',
+    meta: {title:'注册 - 咕鸽学术'},
+    component:() => import('../views/regTest.vue')
+  },
+  {
     // 会匹配所有路径
     path: '/*',
     name: '404',

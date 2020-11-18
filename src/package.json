@@ -11,6 +11,7 @@
     "animate.css": "^4.1.0",
     "ant-design-vue": "^1.6.4",
     "core-js": "^3.6.5",
+    "firebase": "^8.0.2",
     "moment": "^2.27.0",
     "v-contextmenu": "^2.9.0",
     "vue": "^2.6.11",
