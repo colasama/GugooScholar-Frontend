@@ -13,13 +13,15 @@ jobs:
         uses: actions/checkout@master
       - name: Install Dependencies
         run: npm install
+        working-directory: ./src
       - name: Build
         run: npm run-script build
+        working-directory: ./src
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
           name: dist
-          path: dist
+          path: ./src/dist
   deploy:
     name: Deploy
     needs: build
