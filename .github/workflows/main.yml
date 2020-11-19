@@ -47,7 +47,7 @@ jobs:
         with:
           service_key: ${{ secrets.SERVICE_KEY }}
           bucket_name: gugoo.fewings.xyz
-          project: GugooScholar 
+          project: googoscholar-294912
           home_page_path: index.html
           error_page_path: ''
           build_folder: ./src/dist
