@@ -42,4 +42,13 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: ./src
           PROJECT_ID: googoscholar-294912
+      - name: Deploy
+        uses: abinmn/gcp-storage-bucket-action
+        with:
+          service_key: ${{ secrets.SERVICE_KEY }}
+          bucket_name: gugoo.fewings.xyz
+          project: GugooScholar 
+          home_page_path: index.html
+          error_page_path: ''
+          build_folder: ./src/dist
 
