@@ -42,14 +42,8 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: ./src
           PROJECT_ID: googoscholar-294912
-      - name: CompressFiles
-        uses: StefH/ghaction-CompressFiles@v1
-        with:
-          path: ./src/dist
-          extensions: '.js,.css,.html'
-          tools: 'gzip'
       - name: Deploy GCS
-        uses: abinmn/gcp-storage-bucket-action@v1.0
+        uses: Fewing/gcp-storage-bucket-action@master
         with:
           service_key: ${{ secrets.SERVICE_KEY }}
           bucket_name: gugoo.fewings.xyz
