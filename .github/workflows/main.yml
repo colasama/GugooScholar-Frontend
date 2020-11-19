@@ -49,6 +49,6 @@ jobs:
           bucket_name: gugoo.fewings.xyz
           project: googoscholar-294912
           home_page_path: index.html
-          error_page_path: ''
+          error_page_path: 404.html
           build_folder: ./src/dist
 
