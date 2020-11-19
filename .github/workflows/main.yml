@@ -41,3 +41,5 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: ./src
+          PROJECT_ID: googoscholar-294912
+
