@@ -4,5 +4,8 @@
 
 > 但是全小写标题真的好难看啊！！！
 
-访问网址：https://gugoo.fewings.xyz (Google CDN)
-         https://gugoo.xyz/ (CloudFlare CDN)
+访问网址：
+
+https://gugoo.fewings.xyz (Google CDN)
+
+https://gugoo.xyz/ (CloudFlare CDN)
