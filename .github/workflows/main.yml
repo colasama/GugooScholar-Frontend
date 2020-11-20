@@ -33,10 +33,22 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: dist
-          path: dist
-      - name: GitHub Action for Firebase
+          path: ./src/dist
+      - name: Deploy Firebase
         uses: w9jds/firebase-action@v2.0.0
         with:
           args: deploy --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_PATH: ./src
+          PROJECT_ID: googoscholar-294912
+      - name: Deploy GCS
+        uses: Fewing/gcp-storage-bucket-action@master
+        with:
+          service_key: ${{ secrets.SERVICE_KEY }}
+          bucket_name: gugoo.fewings.xyz
+          project: googoscholar-294912
+          home_page_path: index.html
+          error_page_path: 404.html
+          build_folder: ./src/dist
+
