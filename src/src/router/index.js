@@ -24,6 +24,13 @@ Vue.use(VueRouter)
     component:() => import('../views/Register.vue')
   },
   {
+    // 暂时先这样 测试用 后面具体再改
+    path: '/scientist/show',
+    name: 'scientist',
+    meta: {title: '科研人员展示 - 咕鸽学术'},
+    component: () => import('../views/content/Scientist')
+  },
+  {
     path: '/regt',
     name: '404',
     meta: {title:'注册 - 咕鸽学术'},
