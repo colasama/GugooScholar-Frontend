@@ -7,7 +7,7 @@
                     混元形意太极拳教程之闪电五连鞭
                     <div class="author">
                         <div class="avatar">
-                            <a-avatar :size="64" icon="user" src=""/>
+                            <a-avatar :size="64" icon="user" src="https://i.loli.net/2020/11/26/ANYtuRaPrLJTDwy.jpg"/>
                         </div>
                         <div class="au_name">赖佐田</div>
                     </div>
