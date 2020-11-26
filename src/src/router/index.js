@@ -31,11 +31,18 @@ Vue.use(VueRouter)
   },
   {
     // 会匹配所有路径
-    path: '/*',
-    name: '404',
-    meta: {title:'404 - 咕鸽学术'},
-    component:() => import('../views/404.vue')
-  }
+    path: '/paper*',
+    name: 'Paper',
+    meta: {title:'论文 - 咕鸽学术'},
+    component:() => import('../views/content/Paper.vue')
+  },
+    {
+      // 会匹配所有路径
+      path: '/*',
+      name: '404',
+      meta: {title:'404 - 咕鸽学术'},
+      component:() => import('../views/404.vue')
+    }
 ]
 
 const router = new VueRouter({
