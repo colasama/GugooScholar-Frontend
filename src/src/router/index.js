@@ -37,6 +37,12 @@ Vue.use(VueRouter)
     component:() => import('../views/regTest.vue')
   },
   {
+    path: '/ranklist',
+    name: 'ranklist',
+    meta: {title: '排行榜 - 咕鸽学术'},
+    component:() => import('../views/rank/Ranklist.vue')
+  },
+  {
     // 会匹配所有路径
     path: '/paper*',
     name: 'Paper',
