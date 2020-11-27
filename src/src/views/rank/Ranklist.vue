@@ -1,46 +1,64 @@
 <template>
     <div id="whole_page">
         <a-layout>
-            <a-layout-header>Header</a-layout-header>
+            <a-layout-header>
+                <div>
+                    排行榜
+                </div>
+            </a-layout-header>
             <a-layout-content>
                 <a-row type="flex" justify="space-around" align="middle">
-                    <a-col class="gutter-row" :span="5">
+                    <a-col :span="6">
                         <div class="gutter-box">
                             col-12
                         </div>
                     </a-col>
-                    <a-col class="gutter-row" :span="5">
+                    <a-col :span="6">
                         <div class="gutter-box">
                             col-12
                         </div>
                     </a-col>
-                </a-row>
-                <a-row type="flex" justify="space-around" align="middle">
-                    <a-col class="gutter-row" :span="5">
-                        <div class="gutter-box">
-                            col-12
-                        </div>
-                    </a-col>
-                    <a-col class="gutter-row" :span="5">
+                    <a-col :span="6">
                         <div class="gutter-box">
                             col-12
                         </div>
                     </a-col>
                 </a-row>
                 <a-row type="flex" justify="space-around" align="middle">
-                    <a-col class="gutter-row" :span="5">
+                    <a-col :span="6">
                         <div class="gutter-box">
                             col-12
                         </div>
                     </a-col>
-                    <a-col class="gutter-row" :span="5">
+                    <a-col :span="6">
+                        <div class="gutter-box">
+                            col-12
+                        </div>
+                    </a-col>
+                    <a-col :span="6">
+                        <div class="gutter-box">
+                            col-12
+                        </div>
+                    </a-col>
+                </a-row>
+                <a-row type="flex" justify="space-around" align="middle">
+                    <a-col :span="6">
+                        <div class="gutter-box">
+                            col-12
+                        </div>
+                    </a-col>
+                    <a-col :span="6">
+                        <div class="gutter-box">
+                            col-12
+                        </div>
+                    </a-col>
+                    <a-col :span="6">
                         <div class="gutter-box">
                             col-12
                         </div>
                     </a-col>
                 </a-row>
             </a-layout-content>
-            <a-layout-footer>Footer</a-layout-footer>
         </a-layout>
     </div>
 </template>
@@ -61,14 +79,33 @@ export default {
   color: #fff;
 }
 .ant-layout-header {
-  background: #7dbcea;
+  background: rgb(3, 3, 3);
   color: #fff;
+  font-size: 20px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  text-align: left;
 }
 .ant-layout-content {
-  background: rgba(16, 142, 233, 1);
+  background: #fff;
   color: #fff;
   min-height: 120px;
   line-height: 120px;
+}
+.gutter-box {
+    background: rgb(47 50 65 / 88%);
+    margin: 10%;
+    padding: 5%;
+    height: 200px;
+    font-size: 25px;
+    text-align: left;
+}
+.ant-col {
+    background: #fff;
+}
+.ant-row {
+    padding: 8px !important;
+    margin: auto;
 }
 
 </style>
