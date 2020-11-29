@@ -24,6 +24,13 @@ Vue.use(VueRouter)
     component:() => import('../views/Register.vue')
   },
   {
+    // 暂时先这样 测试用 后面具体再改
+    path: '/scientist/show',
+    name: 'scientist',
+    meta: {title: '科研人员展示 - 咕鸽学术'},
+    component: () => import('../views/content/Scientist')
+  },
+  {
     path: '/regt',
     name: '404',
     meta: {title:'注册 - 咕鸽学术'},
@@ -42,6 +49,26 @@ Vue.use(VueRouter)
     meta: {title:'404 - 咕鸽学术'},
     component:() => import('../views/404.vue')
   },
+  {
+    path: '/ranklist',
+    name: 'ranklist',
+    meta: {title: '排行榜 - 咕鸽学术'},
+    component:() => import('../views/rank/Ranklist.vue')
+  },
+  {
+    // 会匹配所有路径
+    path: '/paper*',
+    name: 'Paper',
+    meta: {title:'论文 - 咕鸽学术'},
+    component:() => import('../views/content/Paper.vue')
+  },
+    {
+      // 会匹配所有路径
+      path: '/*',
+      name: '404',
+      meta: {title:'404 - 咕鸽学术'},
+      component:() => import('../views/404.vue')
+    }
 ]
 
 const router = new VueRouter({
