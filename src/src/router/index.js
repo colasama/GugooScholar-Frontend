@@ -43,13 +43,6 @@ Vue.use(VueRouter)
     component:() => import('../views/admin/User.vue')
   },
   {
-    // 会匹配所有路径
-    path: '/*',
-    name: '404',
-    meta: {title:'404 - 咕鸽学术'},
-    component:() => import('../views/404.vue')
-  },
-  {
     path: '/ranklist',
     name: 'ranklist',
     meta: {title: '排行榜 - 咕鸽学术'},
