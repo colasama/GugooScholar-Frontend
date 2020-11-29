@@ -1,9 +1,9 @@
 <template>
-  <a-layout id="components-layout-demo-fixed-sider">
+  <a-layout id="components-layout-demo-fixed-sider" style="min-height:1200px"><!--这里有些微妙，理论上可以自适应来着-->
 
     <a-layout-content style="padding: 50px 100px" >
       <a-layout class="profileBox">
-        <a-layout-sider width="250" style="background: #fff" :style="{ overflow: 'auto' }">
+        <a-layout-sider width="250" style="background: #fff">
           <span style="margin:auto; font-size:20px">用户管理</span>
           <a-menu
             mode="inline"
@@ -23,7 +23,7 @@
         </a-layout-sider>
 
         <!-- 个人信息的页面 -->
-        <a-layout-content :style="{ overflow: 'initial', padding: '0 24px', minHeight: '280px', }" v-if="sider_status==1">
+        <a-layout-content :style="{ padding: '0 24px', minHeight: '280px', }" v-if="sider_status==1">
 
         <a-breadcrumb style="margin:0px 0 0px -730px;">
             <a-breadcrumb-item href="" :style="{ padding: '0px'}">
