@@ -49,6 +49,12 @@ Vue.use(VueRouter)
     component:() => import('../views/rank/Ranklist.vue')
   },
   {
+    path: '/search',
+    name: 'search',
+    meta: {title:'搜索 - 咕鸽学术'},
+    component:() => import('../views/Search.vue')
+  },
+  {
     // 会匹配所有路径
     path: '/paper*',
     name: 'Paper',
@@ -61,7 +67,7 @@ Vue.use(VueRouter)
       name: '404',
       meta: {title:'404 - 咕鸽学术'},
       component:() => import('../views/404.vue')
-    }
+    },
 ]
 
 const router = new VueRouter({
