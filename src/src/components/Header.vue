@@ -2,7 +2,7 @@
   <div class="re-header">
     <div @click="toIndex" class="top-logo" />
 
-    <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '96px' }" class="header-menu">
+    <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu">
       <a-button
         type="ghost"
         @click="toRegister"
@@ -22,10 +22,10 @@
 <style>
 .top-logo {
   cursor: pointer;
-  width: 135px;
-  height: 40px;
-  background: url("../assets/logo1.png");
-  margin: 14px 48px 0px 48px;
+  width: 200px;
+  height: 46px;
+  background: url("../assets/logo.png");
+  margin: 16px 48px 0px 48px;
   float: left;
 }
 
@@ -38,7 +38,7 @@
 
 .re-header {
   background: rgb(43, 46, 59);
-  height: 94px;
+  height: 80px;
   text-align: center;
 }
 

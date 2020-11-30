@@ -3,6 +3,8 @@
     <AppHeader v-if="$store.state.showNav"></AppHeader>
     <!--transition name="fade" mode="out-in"-->
       <keep-alive><router-view style="text-align: center;flex:1;" :key="$route.path"/></keep-alive>
+      
+    <!--a-layout-footer>Footer</！a-layout-footer-->
     <!--/transition-->
   </div>
 </template>

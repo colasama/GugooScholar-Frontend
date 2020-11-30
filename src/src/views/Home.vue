@@ -58,7 +58,6 @@
         <a-button type="link" class="keyword">{{keywords[14]}}</a-button>
       </div>
     </a-layout-content>
-    <a-layout-footer>Footer</a-layout-footer>
   </a-layout>
 
 </template>
@@ -133,7 +132,7 @@
     width: 250px;
     height: 250px;
     margin: 40px auto 40px;
-    background: url(../../../banner.png) no-repeat -1000px -200px;
+    background: url(../assets/logo_s.png) no-repeat;
   }
 
   .homemain .search {
