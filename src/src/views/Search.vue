@@ -37,25 +37,43 @@
     </a-layout-header>
     <a-layout-content class="homemain">
         <div class="classify" style="margin-top:10px">
-            <a-menu v-model="current" mode="horizontal">
-              <a-menu-item style="width:180px;"> <a-icon type="mail" />论文 </a-menu-item>
-              <a-menu-item style="width:180px"> <a-icon type="appstore" />专利 </a-menu-item>
-              <a-menu-item style="width:180px"><a-icon type="appstore" />科研人员</a-menu-item>
+            <a-menu  mode="horizontal">
+              <a-menu-item style="width:180px;"> <a-icon type="book" />论文 </a-menu-item>
+              <a-menu-item style="width:180px"> <a-icon type="reconciliation"  />专利 </a-menu-item>
+              <a-menu-item style="width:180px"><a-icon type="user" />科研人员</a-menu-item>
             </a-menu>
+            
         </div>
-        <div class="content" style="margin-top:20px">
-            <a-card hoverable="true" title="Default size card" style="width: 700px;margin:0px auto;margin-bottom:10px">
-                <a slot="extra" href="#">more</a>
-                <p>card content</p>
-                <p>card content</p>
-                <p>card content</p>
-            </a-card>
-            <a-card title="Small size card" style="width:700px;margin:0px auto">
-                <a slot="extra" href="#">more</a>
-                <p>card content</p>
-                <p>card content</p>
-                <p>card content</p>
-            </a-card>
+        <div class="content" >
+            <div v-for="(article,index) in localData" :key="index">
+                <a-card class="result" :hoverable="true"  >
+                  <div style="text-align:left" >
+                    <p style="font-weight:bold;">
+                      <a-icon type="book" />&#12288;{{article.Title}}
+                      <template><div style="float:right">{{article.Time}}{{'  citations'}}</div></template>
+                    </p>
+                    <p style="font-weight:100;margin-top:8px">{{article.Source}}</p>
+                    <p style="margin-top:3px;font-weight:300;font-family:隶体;font-size:10px">
+                      <template v-for="(author,index2) in article.Authors"  >{{author}}
+                        <template v-if="index2 < article.Authors.length-1">{{'，'}}</template>
+                      </template>
+                    </p>
+                    <p style="margin-top:3px;font-weight:200;">
+                      <template v-for="(field,index3) in article.Fields" >
+                        <a-button style="height:25px;width:auto;padding-left:5x;padding-right:5px" :key="index3">
+                          <a-icon style="padding-left:5px" type="experiment" />{{field}}
+                        </a-button>
+                        <template v-if="index3 < article.Fields.length-1">{{'，'}}</template>
+                      </template>
+                    </p>
+                    <p style="font-family:SimHei;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
+                      <template >
+                        {{article.Abstract}}
+                      </template>
+                    </p>
+                  </div>
+                </a-card>
+            </div>
         </div>
     </a-layout-content>
   </a-layout>
@@ -84,10 +102,44 @@
           "关键词10",
           "关键词11",
           "关键词12",
-          "关键词13",
-          "关键词14",
-          "关键词15",
-        ]
+        ],
+        comma:", ",
+         localData: [
+             {
+                Title:'基于深度学习的人脸识别',
+                Authors:['任志玲','薛新根'],
+                Source:'辽宁工程技术大学电气与控制工程学院',
+                Time:7777,
+                Fields:['机器学习','人工智能'],
+                Abstract:'人脸识别是图像领域的经典问题，为解决目前人脸识别中普遍存在的识别精度不高、'+
+                '特征点估计较为粗糙等问题，采用一种基于R-CNN（ResNet-Convolutional Neural Network）算法的人脸识别方法。'+
+                '采集了400张目标脸，和人脸库中的1000张样本脸混合，模型共训练130轮,其网络识别的准确率达到了90%以上，结合了深度学习方法，具有较高的识别率。'
+            },
+            {
+                 Title:'基于深度学习的人脸识别',
+                Authors:['任志玲','薛新根'],
+                Source:'辽宁工程技术大学电气与控制工程学院',
+                Time:546,
+                Fields:['机器学习','人工智能'],
+                Abstract:'人脸识别是图像领域的经典问题，为解决目前人脸识别中普遍存在的识别精度不高、'+
+                '特征点估计较为粗糙等问题，采用一种基于R-CNN（ResNet-Convolutional Neural Network）算法的人脸识别方法。'+
+                '该方法用人脸特征探测器有效的提取了人脸特征，同时将R-CNN卷积神经网络用于2D人脸识别，'+
+                '采集了400张目标脸，和人脸库中的1000张样本脸混合，模型共训练130轮,其网络识别的准确率达到了90%以上，结合了深度学习方法，具有较高的识别率。人脸识别是图像领域的经典问题，为解决目前人脸识别中普遍存在的识别精度不高、'+
+                '特征点估计较为粗糙等问题，采用一种基于R-CNN（ResNet-Convolutional Neural Network）算法的人脸识别方法。'+
+                '该方法用人脸特征探测器有效的提取了人脸特征，同时将R-CNN卷积神经网络用于2D人脸识别，'+
+                '采集了400张目标脸，和人脸库中的1000张样本脸混合，模型共训练130轮,其网络识别的准确率达到了90%以上，结合了'
+            },
+            {
+                Title:'爱情心理学',
+                Authors:['韦志中','薄艳艳'],
+                Source:'北京:台海出版社',
+                Time:1,
+                Fields:['恋爱心理学-通俗读物'],
+                Abstract:'本书精选了关于婚姻爱情的20个非常重要的主题, 包括找一个什么样的人结婚、婆媳关系、家庭文化的冲突与融合、角'+
+                '色匹配、爱情仪式、离婚、再婚、破解家庭暴力、婚姻危机干预、亲子关系、女性的自我成长、家庭未来建设等等, 并针对每'+
+                '个主题都提供了与之相应的心理成长技术。通过这20个主题的学习和成长, 人们将会揭开美满爱情的神秘面纱, 通过爱情和婚姻, 遇见一个更好的自己。'
+            },
+       ],
       };
     },
     watch: {
@@ -123,6 +175,14 @@
     width: 100%;
     text-align: center;
     background-color: white;
+  }
+  .homemain .content {
+    margin-top:20px
+  }
+  .homemain .content .result {
+    width: 700px;
+    margin:0px auto;
+    margin-bottom:10px
   }
 
   /*.homemain .img {
