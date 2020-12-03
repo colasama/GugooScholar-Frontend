@@ -77,7 +77,12 @@ export default {
   computed: {},
   watch: {},
   methods: {
-    toRegister() {},
+    toRegister() {
+      this.$router.push({ path: "/register"});
+    },
+    toLogin() {
+      this.$router.push({ path: "/login"});
+    },
     toIndex() {
       this.$router.push({ path: "/" });
       //location.reload();//话说为啥加这行来着，如果不注释掉会回到原页面？
