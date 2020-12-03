@@ -38,25 +38,25 @@
         </a-input-group>
       </div>
       <div class="keywords">
-        <a-button type="link" class="keyword">{{keywords[0]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[1]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[2]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[3]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[4]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[5]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(0)">{{keywords[0]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(1)">{{keywords[1]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(2)">{{keywords[2]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(3)">{{keywords[3]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(4)">{{keywords[4]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(5)">{{keywords[5]}}</a-button>
       </div>
       <div class="keywords">
-        <a-button type="link" class="keyword">{{keywords[6]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[7]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[8]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[9]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(6)">{{keywords[6]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(7)">{{keywords[7]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(8)">{{keywords[8]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(9)">{{keywords[9]}}</a-button>
       </div>
       <div class="keywords">
-        <a-button type="link" class="keyword">{{keywords[10]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[11]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[12]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[13]}}</a-button>
-        <a-button type="link" class="keyword">{{keywords[14]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(10)">{{keywords[10]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(11)">{{keywords[11]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(12)">{{keywords[12]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(13)">{{keywords[13]}}</a-button>
+        <a-button type="link" class="keyword" @click="searchKeyword(14)">{{keywords[14]}}</a-button>
       </div>
     </a-layout-content>
   </a-layout>
@@ -109,12 +109,21 @@
         if (this.searchContent != "") {
           this.$router.push({
             name: "search",
-            params: {
+            query: {
               searchType: this.searchType,
               searchContent: this.searchContent,
             }
           });
         }
+      },
+      searchKeyword(num) {
+        this.$router.push({
+          name: "search",
+          query: {
+            searchType: '关键词',
+            searchContent: this.keywords[num],
+          }
+        });
       }
     },
   };

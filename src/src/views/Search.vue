@@ -155,9 +155,10 @@
     },
     updated() {},
     mounted() {
-      console.log(this.$route);
-      this.searchType = this.$route.params.searchType;
-      this.searchContent = this.$route.params.searchContent;
+      if (this.$route.query.searchType)
+        this.searchType = this.$route.query.searchType;
+      if (this.$route.query.searchContent)
+        this.searchContent = this.$route.query.searchContent;
     },
     methods: {
       handleChange(value) {
