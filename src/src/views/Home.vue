@@ -6,7 +6,7 @@
       <div class="img"></div>
       <div class="search">
         <a-input-group compact>
-          <a-select default-value="主题" style="width: 120px;" size="large">
+          <a-select v-model="searchType" style="width: 120px;" size="large" @change="handleChange">
             <a-select-option value="主题">
               主题
             </a-select-option>
@@ -32,8 +32,9 @@
               学术领域
             </a-select-option>
           </a-select>
-          <a-input style="width: 40%;" placeholder="搜索你想要的" size="large" />
-          <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large">搜索</a-button>
+          <a-input style="width: 40%;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
+          <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large" @click="onSearch">搜索
+          </a-button>
         </a-input-group>
       </div>
       <div class="keywords">
@@ -71,6 +72,8 @@
     data() {
       return {
         memberName: "",
+        searchType: "摘要",
+        searchContent: "haha",
         keywords: [
           "关键词1",
           "关键词2",
@@ -98,8 +101,20 @@
 
     },
     methods: {
+      handleChange(value) {
+        this.searchType = value;
+      },
       onSearch() {
-        this.$router.push("/404");
+        console.log(this.searchContent);
+        if (this.searchContent != "") {
+          this.$router.push({
+            name: "search",
+            params: {
+              searchType: this.searchType,
+              searchContent: this.searchContent,
+            }
+          });
+        }
       }
     },
   };
@@ -144,9 +159,8 @@
   .keywords {
     color: #9feaf9;
   }
-  
+
   .keywords .keyword {
     margin: 0 3px;
   }
-  
 </style>
