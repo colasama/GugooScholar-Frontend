@@ -4,7 +4,9 @@
     <a-layout-content style="padding: 50px 100px" >
       <a-layout class="profileBox">
         <a-layout-sider width="250" style="background: #fff">
-          <span style="margin:auto; font-size:20px">用户管理</span>
+          <div style="margin:auto; height: 55px">
+            <span style="margin:auto; font-size:20px; height:20%"><b>用户管理</b></span>
+          </div>
           <a-menu
             mode="inline"
             :default-selected-keys="['1']"
@@ -30,7 +32,7 @@
                 <a-icon type="home" />
                 <span>主页</span>
             </a-breadcrumb-item>
-            <a-breadcrumb-item href="">
+            <a-breadcrumb-item>
                 <a-icon type="user" />
                 <span>用户管理</span>
             </a-breadcrumb-item>
@@ -38,17 +40,15 @@
                 用户信息
             </a-breadcrumb-item>
         </a-breadcrumb>
-        <br>
-
         <span style="font-size:40px; "><b>用户信息</b></span>
         <br>
         <span style="font-size:15px">您在Gugoo学术的个人信息，例如名字和电话</span>
         <br>
         <br>
         <br>
-        <a-card style="width: 80%; margin: auto;">
+        <a-card class="infoCard">
           <div>
-            <span style=" font-size: 25px; margin-left:-80%">基本资料</span>
+            <span class="cardTitle">基本资料</span>
           </div>
           <br>
           <a-row style="margin-top:24px">
@@ -142,9 +142,9 @@
 
         <br>
 
-        <a-card style="width: 80%; margin: auto;">
+        <a-card class='infoCard'>
           <div>
-            <span style=" font-size: 25px; margin-left:-80%">联系方式</span>
+            <span class="cardTitle">联系方式</span>
           </div>
           <br>
           <br>
@@ -176,9 +176,9 @@
 
         <br>
 
-        <a-card style="width: 80%; margin: auto;">
+        <a-card class="infoCard">
           <div>
-            <span style=" font-size: 25px; margin-left:-80%">个人简介</span>
+            <span class="cardTitle">个人简介</span>
           </div>
           <br>
           <br>
@@ -224,7 +224,7 @@
                 <a-icon type="home" />
                 <span>主页</span>
             </a-breadcrumb-item>
-            <a-breadcrumb-item href="">
+            <a-breadcrumb-item >
                 <a-icon type="user" />
                 <span>用户管理</span>
             </a-breadcrumb-item>
@@ -236,9 +236,76 @@
         <span style="font-size:40px; "><b>密码修改</b></span>
           <br>
         <span style="font-size:15px">修改您用于登陆Gugoo学术的密码</span>
-
-
+        <br>
+        <br>
+        <br>
+        <a-card class="infoCard">
+          <a-form
+            id="components-form-demo-normal-login"
+            :form="form"
+            class="login-form"
+            @submit="handleSubmit"
+          >
+            <a-form-item 
+              label="原密码" 
+              class="formInput" 
+              :label-col="{ span:4 }"
+              :wrapper-col="{ span:8 }">
+              <a-input
+                v-decorator="[
+                  'userName',
+                  { rules: [{ required: true, message: 'Please input your username!' }] },
+                ]"
+                placeholder="请输入原密码"
+                style="margin:auto"
+              >
+                <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
+              </a-input>
+            </a-form-item>
+            <a-form-item 
+              label="新密码" 
+              class="formInput"
+              :label-col="{ span:4 }"
+              :wrapper-col="{ span:8 }">
+              <a-input
+                v-decorator="[
+                  'password',
+                  { rules: [{ required: true, message: 'Please input your Password!' }] },
+                ]"
+                type="password"
+                placeholder="请输入新密码"
+              >
+                <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
+              </a-input>
+            </a-form-item>
+            <a-form-item 
+              label="确认密码" 
+              class="formInput"
+              :label-col="{ span:4 }"
+              :wrapper-col="{ span:8 }">
+              <a-input
+                v-decorator="[
+                  'password',
+                  { rules: [{ required: true, message: 'Please input your Password!' }] },
+                ]"
+                type="password"
+                placeholder="确认新密码"
+                required
+              >
+                <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
+              </a-input>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary"  @click="modifyPwd">
+                确认修改
+              </a-button>
+            </a-form-item>
+          </a-form>
+        </a-card>
+        
         </a-layout-content>
+
+
       </a-layout>
     </a-layout-content>
     <a-layout-footer style="text-align: center">
@@ -253,6 +320,22 @@
   height: 32px;
   background: rgba(255, 255, 255, 0.2);
   margin: 16px;
+}
+
+.infoCard{
+  width: 80%; 
+  margin: auto;
+}
+
+.cardTitle{
+  font-size: 25px; 
+  margin-left:-80%;
+}
+
+.formInput{
+  margin: auto;
+  text-align: center;
+  height: 60px
 }
 
 .profileBox{
@@ -293,6 +376,7 @@ export default {
       userInfo:{
         userId:0,
         userName:"wzk",
+        password:"asdfasdfasfd",
         userBirth:"",
         userSex:"男",
         userEmail:"869693441@qq.com",
@@ -323,6 +407,9 @@ export default {
       console.log('Clicked cancel button');
       this.modal_visible = 0;
     },
+    modifyPwd() {
+      console.log("Modify pwd");
+    }
   }
   
 }
