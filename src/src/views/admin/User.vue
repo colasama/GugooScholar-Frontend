@@ -161,7 +161,7 @@
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="handleOk"
+              @ok="submit"
               @cancel="handleCancel"
             >
             <div :style="{ margin:auto, border: '1px solid #d9d9d9', borderRadius: '4px' }">
@@ -193,7 +193,7 @@
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="handleOk"
+              @ok="submit"
               @cancel="handleCancel"
             >
             <a-form-model >
@@ -208,43 +208,35 @@
         <br>
 
         <a-card class="infoCard" style="margin-bottom:48px">
-          <div>
-            <span class="cardTitle">个人简介</span>
+          <div class="cardTitle">
+            <span>个人简介</span>
           </div>
           <br>
           <br>
           <transition name="slide-fade">
-          <a-row v-if="modal_visible==0">
+          <a-row style="margin-top:24px">
           <a-col :span="22">
             <div style=" work-break: keep-all; max-width:90%; margin:auto; text-align:left;">{{userInfo.description}}</div>
           </a-col>
           <a-col :span="2" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(6)"/></a-col>
           </a-row>
           </transition>
-          <transition name="slide-fade">
-          <a-row v-if="modal_visible==6">
-          <a-col :span="20">
-            <a-form-model-item style="work-break: keep-all; max-width:90%; margin:auto; text-align:left;">
-              <a-input v-model="userInfo.description" type="textarea" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="2" class="profile_col_edit"><a-button v-if="loading_visible==0" shape="circle" icon="check" @click="submit($event)"/><a-button v-if="loading_visible==1" shape="circle" icon="loading"/></a-col>
-          <a-col :span="2" class="profile_col_edit"><a-button shape="circle" icon="close" @click="handleCancel($event)"/></a-col>
-          </a-row>
-          </transition>
-          <!-- <a-modal
+          <a-modal
               title="修改个人简介"
               :visible="modal_visible==6"
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="handleOk"
+              @ok="submit"
               @cancel="handleCancel"
             >
-            </a-modal> -->
+            <a-input v-model="userInfo.description" type="textarea" :rows="5"/>
+            </a-modal>
         </a-card>
-
         </a-layout-content>
+
+
+
 
 
         <!-- 修改密码的页面 -->
@@ -273,8 +265,8 @@
         <a-card class="infoCard" style="margin-bottom:48px">
               <div><a-input
                 v-decorator="[
-                  'userName',
-                  { rules: [{ required: true, message: 'Please input your username!' }] },
+                  'oldpassword',
+                  { rules: [{ required: true, message: '原密码不能为空' }] },
                 ]"
                 placeholder="请输入原密码"
                 class="formInput"
@@ -284,8 +276,8 @@
               </a-input></div>
               <div><a-input
                 v-decorator="[
-                  'password',
-                  { rules: [{ required: true, message: 'Please input your Password!' }] },
+                  'newpassword',
+                  { rules: [{ required: true, message: '新密码不能为空' }] },
                 ]"
                 type="password"
                 placeholder="请输入新密码"
@@ -296,13 +288,14 @@
               </a-input></div>
               <div><a-input
                 v-decorator="[
-                  'password',
-                  { rules: [{ required: true, message: 'Please input your Password!' }] },
+                  'checkpassword',
+                  { rules: [{ required: true, message: '确认密码不能为空' }] },
                 ]"
                 type="password"
                 placeholder="确认新密码"
                 class="formInput"
                 size="large"
+                :required="true"
               >
                 <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
               </a-input></div>
@@ -313,6 +306,10 @@
         </a-layout-content>
       </a-layout>
     </a-layout-content>
+    <div>
+    <a-back-top style="margin-right:30px"/>
+    <strong style="color: rgba(64, 64, 64, 0.6);"> </strong>
+    </div>
   </a-layout>
 </template>
 
@@ -442,7 +439,6 @@ export default {
       console.log("Modify pwd");
     }
   }
-  
 }
 
 
