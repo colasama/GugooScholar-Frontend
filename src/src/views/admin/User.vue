@@ -47,9 +47,39 @@
         <br>
         <br>
         <a-card class="infoCard">
-          <div>
-            <span class="cardTitle">基本资料</span>
+          <div class="cardTitle">
+            <span >头像</span>
+            <div>
+              <span style="font-size: 15px">上传头像来个性化您的信息</span>
+            </div>
           </div>
+          <br>
+          <br>
+          <!-- <a-avatar :size="128" icon="user" :src="userInfo.avatarSrc"></a-avatar> -->
+          <a-upload
+            style="margin:0 auto"
+            name="image"
+            :show-upload-list="false"
+            action="http://182.92.57.178:5000/pictures/add"
+            :before-upload="beforeUpload"
+            @change="handleChange"
+          >
+          <a-avatar :size="256" class="avatarStyle" v-if="userInfo.avatarSrc!=null" :src="userInfo.avatarSrc" />
+
+          <avatar
+            :size="128"
+            class="avatarStyle"
+            v-if="userInfo.avatarSrc==null"
+            :username="`${userInfo.userName}`"
+          ></avatar>
+        </a-upload>
+        </a-card>
+        <br>
+        <a-card class="infoCard">
+          <div class="cardTitle">
+            <span >基本资料</span>
+          </div>
+          <br>
           <br>
           <a-row style="margin-top:24px">
             <a-col :span="8" class="profile_col_title">
@@ -143,8 +173,8 @@
         <br>
 
         <a-card class='infoCard'>
-          <div>
-            <span class="cardTitle">联系方式</span>
+          <div class="cardTitle">
+            <span >联系方式</span>
           </div>
           <br>
           <br>
@@ -177,8 +207,8 @@
         <br>
 
         <a-card class="infoCard">
-          <div>
-            <span class="cardTitle">个人简介</span>
+          <div class="cardTitle">
+            <span >个人简介</span>
           </div>
           <br>
           <br>
@@ -293,14 +323,35 @@
   margin: 16px;
 }
 
+.avatar-uploader > .ant-upload {
+  width: 128px;
+  height: 128px;
+  text-align: center;
+  margin: auto;
+}
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+  margin: auto;
+  text-align: center;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px 0 0 0;
+  color: #666;
+  text-align: center;
+}
+
 .infoCard{
   width: 80%; 
   margin: auto;
 }
 
 .cardTitle{
-  font-size: 25px; 
-  margin-left:-80%;
+  font-size: 25px;
+  text-align: left;
+  width: 95%;
+  margin: auto;
 }
 
 .formInput{
@@ -347,6 +398,7 @@ export default {
         userId:0,
         userName:"wzk",
         password:"asdfasdfasfd",
+        avatarSrc:"https://i.loli.net/2020/11/26/ANYtuRaPrLJTDwy.jpg",
         userBirth:"",
         userSex:"男",
         userEmail:"869693441@qq.com",
