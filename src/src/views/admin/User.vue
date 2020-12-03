@@ -1,9 +1,10 @@
 <template>
-  <a-layout id="components-layout-demo-fixed-sider" ><!--这里有些微妙，理论上可以自适应来着-->
+  <a-layout :style="layoutHeight"><!--这里有些微妙，理论上可以自适应来着-->
 
-    <a-layout-content style="padding: 50px 100px" >
+    <a-layout-content style="padding: 50px 100px 50px 100px" >
       <a-layout class="profileBox">
         <a-layout-sider width="250" style="background: #fff">
+
           <div style="margin:auto; height: 55px">
             <span style="margin:auto; font-size:20px; height:20%"><b>用户管理</b></span>
           </div>
@@ -11,7 +12,7 @@
             mode="inline"
             :default-selected-keys="['1']"
             :default-open-keys="['1']"
-            style="height: 100%"
+            style="height: 80%"
             @click="handleClick"
           >
             <a-menu-item key="1">
@@ -206,9 +207,9 @@
 
         <br>
 
-        <a-card class="infoCard">
-          <div class="cardTitle">
-            <span >个人简介</span>
+        <a-card class="infoCard" style="margin-bottom:48px">
+          <div>
+            <span class="cardTitle">个人简介</span>
           </div>
           <br>
           <br>
@@ -269,7 +270,7 @@
         <br>
         <br>
         <br>
-        <a-card class="infoCard">
+        <a-card class="infoCard" style="margin-bottom:48px">
               <div><a-input
                 v-decorator="[
                   'userName',
@@ -392,6 +393,7 @@ export default {
   data(){
     return{
       sider_status: 1,
+      layoutHeight: {"min-height":"1120px"},
       modal_visible: 0,
       loading_visible: 0,
       userInfo:{
@@ -410,6 +412,13 @@ export default {
     handleClick(e) {
       console.log("click", e);
       this.sider_status = e.key;
+      if(this.sider_status == 2){
+        console.log("Height Changed.")
+        this.layoutHeight = {"min-height":"500px"};//使用手动方式改变layout高度
+      }
+      else{
+        this.layoutHeight = {"min-height":"1120px"};
+      }
     },
     set_modal_visible(e){
       this.modal_visible=e;

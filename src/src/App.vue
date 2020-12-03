@@ -2,8 +2,8 @@
   <div id="app" style="display:flex;flex-direction:column;">
     <AppHeader v-if="$store.state.showNav"></AppHeader>
     <!--transition name="fade" mode="out-in"-->
-      <keep-alive><router-view style="text-align: center;flex:1;" :key="$route.path"/></keep-alive>
-      
+      <router-view style="text-align: center;flex:1;" :key="$route.path"/>
+
     <!--a-layout-footer>Footer</！a-layout-footer-->
     <!--/transition-->
   </div>
