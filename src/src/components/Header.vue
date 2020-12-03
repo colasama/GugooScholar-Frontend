@@ -2,7 +2,10 @@
   <div class="re-header">
     <div @click="toIndex" class="top-logo" />
 
-    <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu">
+    <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
+      <a-menu-item key="1">排名榜</a-menu-item>
+      <a-menu-item key="2">订阅</a-menu-item>
+
       <a-button
         type="ghost"
         @click="toRegister"
@@ -77,7 +80,7 @@ export default {
     toRegister() {},
     toIndex() {
       this.$router.push({ path: "/" });
-      location.reload();
+      //location.reload();//话说为啥加这行来着，如果不注释掉会回到原页面？
     },
     exit() {
       this.$store.state.token = null;
@@ -85,7 +88,7 @@ export default {
       this.$store.state.userid = "";
       this.$store.state.useravatar = "";
       window.sessionStorage.clear();
-      this.$router.push({ path: "/welcome" });
+      this.$router.push({ path: "/" });
     },
   },
 };
