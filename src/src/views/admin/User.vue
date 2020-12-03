@@ -1,5 +1,5 @@
 <template>
-  <a-layout id="components-layout-demo-fixed-sider" style="min-height:1200px"><!--这里有些微妙，理论上可以自适应来着-->
+  <a-layout id="components-layout-demo-fixed-sider" ><!--这里有些微妙，理论上可以自适应来着-->
 
     <a-layout-content style="padding: 50px 100px" >
       <a-layout class="profileBox">
@@ -240,20 +240,18 @@
         <br>
         <br>
         <a-card class="infoCard">
-          <a-form-item label="Success" has-feedback validate-status="" class="formInput">
-            <a-input id="success" placeholder="I'm the content" />
-          </a-form-item>
-              <a-input
+              <div><a-input
                 v-decorator="[
                   'userName',
                   { rules: [{ required: true, message: 'Please input your username!' }] },
                 ]"
                 placeholder="请输入原密码"
                 class="formInput"
+                size="large"
               >
                 <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
-              </a-input>
-              <a-input
+              </a-input></div>
+              <div><a-input
                 v-decorator="[
                   'password',
                   { rules: [{ required: true, message: 'Please input your Password!' }] },
@@ -261,10 +259,11 @@
                 type="password"
                 placeholder="请输入新密码"
                 class="formInput"
+                size="large"
               >
-                <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25);" />
-              </a-input>
-              <a-input
+                <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
+              </a-input></div>
+              <div><a-input
                 v-decorator="[
                   'password',
                   { rules: [{ required: true, message: 'Please input your Password!' }] },
@@ -272,22 +271,17 @@
                 type="password"
                 placeholder="确认新密码"
                 class="formInput"
+                size="large"
               >
                 <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
-              </a-input>
-              <a-button type="primary"  @click="modifyPwd">
+              </a-input></div>
+              <a-button type="primary"  @click="modifyPwd" size="large" style="width:40%;margin-top:12px">
                 确认修改
               </a-button>
         </a-card>
-        
         </a-layout-content>
-
-
       </a-layout>
     </a-layout-content>
-    <a-layout-footer style="text-align: center">
-      咕鸽学术 ©2020 Created by Gugoo-scholar team
-    </a-layout-footer>
   </a-layout>
 </template>
 
@@ -310,9 +304,8 @@
 }
 
 .formInput{
-  margin: auto;
+  margin: 12px 0;
   width: 40%;
-  height: 60px
 }
 
 .profileBox{
