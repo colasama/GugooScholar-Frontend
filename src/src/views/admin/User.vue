@@ -240,6 +240,9 @@
         <br>
         <br>
         <a-card class="infoCard">
+          <a-form-item label="Success" has-feedback validate-status="" class="formInput">
+            <a-input id="success" placeholder="I'm the content" />
+          </a-form-item>
               <a-input
                 v-decorator="[
                   'userName',
@@ -259,7 +262,7 @@
                 placeholder="请输入新密码"
                 class="formInput"
               >
-                <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
+                <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25);" />
               </a-input>
               <a-input
                 v-decorator="[
