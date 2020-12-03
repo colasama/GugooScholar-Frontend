@@ -240,33 +240,16 @@
         <br>
         <br>
         <a-card class="infoCard">
-          <a-form
-            id="components-form-demo-normal-login"
-            :form="form"
-            class="login-form"
-            @submit="handleSubmit"
-          >
-            <a-form-item 
-              label="原密码" 
-              class="formInput" 
-              :label-col="{ span:4 }"
-              :wrapper-col="{ span:8 }">
               <a-input
                 v-decorator="[
                   'userName',
                   { rules: [{ required: true, message: 'Please input your username!' }] },
                 ]"
                 placeholder="请输入原密码"
-                style="margin:auto"
+                class="formInput"
               >
                 <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
               </a-input>
-            </a-form-item>
-            <a-form-item 
-              label="新密码" 
-              class="formInput"
-              :label-col="{ span:4 }"
-              :wrapper-col="{ span:8 }">
               <a-input
                 v-decorator="[
                   'password',
@@ -274,15 +257,10 @@
                 ]"
                 type="password"
                 placeholder="请输入新密码"
+                class="formInput"
               >
                 <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
               </a-input>
-            </a-form-item>
-            <a-form-item 
-              label="确认密码" 
-              class="formInput"
-              :label-col="{ span:4 }"
-              :wrapper-col="{ span:8 }">
               <a-input
                 v-decorator="[
                   'password',
@@ -290,17 +268,13 @@
                 ]"
                 type="password"
                 placeholder="确认新密码"
-                required
+                class="formInput"
               >
                 <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
               </a-input>
-            </a-form-item>
-            <a-form-item>
               <a-button type="primary"  @click="modifyPwd">
                 确认修改
               </a-button>
-            </a-form-item>
-          </a-form>
         </a-card>
         
         </a-layout-content>
@@ -334,7 +308,7 @@
 
 .formInput{
   margin: auto;
-  text-align: center;
+  width: 40%;
   height: 60px
 }
 
