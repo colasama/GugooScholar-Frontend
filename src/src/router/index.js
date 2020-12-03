@@ -37,7 +37,7 @@ Vue.use(VueRouter)
     component:() => import('../views/regTest.vue')
   },
   {
-    path: '/adminUser',
+    path: '/admin/user',
     name: 'adminUser',
     meta: {title: '用户管理 - 咕鸽学术'},
     component:() => import('../views/admin/User.vue')
