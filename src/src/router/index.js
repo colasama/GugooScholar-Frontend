@@ -68,6 +68,18 @@ Vue.use(VueRouter)
     component:() => import('../views/content/Paper.vue')
   },
     {
+      path: '/list',
+      name: 'List',
+      meta: {title:'学科领域列表 - 咕鸽学术'},
+      component:() => import('../views/field/List.vue')
+    },
+    {
+      path: '/field',
+      name: 'Field',
+      meta: {title:'学科领域 - 咕鸽学术'},
+      component:() => import('../views/field/Field.vue')
+    },
+    {
       // 会匹配所有路径
       path: '/*',
       name: '404',
