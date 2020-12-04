@@ -59,29 +59,34 @@
                         </a-card>
                     </a-col>
                 </a-row>
+                <a-pagination :total="44" pageSize="9">
+                    <template #itemRender="{ page, type, originalElement }">
+                        <a v-if="type === 'prev'">Previous</a>
+                        <a v-else-if="type === 'next'">Next</a>
+                        <renderVNode v-else :vnode="originalElement"></renderVNode>
+                    </template>
+                </a-pagination>
             </a-layout-content>
 
             <a-layout-footer class="ant-layout-footer">
-                <a-pagination :total="36" :item-render="itemRender" />
+
             </a-layout-footer>
         </a-layout>
     </div>
 </template>
 
 <script>
+    function renderVNode(_, { attrs: { vnode } }) {
+        return vnode;
+    }
     export default {
+        components: {
+            renderVNode,
+        },
         methods:{
           Field(){
               this.$router.push("/Field");
           },
-            itemRender(current, type, originalElement) {
-                if (type === 'prev') {
-                    return <a>Previous</a>;
-                } else if (type === 'next') {
-                    return <a>Next</a>;
-                }
-                return originalElement;
-            },
         },
     }
 </script>
