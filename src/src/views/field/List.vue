@@ -39,7 +39,7 @@
     const listData = [];
     for (let i = 0; i < 24; i++) {
         listData.push({
-            href: `http://localhost:8080/field/`+`${i+1}`,
+            href: `http://localhost:8080/#/field/`,
             //title: `研究领域 ${i+1}`,
             //avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
             description:
