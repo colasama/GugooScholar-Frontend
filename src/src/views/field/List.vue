@@ -8,64 +8,17 @@
             </a-layout-header>
 
             <a-layout-content class="ant-layout-content">
-                <a-row display="flex" justify="center" align="middle" gutter="40">
-                    <a-col :span="6" offset="3" class="ant-col">
-                        <a-card class="hippoGrid-left">
-                            学科A
-                        </a-card>
-                    </a-col>
-                    <a-col :span="6" class="ant-col" >
-                        <a-card class="hippoGrid-left">
-                            学科A
-                        </a-card>
-                    </a-col>
-                    <a-col :span="6" class="ant-col">
-                        <a-card class="hippoGrid-left">
-                            学科A
-                        </a-card>
-                    </a-col>
-                </a-row>
-                <a-row display="flex" justify="center" align="middle" gutter="40">
-                    <a-col :span="6" offset="3" class="ant-col">
-                        <a-card class="hippoGrid-left">
-                            学科A
-                        </a-card>
-                    </a-col>
-                    <a-col :span="6" class="ant-col" >
-                        <a-card class="hippoGrid-left">
-                            学科A
-                        </a-card>
-                    </a-col>
-                    <a-col :span="6" class="ant-col">
-                        <a-card class="hippoGrid-left">
-                            学科A
-                        </a-card>
-                    </a-col>
-                </a-row>
-                <a-row :display="flex" justify="center" align="middle" gutter="40">
-                    <a-col :span="6" offset="3" class="ant-col">
-                        <a-card class="hippoGrid-left">
-                            学科A
-                        </a-card>
-                    </a-col>
-                    <a-col :span="6" class="ant-col" >
-                        <a-card class="hippoGrid-left">
-                            学科A
-                        </a-card>
-                    </a-col>
-                    <a-col :span="6" class="ant-col">
-                        <a-card class="hippoGrid-left">
-                            学科A
-                        </a-card>
-                    </a-col>
-                </a-row>
-                <a-pagination :total="44" pageSize="9">
-                    <template #itemRender="{ page, type, originalElement }">
-                        <a v-if="type === 'prev'">Previous</a>
-                        <a v-else-if="type === 'next'">Next</a>
-                        <renderVNode v-else :vnode="originalElement"></renderVNode>
-                    </template>
-                </a-pagination>
+                <a-list size="small" bordered :grid="{ gutter: 16, column: 3 }" :pagination="pagination" :data-source="listData">
+                <a-list-item slot="renderItem" slot-scope="item, index" :key="index">
+                    <a-list-item-meta :description="item.description">
+                    </a-list-item-meta>
+                    <a-card size="default" class="hippoCard-middle" >
+                        <a slot="actions" :href="item.href">more</a>
+                        {{item.content}}
+                    </a-card>
+                </a-list-item>
+            </a-list>
+
             </a-layout-content>
 
             <a-layout-footer class="ant-layout-footer">
@@ -75,13 +28,45 @@
     </div>
 </template>
 
+
 <script>
-    function renderVNode(_, { attrs: { vnode } }) {
-        return vnode;
+    import Vue from "vue";
+    import { List } from "ant-design-vue";
+    import "ant-design-vue/dist/antd.css";
+
+    Vue.use(List);
+
+    const listData = [];
+    for (let i = 0; i < 24; i++) {
+        listData.push({
+            href: `http://localhost:8080/field/`+`${i+1}`,
+            //title: `研究领域 ${i+1}`,
+            //avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+            description:
+                `Simple description for research Field ${i+1}`,
+            content:
+                `Content for research Field ${i+1}`,
+        });
     }
     export default {
+        data() {
+            return {
+                listData,
+                pagination: {
+                    onChange: page => {
+                        console.log(page);
+                    },
+                    pageSize: 9,
+                },
+                actions: [
+                    { type: 'star-o', text: '156' },
+                    { type: 'like-o', text: '156' },
+                    { type: 'message', text: '2' },
+                ],
+            };
+        },
         components: {
-            renderVNode,
+
         },
         methods:{
           Field(){
@@ -114,33 +99,18 @@
         min-height: 120px;
         line-height: 120px;
     }
-    .hippoGrid-left {
+
+    .hippoCard-middle {
         background: rgb(47 50 65);
         padding: 10%;
-        margin-top: 10px;
-        height: 150px;
-        font-size: 30px;
+        /*margin-top: 20px;*/
+        /*margin-bottom: 20px;*/
+        margin:auto;
+        font-size: 20px;
         color: #ffffff;
-        text-align: left;
+        width: 400px;
     }
-    .hippoGrid-middle {
-        background: rgb(47 50 65);
-        padding: 10%;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        height: 150px;
-        font-size: 30px;
-        text-align: left;
-    }
-    .hippoGrid-right {
-        background: rgb(47 50 65);
-        padding: 10%;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        height: 150px;
-        font-size: 30px;
-        text-align: left;
-    }
+
     .ant-col {
         background: #ffffff;
         margin-top: 20px;
