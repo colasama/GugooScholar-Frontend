@@ -24,6 +24,12 @@ Vue.use(VueRouter)
     component:() => import('../views/Register.vue')
   },
   {
+    path: '/subscribe',
+    name: '404',
+    meta: {title:'消息 - 咕鸽学术'},
+    component:() => import('../views/Subscribe.vue')
+  },
+  {
     // 暂时先这样 测试用 后面具体再改
     path: '/scientist/show',
     name: 'scientist',
@@ -89,6 +95,7 @@ Vue.use(VueRouter)
 ]
 
 const router = new VueRouter({
+  mode:'history',
   routes
 })
 /*
