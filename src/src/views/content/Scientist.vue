@@ -8,7 +8,7 @@
                     </div>
                     <div class="authorInfo">
                         <div class="authorName">
-                            {{authorChineseName}}（{{authorName}}）
+                            {{authorName}}
                         </div>
                         <div class="authorDes">
                             {{career}}<br/>{{university}}<br/>{{universityChineseName}}
@@ -71,6 +71,7 @@
         },
         data() {
             return {
+                relations: [],
                 sites: [0,0,0,0,0,0,0,0,0,0,0,0],
                 headStyle: {},
                 bodyStyle: {"margin-left": "0"},
@@ -95,6 +96,30 @@
                     "主要研究领域为嵌入式系统开发、信息安全、软件开发技术等。著有多种专业论文。",
 
             }
+        },
+        created() {
+            let scientistId = '53f4474cdabfaee43ec81506';
+            this.university = '暂无所属机构';
+            this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId,
+                {headers: {token: 'xx'}}
+            ).then((res)=>{
+                let data = res.data.data
+                console.log(data);
+                this.authorName = data.name;
+                if (data.orgs != null)
+                    this.university = data.orgs;
+                this.paperNum = data.n_pubs;
+            }).catch((e)=>{
+                console.log(e);
+            });
+            this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/relation',
+                {headers: {token: 'xx'}}
+            ).then((res)=>{
+                this.relations = res.data.data;
+                console.log(this.relations);
+            }).catch((e)=>{
+                console.log(e);
+            });
         },
         methods:{
             toHome() {
