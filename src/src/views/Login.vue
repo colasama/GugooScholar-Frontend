@@ -112,7 +112,22 @@ export default {
     },
     checkLogin() {
       var that = this;
-      firebase.auth().signInWithEmailAndPassword(this.email,this.password).catch(function(error) {
+      firebase.auth().signInWithEmailAndPassword(this.email,this.password)
+      .then((response) =>{
+        console.log(response)
+        that.$store.state.username = response.user.displayName;
+        that.$store.state.userid = response.user.uid;
+        that.$store.state.token = response.user.refreshToken;
+        window.sessionStorage.setItem('token',response.user.refreshToken)
+        window.sessionStorage.setItem('username',response.user.displayName)
+        window.sessionStorage.setItem('userid',response.user.uid)
+        //window.sessionStorage.setItem('useravatar',that.$store.state.useravatar)
+        that.$message.success("登录成功，即将跳转回主页！", 1.5).then(() => {
+            that.$router.push({ path: "/" });
+            that.$store.state.showNav = true;
+          });
+      })
+      .catch((error) =>{
         that.setError();
         var errorMessage = error.message;
         console.log(errorMessage)
