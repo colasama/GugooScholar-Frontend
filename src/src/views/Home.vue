@@ -2,9 +2,11 @@
 
   <a-layout>
     <a-layout-header class="headtext">Gugu lives matter!</a-layout-header>
-    <a-layout-content class="homemain">
+    <a-layout-content >
+    <div class="homemain">
+      <div style="height:64px"/>
       <div class="img"></div>
-      <div class="search">
+      <div class="search"  style="margin-bottom:24px">
         <a-input-group compact>
           <a-select v-model="searchType" style="width: 120px;" size="large" @change="handleChange">
             <a-select-option value="主题">
@@ -32,8 +34,8 @@
               学术领域
             </a-select-option>
           </a-select>
-          <a-input style="width: 40%;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
-          <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large" @click="onSearch">搜索
+          <a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
+          <a-button class="searchbutton" size="large" @click="onSearch">搜索
           </a-button>
         </a-input-group>
       </div>
@@ -58,6 +60,11 @@
         <a-button type="link" class="keyword" @click="searchKeyword(13)">{{keywords[13]}}</a-button>
         <a-button type="link" class="keyword" @click="searchKeyword(14)">{{keywords[14]}}</a-button>
       </div>
+      <div style="height:64px"/>
+    </div>
+    <div>
+      <!--首页展示的内容-->
+    </div>
     </a-layout-content>
   </a-layout>
 
@@ -73,7 +80,7 @@
       return {
         memberName: "",
         searchType: "摘要",
-        searchContent: "haha",
+        searchContent: "",
         keywords: [
           "关键词1",
           "关键词2",
@@ -155,7 +162,7 @@
   .homemain .img {
     width: 250px;
     height: 250px;
-    margin: 40px auto 40px;
+    margin: 0 auto 40px;
     background: url(../assets/logo_s.png) no-repeat;
   }
 
@@ -171,5 +178,13 @@
 
   .keywords .keyword {
     margin: 0 3px;
+  }
+
+  .searchbutton {
+    width: 80px;
+    background-color: #3A585F;
+    border-color:#3A585F; 
+    font-size: 14px;
+    color:white;
   }
 </style>
