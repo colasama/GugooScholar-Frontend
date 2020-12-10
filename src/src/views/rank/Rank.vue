@@ -9,6 +9,7 @@
         </span>
       </a-table>
       <a-button @click="magic">点击有惊喜</a-button>
+      <a-button @click="getAuthorRank">getAuthorRank</a-button>
     </a-layout-content>
   </a-layout>
 </template>
@@ -168,8 +169,8 @@
       getAuthorRank() {
         this.$axios({
           method: 'get',
-          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/rank/',
-          data: {
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/rank',
+          params: {
             order_by: "n_citation"
           }
         }).then(
