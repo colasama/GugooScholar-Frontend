@@ -66,7 +66,7 @@
               </p>
               <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
                 <template v-for="(field,index3) in article.Fields">
-                  <a-button style="height:25px;width:auto;padding-left:5x;padding-right:5px" :key="index3">
+                  <a-button style="height:25px;width:auto;padding-left:5px;padding-right:5px" :key="index3">
                     <a-icon style="padding-left:5px" type="experiment" />{{field}}
                   </a-button>
                   <template v-if="index3 < article.Fields.length-1">{{'，'}}</template>
