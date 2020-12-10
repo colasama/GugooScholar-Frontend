@@ -23,15 +23,15 @@
     <a-row>
       <a-col :span="6"></a-col>
       <a-col :span="12">
-        <a-card style="width:400px;margin:100px auto;text-align:center" v-if="isregister">
+        <a-card style="width:400px;margin:100px auto;text-align:center" v-if="!isregister">
           <h1 style="margin-top:20px;margin-left:5px;font-size:38px;float:left">
             <b>注册账户</b>
           </h1>
-          <a-input size="large" placeholder="用户名" v-model="username" style="margin-top:20px">
-            <a-icon slot="prefix" type="user" />
-          </a-input>
-          <a-input size="large" placeholder="邮箱" v-model="email" style="margin-top:30px">
+          <a-input size="large" placeholder="邮箱地址" v-model="email" style="margin-top:20px">
             <a-icon slot="prefix" type="mail" />
+          </a-input>
+          <a-input size="large" placeholder="用户名" v-model="username" style="margin-top:30px">
+            <a-icon slot="prefix" type="user" />
           </a-input>
           <a-input-password
             size="large"
@@ -45,13 +45,13 @@
             size="large"
             placeholder="重复密码"
             v-model="repassword"
-            style="margin-top:30px"
+            style="margin-top:30px;margin-bottom:15px"
           >
             <a-icon slot="prefix" type="info-circle" />
           </a-input-password>
           <!--a-input size="large" placeholder="手机号" v-model="phone" style="margin-top:30px">
             <a-icon slot="prefix" type="phone" />
-          </a-input-->
+          </a-input>
           <a-input-search
             style="margin-top:30px;margin-bottom:15px"
             placeholder="邮箱验证码"
@@ -61,9 +61,9 @@
           >
             <a-button v-if="count==0" slot="enterButton">获取验证码</a-button>
             <a-button v-else disabled slot="enterButton">{{count}}秒后重试</a-button>
-          </a-input-search>
+          </a-input-search -->
           <div v-if="errorLogin" style="color:red">用户名或密码错误！</div>
-          <a href="#/login">已有账号？点击这里登录</a>
+          <a href="#/login" >已有账号？点击这里登录</a>
           <a-button
             size="large"
             type="primary"
@@ -74,7 +74,7 @@
           <div style="text-align:center" />
         </a-card>
         
-        <a-card v-if="!isregister" style="width:60%;min-width:400px;margin:240px auto;">
+        <a-card v-if="isregister" style="width:60%;min-width:400px;margin:240px auto;">
           <div style="text-align:left"><h1 style="margin-top:20px;margin-left:5px;font-size:38px">
               <b>还差最后一步...</b>
           </h1></div>
@@ -153,7 +153,6 @@ export default {
       username: "",
       email: "",
       password: "",
-      //phone: "",
       isregister: false,
       repassword: "",
       token: "",
@@ -166,18 +165,14 @@ export default {
   },
   methods: {
     register() {
-      //var that = this;
+      var that = this;
       var regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-      var regPhone = /^[0-9]{11}$/;
       var errorTip = "";
       if (this.username == "") errorTip = "请输入您的用户名";
       else if (this.password == "" || this.repassword == "")
         errorTip = "请输入您的密码";
       else if (this.email == "") errorTip = "请输入您的邮箱";
-      //else if (this.phone == "") errorTip = "请输入您的手机号码";
-      else if (this.authcode == "") errorTip = "请输入邮箱验证码";
       else if (!regEmail.test(this.email)) errorTip = "请输入正确的邮箱";
-      else if (!regPhone.test(this.phone)) errorTip = "请输入正确的手机号码";
       else if (this.password != this.repassword)
         errorTip = "两次输入的密码不同";
       if (errorTip != "") {
@@ -185,6 +180,22 @@ export default {
         return;
       }
       
+      firebase.auth().createUserWithEmailAndPassword(this.email,this.password)
+      .then(function (){
+        that.isregister = true;
+      })
+      .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode == 'auth/weak-password') {
+          alert('The password is too weak.');
+          that.$message.error("您输入的密码太弱了！");
+        } else {
+          alert(errorMessage);
+        }
+        console.log(error);
+      });
     },
     sendMail() {
       //var that = this;
