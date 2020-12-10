@@ -1,7 +1,8 @@
 <template>
 
   <a-layout>
-    <a-layout-header class="headtext">Gugu lives matter!</a-layout-header>
+    <!--a-layout-header class="headtext">Gugu lives matter!</a-layout-header-->
+    <a-layout-header class="homemain"></a-layout-header>
     <a-layout-content >
     <div class="homemain">
       <div style="height:64px"/>
@@ -34,7 +35,8 @@
               学术领域
             </a-select-option>
           </a-select>
-          <a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
+          <a-input placeholder="搜索你想要的" style="width: 40%" size="large" v-model="searchContent" />
+          <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
           <a-button class="searchbutton" size="large" @click="onSearch">搜索
           </a-button>
         </a-input-group>
@@ -182,9 +184,14 @@
 
   .searchbutton {
     width: 80px;
-    background-color: #3A585F;
-    border-color:#3A585F; 
+    font-size: 14px;
+  }
+
+  .searchbutton_old {
+    width: 80px;
     font-size: 14px;
     color:white;
+    background-color: #3A585F;
+    border-color:#3A585F; 
   }
 </style>
