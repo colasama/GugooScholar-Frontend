@@ -4,9 +4,11 @@
       <a-icon type="arrow-left" @click="toRankList" />&nbsp;&nbsp;{{rankNameList[rankType]}}</a-layout-header>
     <a-layout-content>
       <a-table :columns="rankColumns[rankType]" :data-source="rankData[rankType]" class="rank-content" bordered>
-        <span slot="pdf" slot-scope="pdf">
-          <a-button @click="download(pdf)">下载原文</a-button>
-        </span>
+        <div v-if="url.length!=0" slot="url" slot-scope="url">
+          <a-button @click="download(url)">下载原文</a-button>
+        </div>
+        <a-button v-else disabled @click="download(url)">下载原文</a-button>
+        //不知道为什么没法显示禁用按钮，导致表格那里缺一块
       </a-table>
       <a-button @click="magic">点击有惊喜</a-button>
       <a-button @click="getAuthorRank">getAuthorRank</a-button>
@@ -81,66 +83,68 @@
             },
             {
               title: '下载',
-              key: 'pdf',
-              dataIndex: 'pdf',
+              key: 'url',
+              dataIndex: 'url',
               scopedSlots: {
-                customRender: 'pdf'
+                customRender: 'url'
               },
             },
           ],
         ],
         rankData: [
-          [{
-              key: '1',
-              name: 'Donald Trump',
-              // orgs: 'White House bunker',
-              h_index: 2000,
-              n_pubs: 200,
-              n_citation: 12,
-            },
-            {
-              key: '2',
-              name: 'Joe Biden',
-              // orgs: 'The White House',
-              h_index: 0,
-              n_pubs: 0,
-              n_citation: 0,
-            }, {
-              key: '3',
-              name: '马保国',
-              // orgs: '浑元形意太极门',
-              h_index: 2000000,
-              n_pubs: 20,
-              n_citation: 12000000,
-            },
+          [
+            // {
+            //   "key": '1',
+            //   "name": 'Donald Trump',
+            //   // orgs: 'White House bunker',
+            //   "h_index": 2000,
+            //   "n_pubs": 200,
+            //   "n_citation": 12,
+            // },
+            // {
+            //   "key": '2',
+            //   "name": 'Joe Biden',
+            //   // orgs: 'The White House',
+            //   "h_index": 0,
+            //   "n_pubs": 0,
+            //   "n_citation": 0,
+            // }, {
+            //   "key": '3',
+            //   "name": '马保国',
+            //   // orgs: '浑元形意太极门',
+            //   "h_index": 2000000,
+            //   "n_pubs": 20,
+            //   "n_citation": 12000000,
+            // },
           ],
-          [{
-              key: '1',
-              title: '论武德',
-              author: "马保国",
-              venue: '不知名期刊',
-              year: 2020,
-              n_citation: 12,
-              pdf: "https://www.baidu.com",
-            },
-            {
-              key: '2',
-              title: '耗子尾汁',
-              author: "马保国",
-              venue: '不知名期刊',
-              year: 2020,
-              n_citation: 12,
-              pdf: "https://www.bilibili.com",
-            },
-            {
-              key: '3',
-              title: '原来是昨天',
-              author: "马保国",
-              venue: '不知名期刊',
-              year: 2020,
-              n_citation: 12,
-              pdf: "https://www.weibo.com",
-            },
+          [
+            // {
+            //   key: '1',
+            //   title: '论武德',
+            //   author: "马保国",
+            //   venue: '不知名期刊',
+            //   year: 2020,
+            //   n_citation: 12,
+            //   pdf: "https://www.baidu.com",
+            // },
+            // {
+            //   key: '2',
+            //   title: '耗子尾汁',
+            //   author: "马保国",
+            //   venue: '不知名期刊',
+            //   year: 2020,
+            //   n_citation: 12,
+            //   pdf: "https://www.bilibili.com",
+            // },
+            // {
+            //   key: '3',
+            //   title: '原来是昨天',
+            //   author: "马保国",
+            //   venue: '不知名期刊',
+            //   year: 2020,
+            //   n_citation: 12,
+            //   pdf: "https://www.weibo.com",
+            // },
           ],
 
         ]
@@ -150,15 +154,20 @@
     watch: {
 
     },
+    created() {
+
+    },
     updated() {},
     mounted() {
       this.rankType = this.$route.query.rankType - 1;
       if (this.rankType == 0)
         this.getAuthorRank();
+      else if (this.rankType == 1)
+        this.getPaperRank();
     },
     methods: {
-      download(pdf) {
-        window.open(pdf);
+      download(url) {
+        window.open(url[0]);
       },
       toRankList() {
         this.$router.push("/ranklist");
@@ -167,6 +176,7 @@
         this.rankType = 1 - this.rankType;
       },
       getAuthorRank() {
+        var that = this;
         this.$axios({
           method: 'get',
           url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/rank',
@@ -175,9 +185,37 @@
           }
         }).then(
           response => {
-            var list = response.data;
-            this.rankData[0] = list;
+            var list = response.data["data"];
+            for (let index = 0; index < list.length; index++) {
+              list[index]["key"] = index + 1;
+            }
+            // that.rankData[that.rankType] = list;
+            that.$set(that.rankData, 0, list);
             console.log("authorList!");
+          },
+          err => {
+            console.log(err);
+          }).catch((error) => {
+          console.log(error);
+        });
+      },
+      getPaperRank() {
+        var that = this;
+        this.$axios({
+          method: 'get',
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/rank',
+          params: {
+            order_by: "n_citation"
+          }
+        }).then(
+          response => {
+            var list = response.data["data"];
+            for (let index = 0; index < list.length; index++) {
+              list[index]["key"] = index + 1;
+            }
+            // that.rankData[that.rankType] = list;
+            that.$set(that.rankData, 1, list);
+            console.log("paperList!");
           },
           err => {
             console.log(err);
