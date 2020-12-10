@@ -1,7 +1,7 @@
 <template>
   <a-layout>
     <a-layout-header class="headtext">
-      <a-icon type="arrow-left" @click="rankList" />&nbsp;&nbsp;{{rankNameList[rankType]}}</a-layout-header>
+      <a-icon type="arrow-left" @click="toRankList" />&nbsp;&nbsp;{{rankNameList[rankType]}}</a-layout-header>
     <a-layout-content>
       <a-table :columns="rankColumns[rankType]" :data-source="rankData[rankType]" class="rank-content" bordered>
         <span slot="pdf" slot-scope="pdf">
@@ -9,6 +9,7 @@
         </span>
       </a-table>
       <a-button @click="magic">点击有惊喜</a-button>
+      <a-button @click="getAuthorRank">getAuthorRank</a-button>
     </a-layout-content>
   </a-layout>
 </template>
@@ -32,11 +33,11 @@
               key: 'name',
               title: '姓名'
             },
-            {
-              title: '所属机构',
-              dataIndex: 'orgs',
-              key: 'orgs',
-            },
+            // {
+            //   title: '所属机构',
+            //   dataIndex: 'orgs',
+            //   key: 'orgs',
+            // },
             {
               title: 'H指数',
               dataIndex: 'h_index',
@@ -92,7 +93,7 @@
           [{
               key: '1',
               name: 'Donald Trump',
-              orgs: 'White House bunker',
+              // orgs: 'White House bunker',
               h_index: 2000,
               n_pubs: 200,
               n_citation: 12,
@@ -100,14 +101,14 @@
             {
               key: '2',
               name: 'Joe Biden',
-              orgs: 'The White House',
+              // orgs: 'The White House',
               h_index: 0,
               n_pubs: 0,
               n_citation: 0,
             }, {
               key: '3',
               name: '马保国',
-              orgs: '浑元形意太极门',
+              // orgs: '浑元形意太极门',
               h_index: 2000000,
               n_pubs: 20,
               n_citation: 12000000,
@@ -151,17 +152,38 @@
     },
     updated() {},
     mounted() {
-
+      this.rankType = this.$route.query.rankType - 1;
+      if (this.rankType == 0)
+        this.getAuthorRank();
     },
     methods: {
       download(pdf) {
         window.open(pdf);
       },
-      rankList() {
+      toRankList() {
         this.$router.push("/ranklist");
       },
       magic() {
         this.rankType = 1 - this.rankType;
+      },
+      getAuthorRank() {
+        this.$axios({
+          method: 'get',
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/rank',
+          params: {
+            order_by: "n_citation"
+          }
+        }).then(
+          response => {
+            var list = response.data;
+            this.rankData[0] = list;
+            console.log("authorList!");
+          },
+          err => {
+            console.log(err);
+          }).catch((error) => {
+          console.log(error);
+        });
       }
     },
   };

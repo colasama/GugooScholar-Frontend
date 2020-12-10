@@ -3,7 +3,7 @@
     <div @click="toIndex" class="top-logo" />
 
     <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
-      <a-menu-item key="1">排名榜</a-menu-item>
+      <a-menu-item key="1" @click="toRankList">排名榜</a-menu-item>
       <a-menu-item key="2">订阅</a-menu-item>
 
       <a-button
@@ -102,6 +102,9 @@ export default {
     toIndex() {
       this.$router.push({ path: "/" });
       //location.reload();//话说为啥加这行来着，如果不注释掉会回到原页面？
+    },
+    toRankList() {
+      this.$router.push({ path: "/rankList"});
     },
     exit() {
       this.$store.state.token = null;
