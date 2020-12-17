@@ -90,6 +90,7 @@ export default {
     height: 180px;
     width: 1231px;
     display:inline-block;
+    cursor: pointer;
 }
 
 .in-box {
