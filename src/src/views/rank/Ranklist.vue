@@ -10,16 +10,16 @@
                 <div class="place-mid">
                     <a-row type="flex" justify="space-around" align="middle">
                         <a-col :span="8">
-                            <div class="gutter-box" id="dcb1">
+                            <div @click="toAuthor" class="gutter-box" id="dcb1">
                                 <div @mouseover="mhover(1,1)" @mouseleave="mleaver(1,1)"  class="in-box" style="font-size: 30px;">
-                                    计算机科学与技术
+                                    科研人员排行榜
                                 </div>
                             </div>
                         </a-col>
                         <a-col :span="8">
-                            <div class="gutter-box" id="dcb2">
+                            <div @click="toPaper" class="gutter-box" id="dcb2">
                                 <div @mouseover="mhover(1,2)" @mouseleave="mleaver(1,2)" class="in-box" style="font-size: 30px;">
-                                    col-12
+                                    论文排行榜
                                 </div>
                             </div>
                         </a-col>
@@ -102,6 +102,22 @@ export default {
             var num = (row-1)*3 + col;
             var targetd = document.getElementById("dcb"+num).getElementsByTagName("div")[0];
             targetd.style.fontSize = "30px";
+        },
+        toAuthor() {
+            this.$router.push({
+                path:'/rank',
+                query:{
+                    rankType:1
+                }
+            })
+        },
+        toPaper() {
+            this.$router.push({
+                path:'/rank',
+                query:{
+                    rankType:2
+                }
+            })
         }
     }
 
