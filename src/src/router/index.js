@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 //import Home from '../views/Home.vue'
-//import store from '../store/index.js'
+import store from '../store/index.js'
 Vue.use(VueRouter)
 
   const routes = [
@@ -24,6 +24,12 @@ Vue.use(VueRouter)
     component:() => import('../views/Register.vue')
   },
   {
+    path: '/subscribe',
+    name: '404',
+    meta: {title:'消息 - 咕鸽学术'},
+    component:() => import('../views/Subscribe.vue')
+  },
+  {
     // 暂时先这样 测试用 后面具体再改
     path: '/scientist/show',
     name: 'scientist',
@@ -37,7 +43,7 @@ Vue.use(VueRouter)
     component:() => import('../views/regTest.vue')
   },
   {
-    path: '/admin/User',
+    path: '/admin/user',
     name: 'adminUser',
     meta: {title: '用户管理 - 咕鸽学术'},
     component:() => import('../views/admin/User.vue')
@@ -47,6 +53,12 @@ Vue.use(VueRouter)
     name: 'ranklist',
     meta: {title: '排行榜 - 咕鸽学术'},
     component:() => import('../views/rank/Ranklist.vue')
+  },
+  {
+    path: '/rank',
+    name: 'Rank',
+    meta: { title: '排行榜 - 咕鸽学术' },
+    component: () => import('../views/rank/Rank.vue')
   },
   {
     path: '/search',
@@ -62,6 +74,18 @@ Vue.use(VueRouter)
     component:() => import('../views/content/Paper.vue')
   },
     {
+      path: '/list',
+      name: 'List',
+      meta: {title:'学科领域列表 - 咕鸽学术'},
+      component:() => import('../views/field/List.vue')
+    },
+    {
+      path: '/field',
+      name: 'Field',
+      meta: {title:'学科领域 - 咕鸽学术'},
+      component:() => import('../views/field/Field.vue')
+    },
+    {
       // 会匹配所有路径
       path: '/*',
       name: '404',
@@ -73,52 +97,19 @@ Vue.use(VueRouter)
 const router = new VueRouter({
   routes
 })
-/*
-router.beforeResolve((to, from, next) => {
+
+router.beforeResolve((to,from,next) => {
   if (store.state.token==null) {
     store.state.token=window.sessionStorage.getItem('token');
     store.state.username=window.sessionStorage.getItem('username');
     store.state.userid=window.sessionStorage.getItem('userid');
     store.state.useravatar=window.sessionStorage.getItem('useravatar');
   }
-  if (to.name=="Document") {
-    var docid = to.params.id;
-    //拦截非法访问文档
-    Vue.axios({
-      method: "get",
-      url: "http://39.106.230.20:8090/document/" + docid,
-      headers: {
-        token: store.state.token,
-      },
-    }).then(function (response) {
-      if (response.data.success==false) {
-        next('/doc404');
-      }
-    }).catch(function () {
-      next('/doc404');
-    });
-  }
-  //更新消息
-  if (store.state.token!=null) {
-    Vue.axios({
-      method: "get",
-      url: "http://39.106.230.20:8090/message/unread",
-      headers: {
-        token: store.state.token,
-      },
-    }).then(function (response) {
-      store.state.message=response.data.unReadMessages;
-      store.state.messageRead=response.data.readMessages;
-    }).catch(function (res) {
-      console.log(res);
-    });
-
-  }
   if (store.state.token==null&&(to.name=="Home"||to.name=="Profile")) {
-    next('/welcome');
+    next();
   }else{
     next();
   }
 })
-*/
+
 export default router

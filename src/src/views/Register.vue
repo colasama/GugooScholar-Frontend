@@ -21,16 +21,17 @@
       style="z-index:-10"
     ></vue-particles>
     <a-row>
+      <a-col :span="6"></a-col>
       <a-col :span="12">
-        <a-card style="width:400px;margin:100px auto;text-align:center">
+        <a-card style="width:400px;margin:100px auto;text-align:center" v-if="!isregister">
           <h1 style="margin-top:20px;margin-left:5px;font-size:38px;float:left">
             <b>注册账户</b>
           </h1>
-          <a-input size="large" placeholder="用户名" v-model="username" style="margin-top:20px">
-            <a-icon slot="prefix" type="user" />
-          </a-input>
-          <a-input size="large" placeholder="邮箱" v-model="email" style="margin-top:30px">
+          <a-input size="large" placeholder="邮箱地址" v-model="email" style="margin-top:20px">
             <a-icon slot="prefix" type="mail" />
+          </a-input>
+          <a-input size="large" placeholder="用户名" v-model="username" style="margin-top:30px">
+            <a-icon slot="prefix" type="user" />
           </a-input>
           <a-input-password
             size="large"
@@ -44,11 +45,11 @@
             size="large"
             placeholder="重复密码"
             v-model="repassword"
-            style="margin-top:30px"
+            style="margin-top:30px;margin-bottom:15px"
           >
             <a-icon slot="prefix" type="info-circle" />
           </a-input-password>
-          <a-input size="large" placeholder="手机号" v-model="phone" style="margin-top:30px">
+          <!--a-input size="large" placeholder="手机号" v-model="phone" style="margin-top:30px">
             <a-icon slot="prefix" type="phone" />
           </a-input>
           <a-input-search
@@ -60,21 +61,73 @@
           >
             <a-button v-if="count==0" slot="enterButton">获取验证码</a-button>
             <a-button v-else disabled slot="enterButton">{{count}}秒后重试</a-button>
-          </a-input-search>
+          </a-input-search -->
           <div v-if="errorLogin" style="color:red">用户名或密码错误！</div>
-          <a href="#/login">已有账号？点击这里登录</a>
+          <a href="#/login" >已有账号？点击这里登录</a>
           <a-button
             size="large"
             type="primary"
             style="margin-top:15px;margin-bottom:30px"
             block
             @click="register"
+            :loading="regLoading"
           >注册</a-button>
-          <a-avatar style="opacity:0.8" src="https://i.loli.net/2020/08/10/Q1G3yKVZDa8In7q.png" />
           <div style="text-align:center" />
         </a-card>
+        
+        <a-card v-if="isregister" style="width:60%;min-width:400px;margin:240px auto;">
+
+          <div v-if="!mailsended">
+            
+            <div style="text-align:left"><h1 style="margin-top:20px;margin-left:5px;font-size:38px">
+                <b>还差最后一步...</b>
+            </h1></div>
+            <div style="text-align:left;margin-left:6px" v-if="!mailsended">激活邮箱后，就可以使用咕鸽学术的全部服务了！</div>
+            <div style="text-align:left;margin-left:6px" v-if="mailsended">验证码已经发送到您的邮箱，请查收！</div>
+            
+            <div style="text-align:right"><a-button
+              size="large"
+              type="primary"
+              @click="sendMail"
+              style="margin-top:24px;width:128px"
+              :loading = "mailsendLoading"
+            >发送验证码</a-button></div>
+          </div>
+
+          <!--div v-if="mailsended">
+            <a-input
+              style="margin-top:30px;margin-bottom:15px"
+              placeholder="验证码"
+              size="large"
+              v-model="authcode"
+            />
+            
+            <div style="text-align:right;margin-top:12px">
+              <a-button v-if="count==0" style="width:144px;margin-right:10px" size="large" @click="sendMail">重新发送验证码</a-button>
+              <a-button v-else style="width:144px;margin-right:10px" size="large" disabled>{{count}}秒后重试</a-button>
+              <a-button
+                size="large"
+                type="primary"
+                @click="applyCode"
+                style="width:96px"
+              >确 认</a-button>
+            </div-->
+          <div v-if="mailsended">
+            <a-result
+              status="success"
+              title="激活邮件已发送!"
+              sub-title="请您查看邮箱，根据邮件中的步骤进行最后的账户激活过程。"
+            >
+              <template #extra>
+                <a-button key="buy" @click="toIndex">
+                  返回主页
+                </a-button>
+              </template>
+            </a-result>
+          </div>
+        </a-card>
       </a-col>
-      <a-col :span="12"></a-col>
+      <a-col :span="6"></a-col>
     </a-row>
   </div>
 </template>
@@ -86,7 +139,7 @@
   background: url("../assets/logo1.png");
 }
 
-.welcome {
+.welcome_archived {
   background: url("../assets/cover.png");
 }
 
@@ -99,7 +152,14 @@
 
 <script>
 // @ is an alias to /src
-import Vue from "vue";
+//import Vue from "vue";
+import firebase from "firebase";
+
+var config = {
+    apiKey: "AIzaSyCd3aIBhwTRZwYa2JzNWhou2-Mg-kAwv6A",
+    authDomain: "googoscholar-294912.firebaseapp.com",
+};
+firebase.initializeApp(config);
 
 export default {
   name: "Login",
@@ -109,74 +169,78 @@ export default {
       username: "",
       email: "",
       password: "",
-      phone: "",
       repassword: "",
       token: "",
       authcode: "",
       timer: null,
       count: 0,
+      isregister: false,
       errorLogin: false,
+      mailsended: false,
+      regLoading: false,
+      mailsendLoading: false,
     };
   },
   methods: {
+    toIndex() {
+      this.$router.push({ path: "/" });
+    },
     register() {
+      this.regLoading = true;
       var that = this;
       var regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-      var regPhone = /^[0-9]{11}$/;
       var errorTip = "";
       if (this.username == "") errorTip = "请输入您的用户名";
       else if (this.password == "" || this.repassword == "")
         errorTip = "请输入您的密码";
       else if (this.email == "") errorTip = "请输入您的邮箱";
-      else if (this.phone == "") errorTip = "请输入您的手机号码";
-      else if (this.authcode == "") errorTip = "请输入邮箱验证码";
       else if (!regEmail.test(this.email)) errorTip = "请输入正确的邮箱";
-      else if (!regPhone.test(this.phone)) errorTip = "请输入正确的手机号码";
       else if (this.password != this.repassword)
         errorTip = "两次输入的密码不同";
       if (errorTip != "") {
         this.$message.error(errorTip);
         return;
       }
-      Vue.axios({
-        method: "post",
-        url: "http://39.106.230.20:8090/register",
-        data: {
-          username: this.username,
-          password: this.password,
-          email: this.email,
-          phone: this.phone,
-          code: this.authcode,
-        },
-      }).then(function (response) {
-        console.log(response.data);
-        if (response.data.success == true) {
-          that.$message
-            .success("注册成功，即将跳转登录页面")
-            .then(() => that.$router.push({ path: "/login" }));
+      
+      firebase.auth().createUserWithEmailAndPassword(this.email,this.password)
+      .then(function (){
+        firebase.auth().currentUser.updateProfile({
+          displayName: that.username,
+          //photoURL: "https://example.com/jane-q-user/profile.jpg"
+        }).then(function() {
+          that.regLoading = false;
+          console.log(that.isregister);
+          that.isregister = true;
+        }, function(error) {
+          console.log(error)
+        });
+      })
+      .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode == 'auth/weak-password') {
+          alert('The password is too weak.');
+          that.$message.error("您输入的密码太弱了！");
         } else {
-          that.$message.error(response.data.message);
+          alert(errorMessage);
         }
+        console.log(error);
       });
     },
     sendMail() {
       var that = this;
-      Vue.axios({
-        method: "post",
-        url: "http://39.106.230.20:8090/code",
-        data: {
-          username: this.username,
-          email: this.email,
-        },
-      }).then(function (response) {
-        console.log(response.data);
-        if (response.data.success == true) {
-          that.$message.success("验证码已发送");
-          that.count = 60;
-          that.timer = setInterval(that.startTimer, 1000);
-        } else {
-          that.$message.error(response.data.message);
-        }
+      this.mailsendLoading = true;
+      firebase.auth().currentUser.sendEmailVerification()
+      .then(function() {
+        console.log("Mail Sent Successfully!");
+        that.mailsended = true;
+        that.mailsendLoading = false;
+        //that.$message.success("激活邮件发送成功！");
+      })
+      .catch(function(error) {
+        // Error occurred. Inspect error.code.
+        alert(error.message);
       });
     },
     startTimer() {
@@ -187,6 +251,9 @@ export default {
     },
   },
   created() {
+    this.$store.state.showNav = false;
+  },
+  mounted(){
     this.$store.state.showNav = false;
   },
   destroyed() {

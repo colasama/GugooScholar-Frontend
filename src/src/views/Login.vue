@@ -21,6 +21,7 @@
       >
       </vue-particles>
     <a-row>
+      <a-col :span="6"></a-col>
       <a-col :span="12">
         <a-card style="width:400px;margin:220px auto;text-align:center">
           <h1 style="margin-top:20px;margin-left:5px;font-size:38px;float:left">
@@ -53,17 +54,16 @@
               <a-button size="large" type="primary" block @click="checkLogin">登录</a-button>
             </a-col>
           </a-row>
-          <a-avatar style="opacity:0.8" src="https://i.loli.net/2020/08/10/Q1G3yKVZDa8In7q.png" />
           <div style="text-align:center" />
         </a-card>
       </a-col>
-      <a-col :span="12"></a-col>
+      <a-col :span="6"></a-col>
     </a-row>
   </div>
 </template>
 
 <style>
-.welcome {
+.welcome_archived {
   background: url("../assets/cover.png");
 }
 
@@ -112,7 +112,22 @@ export default {
     },
     checkLogin() {
       var that = this;
-      firebase.auth().signInWithEmailAndPassword(this.email,this.password).catch(function(error) {
+      firebase.auth().signInWithEmailAndPassword(this.email,this.password)
+      .then((response) =>{
+        console.log(response)
+        that.$store.state.username = response.user.displayName;
+        that.$store.state.userid = response.user.uid;
+        that.$store.state.token = response.user.refreshToken;
+        window.sessionStorage.setItem('token',response.user.refreshToken)
+        window.sessionStorage.setItem('username',response.user.displayName)
+        window.sessionStorage.setItem('userid',response.user.uid)
+        //window.sessionStorage.setItem('useravatar',that.$store.state.useravatar)
+        that.$message.success("登录成功，即将跳转回主页！", 1.5).then(() => {
+            that.$router.push({ path: "/" });
+            that.$store.state.showNav = true;
+          });
+      })
+      .catch((error) =>{
         that.setError();
         var errorMessage = error.message;
         console.log(errorMessage)
@@ -125,6 +140,9 @@ export default {
     
   },
   created() {
+    this.$store.state.showNav = false;
+  },
+  mounted(){
     this.$store.state.showNav = false;
   },
   destroyed() {

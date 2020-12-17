@@ -3,8 +3,8 @@
     <div @click="toIndex" class="top-logo" />
 
     <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
-      <a-menu-item key="1">排名榜</a-menu-item>
-      <a-menu-item key="2">订阅</a-menu-item>
+      <a-menu-item key="1" @click="toRankList">排名榜</a-menu-item>
+      <a-menu-item key="2" @click="toSubscribe">订阅</a-menu-item>
 
       <a-button
         type="ghost"
@@ -18,6 +18,22 @@
         style="margin-left:15px;margin-right:48px"
         v-if="$store.state.token==null"
       >登录</a-button>
+      <a-button type="link" @click="toUserindex" style="margin-right:12px;" v-if="$store.state.token!=null">
+          <a-avatar
+            :size="32"
+            inline
+            style="margin-right:6px"
+            v-if="$store.state.useravatar==null||$store.state.useravatar=='null'"
+            :username="`${$store.state.username}`"
+          ></a-avatar>
+          <a-avatar
+            v-else
+            :src="$store.state.useravatar"
+            style="margin-right:6px"
+          />
+          {{$store.state.username}}
+          <a-icon type="down" />
+        </a-button>
     </a-menu>
   </div>
 </template>
@@ -86,6 +102,12 @@ export default {
     toIndex() {
       this.$router.push({ path: "/" });
       //location.reload();//话说为啥加这行来着，如果不注释掉会回到原页面？
+    },
+    toSubscribe() {
+      this.$router.push({ path: "/subscribe" });
+    },
+    toRankList() {
+      this.$router.push({ path: "/rankList"});
     },
     exit() {
       this.$store.state.token = null;

@@ -52,28 +52,28 @@
         <div v-for="(article,index) in localData" :key="index">
           <a-card class="result" :hoverable="true">
             <div style="text-align:left">
-              <p style="font-weight:bold;">
+              <p style="font-weight:700;">
                 <a-icon type="book" />&#12288;{{article.Title}}
                 <template>
                   <div style="float:right">{{article.Time}}{{'  citations'}}</div>
                 </template>
               </p>
-              <p style="font-weight:100;margin-top:8px">{{article.Source}}</p>
-              <p style="margin-top:3px;font-weight:300;font-family:隶体;font-size:10px">
+              <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">{{article.Source}}</p>
+              <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
                 <template v-for="(author,index2) in article.Authors">{{author}}
                   <template v-if="index2 < article.Authors.length-1">{{'，'}}</template>
                 </template>
               </p>
-              <p style="margin-top:3px;font-weight:200;">
+              <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
                 <template v-for="(field,index3) in article.Fields">
-                  <a-button style="height:25px;width:auto;padding-left:5x;padding-right:5px" :key="index3">
+                  <a-button style="height:25px;width:auto;padding-left:5px;padding-right:5px" :key="index3">
                     <a-icon style="padding-left:5px" type="experiment" />{{field}}
                   </a-button>
                   <template v-if="index3 < article.Fields.length-1">{{'，'}}</template>
                 </template>
               </p>
               <p
-                style="font-family:SimHei;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
+                style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
                 <template>
                   {{article.Abstract}}
                 </template>
@@ -112,15 +112,15 @@
         ],
         comma: ", ",
         localData: [{
-            Title: '基于深度学习的人脸识别',
-            Authors: ['任志玲', '薛新根'],
-            Source: '辽宁工程技术大学电气与控制工程学院',
+            Title: 'Automobile pollution control using catalysis',
+            Authors: ['Dey S.', 'Mehta N.S.'],
+            Source: 'Environmental Engineering Department, RGPV Bhopal, India;Department of Electronics and Communication, Roorkee College of Engineering, India',
             Time: 7777,
-            Fields: ['机器学习', '人工智能'],
-            Abstract: '人脸识别是图像领域的经典问题，为解决目前人脸识别中普遍存在的识别精度不高、' +
-              '特征点估计较为粗糙等问题，采用一种基于R-CNN（ResNet-Convolutional Neural Network）算法的人脸识别方法。' +
-              '采集了400张目标脸，和人脸库中的1000张样本脸混合，模型共训练130轮,其网络识别的准确率达到了90%以上，结合了深度学习方法，具有较高的识别率。'
-          },
+            Fields: ['Engine and fuel modification', 'Catalytic converter'],
+            Abstract: 'The emissions of pollutants from vehicles are generally low but the numbers of vehicles increasing on the road therefore the environmental pollutions are also increases. About 35% of CO, 30% of HC and 25% percent of NOx produced into the atmosphere is from the transportation sector. These pollutants have adverse effec'+
+            'ts on the environment and human health. The emissions from vehicles are' +
+              'generally depends upon the air–fuel ratio. The control techniques for exhaust gas emissions are engine modifications, fuel pretreatment, fuel additives, exhaust gas recirculation (EGR), positive crankcase ventilation (PCV) and an application of catalytic converters. A catalytic converter is a device that'+' converts more toxic exhaust gas pollutants into less toxic pollutants. There are different types of catalysts used in'}
+              ,
           {
             Title: '基于深度学习的人脸识别',
             Authors: ['任志玲', '薛新根'],
@@ -155,9 +155,10 @@
     },
     updated() {},
     mounted() {
-      console.log(this.$route);
-      this.searchType = this.$route.params.searchType;
-      this.searchContent = this.$route.params.searchContent;
+      if (this.$route.query.searchType)
+        this.searchType = this.$route.query.searchType;
+      if (this.$route.query.searchContent)
+        this.searchContent = this.$route.query.searchContent;
     },
     methods: {
       handleChange(value) {
