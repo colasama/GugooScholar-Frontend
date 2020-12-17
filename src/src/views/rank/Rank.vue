@@ -3,15 +3,20 @@
     <a-layout-header class="headtext">
       <a-icon type="arrow-left" @click="toRankList" />&nbsp;&nbsp;{{rankNameList[rankType]}}</a-layout-header>
     <a-layout-content>
-      <a-table :columns="rankColumns[rankType]" :data-source="rankData[rankType]" class="rank-content" bordered>
-        <div v-if="url.length!=0" slot="url" slot-scope="url">
-          <a-button @click="download(url)">下载原文</a-button>
+      <a-table :columns="rankColumns[rankType]" :data-source="rankData[rankType]" :loading="loading"
+        class="rank-content">
+        <div slot="url" slot-scope="url">
+          <div style="width: 100px; margin: 0 auto;" v-if="url[0]==='null'">无全文链接</div>
+          <div v-else>
+            <div v-for="link in url" :key="link">
+              <a-button style="width: 100px;margin: 10px auto;" v-if="getArrayIndex(url,link) < 3"
+                @click="download(link)">全文链接{{1+getArrayIndex(url,link)}}</a-button>
+            </div>
+          </div>
         </div>
-        <a-button v-else disabled @click="download(url)">下载原文</a-button>
-        //不知道为什么没法显示禁用按钮，导致表格那里缺一块
       </a-table>
-      <a-button @click="magic">点击有惊喜</a-button>
-      <a-button @click="getAuthorRank">getAuthorRank</a-button>
+      <!-- <a-button @click="magic">点击有惊喜</a-button> -->
+      <!-- <a-button @click="getAuthorRank">getAuthorRank</a-button> -->
     </a-layout-content>
   </a-layout>
 </template>
@@ -24,6 +29,7 @@
     },
     data() {
       return {
+        loading: false,
         rankType: 0,
         rankNameList: [
           "科研人员排行榜",
@@ -166,8 +172,17 @@
         this.getPaperRank();
     },
     methods: {
-      download(url) {
-        window.open(url[0]);
+      download(link) {
+        window.open(link);
+      },
+      getArrayIndex(arr, obj) {
+        var i = arr.length;
+        while (i--) {
+          if (arr[i] === obj) {
+            return i;
+          }
+        }
+        return -1;
       },
       toRankList() {
         this.$router.push("/ranklist");
@@ -177,6 +192,7 @@
       },
       getAuthorRank() {
         var that = this;
+        this.loading = true;
         this.$axios({
           method: 'get',
           url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/rank',
@@ -192,6 +208,7 @@
             // that.rankData[that.rankType] = list;
             that.$set(that.rankData, 0, list);
             console.log("authorList!");
+            that.loading = false;
           },
           err => {
             console.log(err);
@@ -201,6 +218,7 @@
       },
       getPaperRank() {
         var that = this;
+        this.loading = true;
         this.$axios({
           method: 'get',
           url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/rank',
@@ -212,10 +230,14 @@
             var list = response.data["data"];
             for (let index = 0; index < list.length; index++) {
               list[index]["key"] = index + 1;
+              if (list[index]["url"] == null) {
+                list[index]["url"] = ["null"];
+              }
             }
             // that.rankData[that.rankType] = list;
             that.$set(that.rankData, 1, list);
             console.log("paperList!");
+            that.loading = false;
           },
           err => {
             console.log(err);
