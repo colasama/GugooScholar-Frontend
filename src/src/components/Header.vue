@@ -19,13 +19,13 @@
         v-if="$store.state.token==null"
       >登录</a-button>
       <a-button type="link" @click="toUserindex" style="margin-right:12px;" v-if="$store.state.token!=null">
-          <avatar
+          <a-avatar
             :size="32"
             inline
             style="margin-right:6px"
             v-if="$store.state.useravatar==null||$store.state.useravatar=='null'"
             :username="`${$store.state.username}`"
-          ></avatar>
+          ></a-avatar>
           <a-avatar
             v-else
             :src="$store.state.useravatar"

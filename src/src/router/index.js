@@ -98,13 +98,15 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeResolve(() => {
+router.beforeResolve((next) => {
   if (store.state.token==null) {
     store.state.token=window.sessionStorage.getItem('token');
     store.state.username=window.sessionStorage.getItem('username');
     store.state.userid=window.sessionStorage.getItem('userid');
     store.state.useravatar=window.sessionStorage.getItem('useravatar');
   }
+
+  next();
 })
 
 export default router
