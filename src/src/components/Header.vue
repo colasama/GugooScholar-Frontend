@@ -4,7 +4,7 @@
 
     <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
       <a-menu-item key="1" @click="toRankList">排名榜</a-menu-item>
-      <a-menu-item key="2">订阅</a-menu-item>
+      <a-menu-item key="2" @click="toSubscribe">订阅</a-menu-item>
 
       <a-button
         type="ghost"
@@ -102,6 +102,9 @@ export default {
     toIndex() {
       this.$router.push({ path: "/" });
       //location.reload();//话说为啥加这行来着，如果不注释掉会回到原页面？
+    },
+    toSubscribe() {
+      this.$router.push({ path: "/subscribe" });
     },
     toRankList() {
       this.$router.push({ path: "/rankList"});
