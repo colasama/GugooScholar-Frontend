@@ -70,27 +70,31 @@
             style="margin-top:15px;margin-bottom:30px"
             block
             @click="register"
+            :loading="regLoading"
           >注册</a-button>
           <div style="text-align:center" />
         </a-card>
         
         <a-card v-if="isregister" style="width:60%;min-width:400px;margin:240px auto;">
-          <div style="text-align:left"><h1 style="margin-top:20px;margin-left:5px;font-size:38px">
-              <b>还差最后一步...</b>
-          </h1></div>
-          <div style="text-align:left;margin-left:6px" v-if="!mailsended">激活邮箱后，就可以使用咕鸽学术的全部服务了！</div>
-          <div style="text-align:left;margin-left:6px" v-if="mailsended">验证码已经发送到您的邮箱，请查收！</div>
 
           <div v-if="!mailsended">
+            
+            <div style="text-align:left"><h1 style="margin-top:20px;margin-left:5px;font-size:38px">
+                <b>还差最后一步...</b>
+            </h1></div>
+            <div style="text-align:left;margin-left:6px" v-if="!mailsended">激活邮箱后，就可以使用咕鸽学术的全部服务了！</div>
+            <div style="text-align:left;margin-left:6px" v-if="mailsended">验证码已经发送到您的邮箱，请查收！</div>
+            
             <div style="text-align:right"><a-button
               size="large"
               type="primary"
               @click="sendMail"
               style="margin-top:24px;width:128px"
+              :loading = "mailsendLoading"
             >发送验证码</a-button></div>
           </div>
 
-          <div v-if="mailsended">
+          <!--div v-if="mailsended">
             <a-input
               style="margin-top:30px;margin-bottom:15px"
               placeholder="验证码"
@@ -107,7 +111,19 @@
                 @click="applyCode"
                 style="width:96px"
               >确 认</a-button>
-            </div>
+            </div-->
+          <div v-if="mailsended">
+            <a-result
+              status="success"
+              title="激活邮件已发送!"
+              sub-title="请您查看邮箱，根据邮件中的步骤进行最后的账户激活过程。"
+            >
+              <template #extra>
+                <a-button key="buy" @click="toIndex">
+                  返回主页
+                </a-button>
+              </template>
+            </a-result>
           </div>
         </a-card>
       </a-col>
@@ -153,18 +169,24 @@ export default {
       username: "",
       email: "",
       password: "",
-      isregister: false,
       repassword: "",
       token: "",
       authcode: "",
       timer: null,
       count: 0,
+      isregister: false,
       errorLogin: false,
       mailsended: false,
+      regLoading: false,
+      mailsendLoading: false,
     };
   },
   methods: {
+    toIndex() {
+      this.$router.push({ path: "/" });
+    },
     register() {
+      this.regLoading = true;
       var that = this;
       var regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
       var errorTip = "";
@@ -182,7 +204,16 @@ export default {
       
       firebase.auth().createUserWithEmailAndPassword(this.email,this.password)
       .then(function (){
-        that.isregister = true;
+        firebase.auth().currentUser.updateProfile({
+          displayName: that.username,
+          //photoURL: "https://example.com/jane-q-user/profile.jpg"
+        }).then(function() {
+          that.regLoading = false;
+          console.log(that.isregister);
+          that.isregister = true;
+        }, function(error) {
+          console.log(error)
+        });
       })
       .catch(function(error) {
         // Handle Errors here.
@@ -198,8 +229,19 @@ export default {
       });
     },
     sendMail() {
-      //var that = this;
-      
+      var that = this;
+      this.mailsendLoading = true;
+      firebase.auth().currentUser.sendEmailVerification()
+      .then(function() {
+        console.log("Mail Sent Successfully!");
+        that.mailsended = true;
+        that.mailsendLoading = false;
+        //that.$message.success("激活邮件发送成功！");
+      })
+      .catch(function(error) {
+        // Error occurred. Inspect error.code.
+        alert(error.message);
+      });
     },
     startTimer() {
       this.count -= 1;

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 //import Home from '../views/Home.vue'
-//import store from '../store/index.js'
+import store from '../store/index.js'
 Vue.use(VueRouter)
 
   const routes = [
@@ -97,52 +97,14 @@ Vue.use(VueRouter)
 const router = new VueRouter({
   routes
 })
-/*
-router.beforeResolve((to, from, next) => {
+
+router.beforeResolve(() => {
   if (store.state.token==null) {
     store.state.token=window.sessionStorage.getItem('token');
     store.state.username=window.sessionStorage.getItem('username');
     store.state.userid=window.sessionStorage.getItem('userid');
     store.state.useravatar=window.sessionStorage.getItem('useravatar');
   }
-  if (to.name=="Document") {
-    var docid = to.params.id;
-    //拦截非法访问文档
-    Vue.axios({
-      method: "get",
-      url: "http://39.106.230.20:8090/document/" + docid,
-      headers: {
-        token: store.state.token,
-      },
-    }).then(function (response) {
-      if (response.data.success==false) {
-        next('/doc404');
-      }
-    }).catch(function () {
-      next('/doc404');
-    });
-  }
-  //更新消息
-  if (store.state.token!=null) {
-    Vue.axios({
-      method: "get",
-      url: "http://39.106.230.20:8090/message/unread",
-      headers: {
-        token: store.state.token,
-      },
-    }).then(function (response) {
-      store.state.message=response.data.unReadMessages;
-      store.state.messageRead=response.data.readMessages;
-    }).catch(function (res) {
-      console.log(res);
-    });
-
-  }
-  if (store.state.token==null&&(to.name=="Home"||to.name=="Profile")) {
-    next('/welcome');
-  }else{
-    next();
-  }
 })
-*/
+
 export default router

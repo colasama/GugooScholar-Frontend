@@ -7,6 +7,7 @@
     <div class="homemain">
       <div style="height:64px"/>
       <div class="img"></div>
+      <a-button @click="showInfo">test</a-button>
       <div class="search"  style="margin-bottom:24px">
         <a-input-group compact>
           <a-select v-model="searchType" style="width: 120px;" size="large" @change="handleChange">
@@ -110,6 +111,9 @@
 
     },
     methods: {
+      showInfo(){
+        console.log(this.$store.state.token)
+      },
       handleChange(value) {
         this.searchType = value;
       },
