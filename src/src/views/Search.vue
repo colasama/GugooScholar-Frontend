@@ -4,34 +4,22 @@
     <a-layout-header class="headtext">
       <div class="search">
         <a-input-group compact>
-          <a-select v-model="searchType" style="width: 120px;" size="large" @change="handleChange">
-            <a-select-option value="主题">
-              主题
-            </a-select-option>
-            <a-select-option value="摘要">
-              摘要
-            </a-select-option>
-            <a-select-option value="关键词">
-              关键词
-            </a-select-option>
-            <a-select-option value="篇名">
+          <a-select v-model="searchType" style="width: 120px;" size="large" @change="handleChange" title="篇名">
+            <a-select-option value="title">
               篇名
             </a-select-option>
-            <a-select-option value="全文">
-              全文
+            <a-select-option value="abstract">
+              摘要
             </a-select-option>
-            <a-select-option value="作者">
+            <a-select-option value="keywords">
+              关键词
+            </a-select-option>
+            <a-select-option value="author">
               作者
-            </a-select-option>
-            <a-select-option value="分类号">
-              分类号
-            </a-select-option>
-            <a-select-option value="学术领域">
-              学术领域
             </a-select-option>
           </a-select>
           <a-input style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
-          <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large" @click="onSearch">搜索
+          <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large" @click="search">搜索
           </a-button>
         </a-input-group>
       </div>
@@ -49,38 +37,49 @@
 
       </div>
       <div class="content">
-        <div v-for="(article,index) in localData" :key="index">
+        <div v-for="(article,index) in temp" :key="index">
           <a-card class="result" :hoverable="true">
             <div style="text-align:left">
-              <p style="font-weight:700;">
-                <a-icon type="book" />&#12288;{{article.Title}}
+              <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
+                <a-icon type="book" />&#12288;{{article.title}}
                 <template>
-                  <div style="float:right">{{article.Time}}{{'  citations'}}</div>
+                  <div style="float:right">{{article.n_citation}}{{'  citations'}}</div>
                 </template>
               </p>
-              <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">{{article.Source}}</p>
+              <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
+                <template>
+                  <div v-if="article.year && article.venue">{{article.year+"  "}}{{article.venue.name}}</div>
+                </template>
+              </p>
               <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
-                <template v-for="(author,index2) in article.Authors">{{author}}
-                  <template v-if="index2 < article.Authors.length-1">{{'，'}}</template>
+                <template v-for="(author,index2) in article.authors">{{author.name}}
+                  <template v-if="index2 < article.authors.length-1">{{'，'}}</template>
                 </template>
               </p>
               <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
-                <template v-for="(field,index3) in article.Fields">
-                  <a-button style="height:25px;width:auto;padding-left:5px;padding-right:5px" :key="index3">
-                    <a-icon style="padding-left:5px" type="experiment" />{{field}}
-                  </a-button>
-                  <template v-if="index3 < article.Fields.length-1">{{'，'}}</template>
+                <template v-for="(field,index3) in article.keywords">
+                  <template v-if="index3 < 3">
+                    <a-button style="height:25px;width:auto;padding-left:5px;padding-right:5px;max-width:300px;overflow: hidden;white-space: nowrap;" :key="index3">
+                      <a-icon style="padding-left:5px" type="experiment" />{{field}}
+                    </a-button>
+                    <template v-if="index3 < article.keywords.length-1">{{'，'}}</template>
+                  </template>
                 </template>
               </p>
               <p
                 style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
                 <template>
-                  {{article.Abstract}}
+                  {{article.abstract}}
                 </template>
               </p>
             </div>
           </a-card>
         </div>
+      </div>
+      <div v-if="isSearched">
+        <template>
+          <a-pagination v-model="searchOffset" :total="50" show-less-items @change="onChange"/>
+        </template>
       </div>
     </a-layout-content>
   </a-layout>
@@ -111,6 +110,7 @@
           "关键词12",
         ],
         comma: ", ",
+        isSearched:false,
         localData: [{
             Title: 'Automobile pollution control using catalysis',
             Authors: ['Dey S.', 'Mehta N.S.'],
@@ -146,8 +146,10 @@
               '个主题都提供了与之相应的心理成长技术。通过这20个主题的学习和成长, 人们将会揭开美满爱情的神秘面纱, 通过爱情和婚姻, 遇见一个更好的自己。'
           },
         ],
-        searchType: "主题",
+        temp:[],
+        searchType: "title",
         searchContent: "",
+        searchOffset:0
       };
     },
     watch: {
@@ -164,10 +166,51 @@
       handleChange(value) {
         this.searchType = value;
       },
-      onSearch() {
-        this.$router.push("/404");
+      onChange() {
+      this.search();
+    },
+      search() {
+        if(this.searchType == 'author')
+        {
+          this.searchAuthor();
+        }else
+        {
+          this.searchPaper();
+        }
+        this.isSearched=true;
+      },
+      searchAuthor() {
+        this.$axios({
+          method: 'get',
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/search',
+          params: {
+            words: this.searchContent,
+            offset: this.searchOffset
+          }
+        }).then((res)=>{
+                this.temp = res.data.data
+            }).catch((e)=>{
+                console.log(e);
+            });
+      },
+      searchPaper() {
+        this.$axios({
+          method: 'get',
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
+          params: {
+            words: this.searchContent,
+            type:this.searchType,
+            offset: this.searchOffset
+          }
+        }).then((res)=>{
+                this.temp = res.data.data
+                console.log(this.temp);
+            }).catch((e)=>{
+                console.log(e);
+            });
       },
     },
+    
   };
 </script>
 <style scoped>
