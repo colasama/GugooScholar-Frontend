@@ -9,70 +9,19 @@
             <a-layout-content>
                 <div class="place-mid">
                     <a-row type="flex" justify="space-around" align="middle">
-                        <a-col :span="8">
+                        <a-col :span="24">
                             <div @click="toAuthor" class="gutter-box" id="dcb1">
-                                <div @mouseover="mhover(1,1)" @mouseleave="mleaver(1,1)"  class="in-box" style="font-size: 30px;">
-                                    科研人员排行榜
-                                </div>
-                            </div>
-                        </a-col>
-                        <a-col :span="8">
-                            <div @click="toPaper" class="gutter-box" id="dcb2">
-                                <div @mouseover="mhover(1,2)" @mouseleave="mleaver(1,2)" class="in-box" style="font-size: 30px;">
-                                    论文排行榜
-                                </div>
-                            </div>
-                        </a-col>
-                        <a-col :span="8">
-                            <div class="gutter-box" id="dcb3">
-                                <div @mouseover="mhover(1,3)" @mouseleave="mleaver(1,3)" class="in-box" style="font-size: 30px;">
-                                    col-12
+                                <div @mouseover="mhover(1,1)" @mouseleave="mleaver(1,1)"  class="in-box box-author" style="font-size: 30px;">
+                                    人才热度排行榜
                                 </div>
                             </div>
                         </a-col>
                     </a-row>
                     <a-row type="flex" justify="space-around" align="middle">
-                        <a-col :span="8">
-                            <div class="gutter-box"  id="dcb4">
-                                <div @mouseover="mhover(2,1)" @mouseleave="mleaver(2,1)" class="in-box" style="font-size: 30px;">
-                                    col-12
-                                </div>
-                            </div>
-                        </a-col>
-                        <a-col :span="8">
-                            <div class="gutter-box"  id="dcb5">
-                                <div @mouseover="mhover(2,2)" @mouseleave="mleaver(2,2)" class="in-box" style="font-size: 30px;">
-                                    col-12
-                                </div>
-                            </div>
-                        </a-col>
-                        <a-col :span="8">
-                            <div class="gutter-box"  id="dcb6">
-                                <div @mouseover="mhover(2,3)" @mouseleave="mleaver(2,3)" class="in-box" style="font-size: 30px;">
-                                    col-12
-                                </div>
-                            </div>
-                        </a-col>
-                    </a-row>
-                    <a-row type="flex" justify="space-around" align="middle">
-                        <a-col :span="8">
-                            <div class="gutter-box"  id="dcb7">
-                                <div @mouseover="mhover(3,1)" @mouseleave="mleaver(3,1)" class="in-box" style="font-size: 30px;">
-                                    col-12
-                                </div>
-                            </div>
-                        </a-col>
-                        <a-col :span="8">
-                            <div class="gutter-box" id="dcb8">
-                                <div @mouseover="mhover(3,2)" @mouseleave="mleaver(3,2)" class="in-box" style="font-size: 30px;">
-                                    col-12
-                                </div>
-                            </div>
-                        </a-col>
-                        <a-col :span="8">
-                            <div class="gutter-box" id="dcb9">
-                                <div @mouseover="mhover(3,3)" @mouseleave="mleaver(3,3)" class="in-box" style="font-size: 30px;">
-                                    col-12
+                        <a-col :span="24">
+                            <div @click="toPaper" class="gutter-box"  id="dcb4">
+                                <div @mouseover="mhover(2,1)" @mouseleave="mleaver(2,1)" class="in-box box-paper" style="font-size: 30px;">
+                                    论文热度排行榜
                                 </div>
                             </div>
                         </a-col>
@@ -147,8 +96,8 @@ export default {
   line-height: 120px;
 }
 .gutter-box {
-    margin: 10%;
-    height: 200px;
+    margin: 3%;
+    height: 180px;
     display: flex;
 }
 #dcb1 {
@@ -163,32 +112,23 @@ export default {
 #dcb4 {
     background:rgb(37, 2, 83);
 }
-#dcb5 {
-    background:rgb(16, 59, 138);
-}
-#dcb6 {
-    background:rgb(199, 228, 35);
-}
-#dcb7 {
-    background:rgb(128, 6, 6);
-}
-#dcb8 {
-    background:rgb(150, 133, 212);
-}
-#dcb9 {
-    background:rgb(165, 47, 155);
-}
 .in-box {
     height: 100%;
     width: 100%;
     opacity: 80%;
-    line-height: 150px;
+    padding-left: 5%;
+    line-height: 100px;
     font-family: Roboto-Bold,Roboto;
     font-weight: 700;
     transition: all .2s;
     vertical-align: middle;
-    text-align: center;
-    background-image: url("../../assets/channel_bg.png");
+    text-align: left;
+}
+.box-paper {
+    background-image: url("../../assets/dark-background-papers.png");
+}
+.box-author {
+    background-image: url("../../assets/dark-background-experts.png");
 }
 .ant-col {
     background: #fff;
