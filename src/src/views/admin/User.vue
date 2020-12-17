@@ -91,7 +91,7 @@
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo.userId}}</span></a-col>
           </a-row>
           <a-divider />
-          <a-row style="margin-top:24px">
+          <a-row style="margin-top:24px; vertical-align:middle">
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="user"/> 名字
@@ -116,7 +116,7 @@
             </a-modal>
           </a-row>
           <a-divider />
-          <a-row style="margin-top:24px">
+          <a-row style="margin-top:24px;" >
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="man"/> 性别
@@ -321,24 +321,6 @@
   margin: 16px;
 }
 
-.avatar-uploader > .ant-upload {
-  width: 128px;
-  height: 128px;
-  text-align: center;
-  margin: auto;
-}
-.ant-upload-select-picture-card i {
-  font-size: 32px;
-  color: #999;
-  margin: auto;
-  text-align: center;
-}
-
-.ant-upload-select-picture-card .ant-upload-text {
-  margin-top: 8px 0 0 0;
-  color: #666;
-  text-align: center;
-}
 
 .infoCard{
   width: 80%; 
@@ -371,14 +353,7 @@
 
 .profile_col_content{
   text-align: left;
-  vertical-align:middle;
-}
-
-.slide-fade-enter-active {
-  transition: all .3s ease;
-}
-.slide-fade-leave-active {
-  transition: all .0s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  vertical-align: middle;
 }
 
 
