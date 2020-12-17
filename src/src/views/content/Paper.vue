@@ -6,9 +6,10 @@
                 <div class="topic">{{searchResult.title}}</div>
             </a-layout-content>
             <a-layout-content>
-                <div class="author" style= "margin-top:0" v-for="author in searchResult.authors" :key="author.length">
-                    <author_avatar link="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                    :name = author></author_avatar>
+                <div class="author" style= "margin-top:0" v-for="(author,i) in searchResult.authors" :key="author.length">
+                    <author_avatar
+                    :name = author.name :color="colorList[i%6]"></author_avatar>
+<!--                    link="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"-->
                 </div>
             </a-layout-content>
         </a-layout>
@@ -19,7 +20,10 @@
             </div>
             <div class="details" v-if="searchResult.keywords!=null">
                 <span class="rowtit">关键词：</span>
-                <span class="abstract-text">{{searchResult.keywords}}</span>
+                <span class="abstract-text" v-for="(keyword,i) in searchResult.keywords" :key="keyword.length">
+                    <span v-if="i===searchResult.keywords.length-1">{{keyword}}</span>
+                    <span v-else-if="i!==keyword.length-1">{{keyword}}, </span>
+                </span>
             </div>
             <div class="details" v-if="searchResult.doi!=null">
                 <span class="rowtit">DOI：</span>
@@ -31,15 +35,18 @@
             </div>
             <div class="details" v-if="searchResult.pdf!=null">
                 <span class="rowtit">原文链接：</span>
-                <a :href="searchResult.pdf" class="paper_url">{{searchResult.pdf}}</a>
+                <span :href="searchResult.pdf" class="paper_url" @click=open(searchResult.pdf)>{{searchResult.pdf}}</span>
             </div>
             <div class="details" v-if="searchResult.url!=null">
                 <span class="rowtit">相关链接：</span>
-                <a :href="searchResult.url" class="paper_url">{{searchResult.url}}</a>
+                <span :href="searchResult.url" class="paper_url" v-for="(url,i) in searchResult.url" :key="url.length" @click=open(searchResult.url[i])>
+                    <span v-if="i===searchResult.url.length-1" class="paper_url">{{searchResult.url[i]}}</span>
+                    <span v-if="i!==searchResult.url.length-1" class="paper_url">{{searchResult.url[i]}}<br></span>
+                </span>
             </div>
             <div class="details" v-if="searchResult.venue!=null">
                 <span class="rowtit">所属期刊：</span>
-                <span class="abstract-text">{{searchResult.venue}}</span>
+                <span class="abstract-text">{{searchResult.venue.name}}</span>
             </div>
             <div class="details" v-if="searchResult.year!=null">
                 <span class="rowtit">出版年份：</span>
@@ -84,32 +91,38 @@
         },
         data() {
             return {
-                searchResult: {"title": "马保国现象：一个传统武术江湖人士的人设特征解读",
-                "abstract": "文章运用社会学理论对马保国现象进行分析。马保国是自媒体时代的新型江湖艺人,他将自我塑造成沉浮于市井的文、武兼备之人,并对自身武" +
-            "学品格做出深度描述,打造出全知全能的武师形象。除了对自己的尚武业绩做出虚饰性宣" +
-            "传,还试图占据道德制高点,对古典完人形象进行再度扮演。他塑造的海归武师角色,更像是走向社会表演的非尚武类武者," +
-            "他并未真正走进中国传统武术,也并非武术高手,却竭力在各种场合扮演武林高人的角色," +
-            "最终在实战中败下阵来。\"马保国事件\"可能促进中国传统武术的内部革新,成为重新审视中国传统武术的契机。",
-                    "authors":["耗子尾汁","嘤国大理石","九十多公斤","八十多公斤","赖佐田","马老师","婷婷"],
-                "keywords": "马保国现象;江湖艺人;社会角色;传统武术;现代体育;",
-                "doi": "10.15877/j.cnki.nsic.20201009.004",
-                "n_citation": "233",
-                "pdf": "https://kns.cnki.net/KXReader/Detail?PlatForm=kdoc&TIMESTAMP=637421042801093750&DBCODE=CJFD&TABLEName=CJFDAUTO&FileName=LJTB202005012&RESULT=1&SIGN=KImDfrMgmsANqw9qdedfVFPO2FM%3d",
-                "url": "",
-                "venue": "体育学研究",
-                "year": "2020",
-                "volume": "",
-                "issue": "05",
-                "page_start": "87",
-                "page_end": "94",
-                "issn": " ",
-                "isbn": " ",
-                "lang": "中文"},
-                content: '',
-                isEmpty: false,
+                searchResult: {},
+                colorList:["background: #87d068","background: #c9bcd6","background:#edadad",
+                    "background:#108ee9", "background: #ff5500","background: #2db7f5"],
+                    // {"title": "马保国现象：一个传统武术江湖人士的人设特征解读",
+            //     "abstract": "文章运用社会学理论对马保国现象进行分析。马保国是自媒体时代的新型江湖艺人,他将自我塑造成沉浮于市井的文、武兼备之人,并对自身武" +
+            // "学品格做出深度描述,打造出全知全能的武师形象。除了对自己的尚武业绩做出虚饰性宣" +
+            // "传,还试图占据道德制高点,对古典完人形象进行再度扮演。他塑造的海归武师角色,更像是走向社会表演的非尚武类武者," +
+            // "他并未真正走进中国传统武术,也并非武术高手,却竭力在各种场合扮演武林高人的角色," +
+            // "最终在实战中败下阵来。\"马保国事件\"可能促进中国传统武术的内部革新,成为重新审视中国传统武术的契机。",
+            //         "authors":["耗子尾汁","嘤国大理石","九十多公斤","八十多公斤","赖佐田","马老师","婷婷"],
+            //     "keywords": ["马保国现象","江湖艺人","社会角色","传统武术","现代体育"],
+            //     "doi": "10.15877/j.cnki.nsic.20201009.004",
+            //     "n_citation": "233",
+            //     "pdf": "https://kns.cnki.net/KXReader/Detail?PlatForm=kdoc&TIMESTAMP=637421042801093750&DBCODE=CJFD&TABLEName=CJFDAUTO&FileName=LJTB202005012&RESULT=1&SIGN=KImDfrMgmsANqw9qdedfVFPO2FM%3d",
+            //     "url": "",
+            //     "venue": "体育学研究",
+            //     "year": "2020",
+            //     "volume": "",
+            //     "issue": "05",
+            //     "page_start": "87",
+            //     "page_end": "94",
+            //     "issn": " ",
+            //     "isbn": " ",
+            //     "lang": "中文"},
+            //     content: '',
+            //     isEmpty: false,
             }
         },
         methods: {
+            open(url) {
+              window.open(url);
+            },
             searchPaper() {
                 var search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/yYKQ8ILOTGHbdxH4YzZC"
                 this.$axios({
@@ -135,18 +148,17 @@
             }
         },
         created() {
-            var search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/1yAOa6c8B4VLMKN9XEJ7"
+            let id = "1e60ZHlVd6xQjz9FX7j2"
+            let search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/"+id
             // while(this.search!==''){
-            this.$axios({
-                method: 'get',
-                url: search_url, //此处不传data
+            this.$axios.get(search_url,{
                 data: {
                     key: this.search,
                 }
             }).then(
                 response => {
                     console.log(response.data["data"]);
-                    var origin = this.searchResult;
+                    let origin = this.searchResult;
                     this.searchResult = response.data["data"];
                     if(response.data.length===0)
                         this.isEmpty = true;
@@ -234,13 +246,14 @@
     }
 
     .details .paper_url {
-        text-decoration: underline;
+        text-decoration: none;
         color: #675850;
         width: 1100px;
         overflow: hidden;
     }
 
     .details .paper_url:hover {
+        text-decoration: underline;
         color: #6aaddf
     }
 
