@@ -49,6 +49,12 @@ Vue.use(VueRouter)
     component:() => import('../views/admin/User.vue')
   },
   {
+    path: '/admin/admin',
+    name: 'adminAdmin',
+    meta: {title: '管理员管理 - 咕鸽学术'},
+    component:() => import('../views/admin/Admin.vue')
+  },
+  {
     path: '/ranklist',
     name: 'ranklist',
     meta: {title: '排行榜 - 咕鸽学术'},
