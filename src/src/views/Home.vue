@@ -82,7 +82,7 @@
     data() {
       return {
         memberName: "",
-        searchType: "摘要",
+        searchType: "abstract",
         searchContent: "",
         keywords: [
           "关键词1",
