@@ -26,20 +26,19 @@
     </a-layout-header>
     <a-layout-content class="homemain">
       <div class="classify" style="margin-top:10px">
-        <a-menu mode="horizontal" v-model="this.current">
-          <a-menu-item style="width:180px;" key="paper">
+        <a-menu mode="horizontal">
+          <a-menu-item style="width:180px;">
             <a-icon type="book" />论文 </a-menu-item>
-          <a-menu-item style="width:180px" key="patent">
+          <a-menu-item style="width:180px">
             <a-icon type="reconciliation" />专利 </a-menu-item>
-          <a-menu-item style="width:180px" key="user">
+          <a-menu-item style="width:180px">
             <a-icon type="user" />科研人员</a-menu-item>
         </a-menu>
 
       </div>
       <div class="content">
-        <a-spin v-if="isSearchCompleted==false" size="large" style="margin-top:100px"/>
-        <div v-for="(article,index) in paperResult" :key="index">
-          <a-card class="result" :hoverable="true" v-if="isAuthor==false&&index<10&&isSearchCompleted==true" @click="toPaper(article.id)">
+        <div v-for="(article,index) in temp" :key="index">
+          <a-card class="result" :hoverable="true">
             <div style="text-align:left">
               <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
                 <a-icon type="book" />&#12288;{{article.title}}
@@ -59,10 +58,9 @@
               </p>
               <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
                 <template v-for="(field,index3) in article.keywords">
-                  <template v-if="index3 < 3" style="float:left">
-                    <a-button   type="primary" style="height:25px;max-width:250px;padding-left:5px;padding-right:5px;
-                    " :key="index3">
-                      <div class="test" style="text-overflow:ellipsis;">{{field}}</div>
+                  <template v-if="index3 < 3">
+                    <a-button style="height:25px;width:auto;padding-left:5px;padding-right:5px;max-width:300px;overflow: hidden;white-space: nowrap;" :key="index3">
+                      <a-icon style="padding-left:5px" type="experiment" />{{field}}
                     </a-button>
                     <template v-if="index3 < article.keywords.length-1">{{'，'}}</template>
                   </template>
@@ -77,54 +75,10 @@
             </div>
           </a-card>
         </div>
-
-        <div v-for="(author,index4) in authorResult" :key="index4+'author'">
-          <a-card class="result" :hoverable="true" v-if="isAuthor==true && index4<10 && isSearchCompleted==true">
-            <div style="text-align:left">
-              <p style="font-weight:700;">
-                <a-icon type="user" />&#12288;{{author.name}}
-                <template>
-                  <div style="float:right">{{author.n_citation}}{{'  citations'}}</div>
-                </template>
-              </p>
-              <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
-                <template>
-                  <div v-if="author.h_index" style="display:inline-block;text-align:center;border-style:solid;border-width:1px;border-color:#66CCCC;border-radius:3px;width:70px">
-                    <a-row>
-                      <a-col :span="8" style="background-color:#66CCCC;color:white">
-                        {{"H"}}
-                      </a-col>
-                      <a-col :span="16">
-                        {{author.h_index}}
-                      </a-col>
-                    </a-row>
-                  </div>
-                  <div v-if="author.h_index" style="display:inline-block;margin-left:10px;text-align:center;border-style:solid;border-width:1px;border-color:	#D8D8D8;border-radius:3px;width:70px">
-                    <a-row>
-                      <a-col :span="8" style="background-color:#B0B0B0;color:white">
-                        {{"P"}}
-                      </a-col>
-                      <a-col :span="16">
-                        {{author.n_pubs}}
-                      </a-col>
-                    </a-row>
-                  </div>
-                </template>
-              </p>
-              <p v-if="author.orgs" style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
-                <template>
-                   <a-icon type="bank" />{{"  "+author.orgs}}
-                </template>
-              </p>
-            </div>
-          </a-card>
-        </div>
       </div>
-      <div v-if="isSearched&&isSearchCompleted==true" style="margin-top:30px">
+      <div v-if="isSearched">
         <template>
-          <!--<a-pagination v-model="searchOffset" :total="20" show-less-items @change="onChange()"/>-->
-          <a-button  @click="onChange(false)" size="large" type="primary" style="padding-left:20px;padding-right:20px;margin-right:30px">last</a-button>
-          <a-button v-if="this.authorResult" @click="onChange(true)" size="large" type="primary" style="padding-left:20px;padding-right:20px;">next</a-button>
+          <a-pagination v-model="searchOffset" :total="50" show-less-items @change="onChange"/>
         </template>
       </div>
     </a-layout-content>
@@ -140,14 +94,59 @@
     },
     data() {
       return {
-        current:["paper"],
         memberName: "",
+        keywords: [
+          "关键词1",
+          "关键词2",
+          "关键词3",
+          "关键词4",
+          "关键词5",
+          "关键词6",
+          "关键词7",
+          "关键词8",
+          "关键词9",
+          "关键词10",
+          "关键词11",
+          "关键词12",
+        ],
         comma: ", ",
         isSearched:false,
-        isAuthor:false,
-        isSearchCompleted:true,
-        paperResult:[],
-        authorResult:[],
+        localData: [{
+            Title: 'Automobile pollution control using catalysis',
+            Authors: ['Dey S.', 'Mehta N.S.'],
+            Source: 'Environmental Engineering Department, RGPV Bhopal, India;Department of Electronics and Communication, Roorkee College of Engineering, India',
+            Time: 7777,
+            Fields: ['Engine and fuel modification', 'Catalytic converter'],
+            Abstract: 'The emissions of pollutants from vehicles are generally low but the numbers of vehicles increasing on the road therefore the environmental pollutions are also increases. About 35% of CO, 30% of HC and 25% percent of NOx produced into the atmosphere is from the transportation sector. These pollutants have adverse effec'+
+            'ts on the environment and human health. The emissions from vehicles are' +
+              'generally depends upon the air–fuel ratio. The control techniques for exhaust gas emissions are engine modifications, fuel pretreatment, fuel additives, exhaust gas recirculation (EGR), positive crankcase ventilation (PCV) and an application of catalytic converters. A catalytic converter is a device that'+' converts more toxic exhaust gas pollutants into less toxic pollutants. There are different types of catalysts used in'}
+              ,
+          {
+            Title: '基于深度学习的人脸识别',
+            Authors: ['任志玲', '薛新根'],
+            Source: '辽宁工程技术大学电气与控制工程学院',
+            Time: 546,
+            Fields: ['机器学习', '人工智能'],
+            Abstract: '人脸识别是图像领域的经典问题，为解决目前人脸识别中普遍存在的识别精度不高、' +
+              '特征点估计较为粗糙等问题，采用一种基于R-CNN（ResNet-Convolutional Neural Network）算法的人脸识别方法。' +
+              '该方法用人脸特征探测器有效的提取了人脸特征，同时将R-CNN卷积神经网络用于2D人脸识别，' +
+              '采集了400张目标脸，和人脸库中的1000张样本脸混合，模型共训练130轮,其网络识别的准确率达到了90%以上，结合了深度学习方法，具有较高的识别率。人脸识别是图像领域的经典问题，为解决目前人脸识别中普遍存在的识别精度不高、' +
+              '特征点估计较为粗糙等问题，采用一种基于R-CNN（ResNet-Convolutional Neural Network）算法的人脸识别方法。' +
+              '该方法用人脸特征探测器有效的提取了人脸特征，同时将R-CNN卷积神经网络用于2D人脸识别，' +
+              '采集了400张目标脸，和人脸库中的1000张样本脸混合，模型共训练130轮,其网络识别的准确率达到了90%以上，结合了'
+          },
+          {
+            Title: '爱情心理学',
+            Authors: ['韦志中', '薄艳艳'],
+            Source: '北京:台海出版社',
+            Time: 1,
+            Fields: ['恋爱心理学-通俗读物'],
+            Abstract: '本书精选了关于婚姻爱情的20个非常重要的主题, 包括找一个什么样的人结婚、婆媳关系、家庭文化的冲突与融合、角' +
+              '色匹配、爱情仪式、离婚、再婚、破解家庭暴力、婚姻危机干预、亲子关系、女性的自我成长、家庭未来建设等等, 并针对每' +
+              '个主题都提供了与之相应的心理成长技术。通过这20个主题的学习和成长, 人们将会揭开美满爱情的神秘面纱, 通过爱情和婚姻, 遇见一个更好的自己。'
+          },
+        ],
+        temp:[],
         searchType: "title",
         searchContent: "",
         searchOffset:0
@@ -167,44 +166,18 @@
       handleChange(value) {
         this.searchType = value;
       },
-      toPaper(paperid) {
-        /*this.$router.push({
-            name: "Paper",
-            query: {
-              paperId: paperid,
-            }
-          });*/
-        let routeData = this.$router.resolve({
-          path: '/paper*',
-          query: {
-              paperId: paperid,
-            }
-        })
-        window.open(routeData.href, '_blank')
-      },
-      onChange(isNext) 
-      {
-        if(isNext){
-          this.searchOffset+=1;
-        }else{
-          if(this.searchOffset>0)
-            this.searchOffset-=1;
-        }
-        this.search();
-      },
+      onChange() {
+      this.search();
+    },
       search() {
-        if(this.searchContent==''||this.searchContent==null)
-          return
-        this.isSearchCompleted=false;
         if(this.searchType == 'author')
         {
-          this.current=["user"];
           this.searchAuthor();
         }else
         {
-          this.current=["paper"];
           this.searchPaper();
         }
+        this.isSearched=true;
       },
       searchAuthor() {
         this.$axios({
@@ -212,13 +185,10 @@
           url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/search',
           params: {
             words: this.searchContent,
-            offset: this.searchOffset*10
+            offset: this.searchOffset
           }
         }).then((res)=>{
-                this.authorResult = res.data.data;
-                this.isSearched=true;
-                this.isAuthor=true;
-                this.isSearchCompleted=true;
+                this.temp = res.data.data
             }).catch((e)=>{
                 console.log(e);
             });
@@ -230,13 +200,11 @@
           params: {
             words: this.searchContent,
             type:this.searchType,
-            offset: this.searchOffset*10
+            offset: this.searchOffset
           }
         }).then((res)=>{
-                this.paperResult = res.data.data;
-                this.isSearched=true;
-                this.isSearchCompleted=true;
-                this.isAuthor=false;
+                this.temp = res.data.data
+                console.log(this.temp);
             }).catch((e)=>{
                 console.log(e);
             });
@@ -296,12 +264,5 @@
 
   .keywords .keyword {
     margin: 0 3px;
-  }
-  .test
-  {
-    white-space:nowrap; 
-    width:auto; 
-    max-width: 12em;
-    overflow:hidden; 
   }
 </style>
