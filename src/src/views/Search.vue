@@ -39,7 +39,7 @@
       <div class="content">
         <a-spin v-if="isSearchCompleted==false" size="large" style="margin-top:100px"/>
         <div v-for="(article,index) in paperResult" :key="index">
-          <a-card class="result" :hoverable="true" v-if="isAuthor==false&&index<10&&isSearchCompleted==true">
+          <a-card class="result" :hoverable="true" v-if="isAuthor==false&&index<10&&isSearchCompleted==true" @click="toPaper(article.id)">
             <div style="text-align:left">
               <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
                 <a-icon type="book" />&#12288;{{article.title}}
@@ -166,6 +166,21 @@
     methods: {
       handleChange(value) {
         this.searchType = value;
+      },
+      toPaper(paperid) {
+        /*this.$router.push({
+            name: "Paper",
+            query: {
+              paperId: paperid,
+            }
+          });*/
+        let routeData = this.$router.resolve({
+          path: '/paper*',
+          query: {
+              paperId: paperid,
+            }
+        })
+        window.open(routeData.href, '_blank')
       },
       onChange(isNext) 
       {
