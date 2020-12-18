@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "firebase": "^8.0.2",
     "moment": "^2.27.0",
+    "relation-graph": "^1.1.0",
     "v-contextmenu": "^2.9.0",
     "vue": "^2.6.11",
     "vue-avatar": "^2.3.0",
