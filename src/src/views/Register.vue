@@ -205,6 +205,7 @@ export default {
       firebase.auth().createUserWithEmailAndPassword(this.email,this.password)
       .then(function (){
         firebase.auth().currentUser.updateProfile({
+          miepu: "TESTDATA",
           displayName: that.username,
           //photoURL: "https://example.com/jane-q-user/profile.jpg"
         }).then(function() {
@@ -258,6 +259,13 @@ export default {
   },
   destroyed() {
     this.$store.state.showNav = true;
-  },
+    firebase.app().delete()
+    .then(function() {
+      console.log("App deleted successfully");
+    })
+    .catch(function(error) {
+      console.log("Error deleting app:", error);
+    });
+    },
 };
 </script>

@@ -3,20 +3,22 @@
     <a-layout-header class="headtext">
       <a-icon type="arrow-left" @click="toRankList" />&nbsp;&nbsp;{{rankNameList[rankType]}}</a-layout-header>
     <a-layout-content>
-      <a-table :columns="rankColumns[rankType]" :data-source="rankData[rankType]" :loading="loading"
-        class="rank-content">
+      <a-table :columns="rankColumns[rankType]" :data-source="rankData[rankType]" :loading="loading" class="rank-content">
+        <span class="rankLink" slot="name" slot-scope="name, record" @click="toAuthor(record['id'])">{{ name }}</span>
         <div slot="url" slot-scope="url">
-          <div style="width: 100px; margin: 0 auto;" v-if="url[0]==='null'">无全文链接</div>
+          <div style="width: 100px; text-align: center;" v-if="url[0]==='null'">无全文链接</div>
           <div v-else>
             <div v-for="link in url" :key="link">
               <a-button style="width: 100px;margin: 10px auto;" v-if="getArrayIndex(url,link) < 3"
-                @click="download(link)">全文链接{{1+getArrayIndex(url,link)}}</a-button>
+                @click="windowOpen(link)">全文链接{{1+getArrayIndex(url,link)}}</a-button>
             </div>
           </div>
         </div>
+        <span class="rankLink" slot="paperTitle" slot-scope="title, record" @click="toPaper(record['id'])">{{ title }}</span>
+        <div slot="authors" slot-scope="authors">
+          <span v-for="author in authors" :key="author['id']" class="rankLink" @click="toAuthor(author['id'])">{{author['name']}}<br></span>
+        </div>
       </a-table>
-      <!-- <a-button @click="magic">点击有惊喜</a-button> -->
-      <!-- <a-button @click="getAuthorRank">getAuthorRank</a-button> -->
     </a-layout-content>
   </a-layout>
 </template>
@@ -36,10 +38,16 @@
           "论文排行榜",
         ],
         rankColumns: [
-          [{
+          [
+            {
               dataIndex: 'name',
               key: 'name',
-              title: '姓名'
+              title: '姓名',
+              scopedSlots: {
+                customRender: 'name'
+              },
+              // width: 300,
+              ellipsis: true,
             },
             // {
             //   title: '所属机构',
@@ -50,37 +58,50 @@
               title: 'H指数',
               dataIndex: 'h_index',
               key: 'h_index',
+              // width: 100,
+              ellipsis: true,
             },
             {
               title: '论文数',
               key: 'n_pubs',
               dataIndex: 'n_pubs',
+              ellipsis: true,
             },
             {
               title: '被引量',
               key: 'n_citation',
-              dataIndex: 'n_citation'
+              dataIndex: 'n_citation',
+              ellipsis: true,
             },
           ],
           [{
               title: '标题',
               dataIndex: 'title',
               key: 'title',
+              scopedSlots: {
+                customRender: 'paperTitle'
+              },
             },
             {
               title: '作者',
-              dataIndex: 'author',
-              key: 'author',
+              dataIndex: 'authors',
+              key: 'authors',
+              scopedSlots: {
+                customRender: 'authors'
+              },
+              // width: 200,
+              // ellipsis: true,
             },
-            {
-              title: '来源',
-              dataIndex: 'venue',
-              key: 'venue',
-            },
+            // {
+            //   title: '来源',
+            //   dataIndex: 'venue',
+            //   key: 'venue',
+            // },
             {
               title: '发表年份',
               key: 'year',
               dataIndex: 'year',
+              // width: 100,
             },
             {
               title: '被引量',
@@ -172,7 +193,7 @@
         this.getPaperRank();
     },
     methods: {
-      download(link) {
+      windowOpen(link) {
         window.open(link);
       },
       getArrayIndex(arr, obj) {
@@ -187,8 +208,21 @@
       toRankList() {
         this.$router.push("/ranklist");
       },
-      magic() {
-        this.rankType = 1 - this.rankType;
+      toAuthor(id) {
+        this.$router.push({
+          name: "scientist",
+          query: {
+            id: id
+          }
+        });
+      },
+      toPaper(id) {
+        this.$router.push({
+          path: "/paper",
+          query: {
+            id: id
+          }
+        });
       },
       getAuthorRank() {
         var that = this;
@@ -270,5 +304,10 @@
   .ant-layout-content .rank-content {
     width: 1200px;
     margin: 0 auto;
+  }
+  
+  .ant-table-row .rankLink:hover {
+    color: blue;
+    cursor: pointer;
   }
 </style>
