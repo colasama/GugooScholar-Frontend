@@ -22,7 +22,7 @@
                     </a-select>
                     <a-input style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent"/>
                     <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large"
-                              @click="onSearch">搜索
+                              @click="onSearch(searchContent)">搜索
                     </a-button>
                 </a-input-group>
             </a-layout-header>
@@ -129,9 +129,9 @@
         mounted() {
             this.fieldName=this.$route.query.FieldName;
             console.log(this.fieldName);
-            this.searchPaper();
+            this.searchPaper(this.fieldName);
             //this.searchPatent();
-            this.searchAuthor();
+            this.searchAuthor(this.fieldName);
             //this.researcherTester();
             this.currentData = this.essayData;
         },
@@ -150,12 +150,12 @@
 
             },
 
-            searchPaper() {
+            searchPaper(searchName) {
                 this.$axios({
                     method: 'get',
                     url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
                     params: {
-                        words: this.fieldName,
+                        words: searchName,
                         type:"keywords",
                         offset: 0
                     }
@@ -211,11 +211,11 @@
                 window.open(routeData.href, '_blank')
             },
 
-            searchAuthor() {
+            searchAuthor(authorName) {
                 var that=this;
                 this.$axios({
                     method: 'get',
-                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/field/'+that.fieldName+'/author',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/field/'+authorName+'/author',
                     params: {
                     }
                 }).then((res)=>{
@@ -318,7 +318,28 @@
             passSearchType(value) {
                 this.searchType = value;
             },
-            onSearch() {
+            onSearch(content) {
+                console.log(content);
+                if (content != "") {
+                    this.fieldName=content;
+                    this.clearData();
+                    this.searchPaper(content);
+                    //this.searchPatent();
+                    this.searchAuthor(content);
+                    //this.researcherTester();
+                    this.currentData = this.essayData;
+                    this.$forceUpdate();
+                }
+            },
+            clearData(){
+                this.currentData=[];
+                this.essayData=[];
+                this.patentData=[];
+                this.researcherData=[];
+                this.Paper=[];
+                this.Researcher=[];
+            },
+            onSearch2() {
                 console.log(this.searchContent);
                 if (this.searchContent != "") {
                     this.$router.push({
