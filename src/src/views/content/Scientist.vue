@@ -28,8 +28,9 @@
                 </div>
                 <div class="rightContent">
                     <div style="font-size: 18px; color: #BDD9E1;">专家关系网络</div>
-                    <div class="expertWeb">
-                        <VueApexCharts width="400" ref="chart" type="polarArea" :options="chartOptions" :series="series">
+                    <a-spin v-if="isCompleted == false" size="large" style="margin-top:100px"/>
+                    <div class="expertWeb" >
+                        <VueApexCharts  v-if="isCompleted" ref="chart" type="polarArea" :options="chartOptions" :series="series">
                         </VueApexCharts>
                     </div>
                     <!--TODO 专家网络可视化-->
@@ -77,6 +78,7 @@
             return {
                 relations: [],
                 sites: [0,0,0,0,0,0,0,0,0,0,0,0],
+                isCompleted: false,
                 headStyle: {},
                 bodyStyle: {"margin-left": "0"},
                 bodyAuthorStyle: {"padding": "0 5px 50px 5px"},
@@ -150,8 +152,11 @@
                 this.relations = res.data.data;
                 this.dealWithData();
                 this.initEvent();
+                this.isCompleted = true;
+                //this.$refs.chart.render();
                 this.$refs.chart.updateSeries(this.series);
                 this.$refs.chart.updateOptions(this.chartOptions);
+
             }).catch((e)=>{
                 console.log(e);
             });
@@ -293,5 +298,6 @@
     margin-top: 20px;
     position: absolute;
     left: 66%;
+    width: 400px;
 }
 </style>
