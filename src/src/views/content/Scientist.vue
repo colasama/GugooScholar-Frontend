@@ -101,7 +101,7 @@
                     "软件学院“操作系统”、“ Linux 内核分析”、“软件工程专业实践一级”等课程的主讲教师。" +
                     "主要研究领域为嵌入式系统开发、信息安全、软件开发技术等。著有多种专业论文。",
                 series: [
-                    0,0,0,0,0,0,0,0,0,0
+                    0,0,0,0
                 ],
                 chartOptions: {
                     chart: {
@@ -126,6 +126,16 @@
                     labels: [],
                     fill: {
                         opacity: 0.9
+                    },
+                    /*theme: {
+                        monochrome: {
+                            enabled: true,
+                            shadeTo: 'light',
+                            shadeIntensity: 0.6
+                        }
+                    },*/
+                    yaxis: {
+                        show: false
                     },
                 },
             }
@@ -174,13 +184,14 @@
             },
             dealWithData() {
                 let max = -1;
-                for (let i = 0; i < 10; i++) {
+                let size = this.relations.length;
+                for (let i = 0; i < size; i++) {
                     this.series[i] = this.relations[i].weight;
                     if (max < this.relations[i].name.length) max = this.relations[i].name.length;
                     this.chartOptions.labels[i] = this.relations[i].name;
                 }
                 console.log(max);
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < size; i++) {
                     let len = this.chartOptions.labels[i].length;
                     console.log(len);
                     if (len < max) {
