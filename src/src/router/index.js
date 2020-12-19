@@ -31,7 +31,7 @@ Vue.use(VueRouter)
   },
   {
     // 暂时先这样 测试用 后面具体再改
-    path: '/scientist/show',
+    path: '/scientist/show/:id',
     name: 'scientist',
     meta: {title: '科研人员展示 - 咕鸽学术'},
     component: () => import('../views/content/Scientist')

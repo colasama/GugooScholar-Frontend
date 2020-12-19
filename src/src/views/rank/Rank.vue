@@ -209,12 +209,7 @@
         this.$router.push("/ranklist");
       },
       toAuthor(id) {
-        this.$router.push({
-          name: "scientist",
-          query: {
-            id: id
-          }
-        });
+        this.$router.push("/scientist/show/" + id);
       },
       toPaper(id) {
         this.$router.push({

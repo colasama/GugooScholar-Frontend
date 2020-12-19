@@ -28,14 +28,10 @@
                 </div>
                 <div class="rightContent">
                     <div style="font-size: 18px; color: #BDD9E1;">专家关系网络</div>
-                        <div style="height: 500px;width: 500px">
-                            <RelationGraph
-                                    ref="seeksRelationGraph"
-                                    :options="graphOptions"
-                                    :on-node-click="onNodeClick"
-                                    :on-line-click="onLineClick"
-                            />
-                        </div>
+                    <div class="expertWeb">
+                        <VueApexCharts width="400" ref="chart" type="polarArea" :options="chartOptions" :series="series">
+                        </VueApexCharts>
+                    </div>
                     <!--TODO 专家网络可视化-->
                 </div>
             </a-layout-content>
@@ -71,11 +67,11 @@
 </template>
 
 <script>
-    import RelationGraph from 'relation-graph'
+    import VueApexCharts from 'vue-apexcharts'
     export default {
 
         components: {
-            RelationGraph,
+            VueApexCharts
         },
         data() {
             return {
@@ -102,54 +98,60 @@
                     "在内的多项课题和工程的设计和开发。已发表科研论文十余篇，其中多篇被 EI 收录。是" +
                     "软件学院“操作系统”、“ Linux 内核分析”、“软件工程专业实践一级”等课程的主讲教师。" +
                     "主要研究领域为嵌入式系统开发、信息安全、软件开发技术等。著有多种专业论文。",
-                graphOptions: {
-                    layouts: [{
-                        "label": "中心",
-                        "layoutName": "center",
-                        "layoutClassName": "seeks-layout-center",
-                        "distance_coefficient": 1
-                    }],
-                    defaultLineMarker: {
-                        "markerWidth": "0",
-                        "markerHeight": "0",
+                series: [
+                    0,0,0,0,0,0,0,0,0,0
+                ],
+                chartOptions: {
+                    chart: {
+                        type: 'polarArea',
+                        foreColor: 'white',
+                        events: {},
                     },
-                    defaultNodeFontColor: "rgba(213, 27, 27, 1)",
-                    allowShowMiniToolBar: false,
-                    allowShowZoomMenu: false,
-                    disableZoom: true,
-                    allowSwitchLineShape: false,
-                    disableDragNode: true,
-                    defaultJunctionPoint: 'border',
-                    defaultNodeBorderWidth: 0,
-                    defaultNodeWidth: 50,
-                    defaultNodeHeight: 50,
-                    // 这里可以参考"Graph 图谱"中的参数进行设置
-                }
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            chart: {
+                                width: 200
+                            },
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }],
+                    stroke: {
+                        colors: ['#fff']
+                    },
+                    labels: [],
+                    fill: {
+                        opacity: 0.9
+                    },
+                },
             }
         },
         created() {
-
-            //let scientistId = this.$route.query.id;
-            let scientistId = '53f4474cdabfaee43ec81506';
+            let scientistId = this.$route.params.id;
+            console.log(scientistId);
+            //let scientistId = '53f4474cdabfaee43ec81506';
             this.university = '暂无所属机构';
             this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId,
                 {headers: {token: 'xx'}}
             ).then((res)=>{
                 let data = res.data.data
-                console.log(data);
                 this.authorName = data.name;
-                if (data.orgs != null)
-                    this.university = data.orgs;
+                if (data.orgs != null) this.university = data.orgs;
                 this.paperNum = data.n_pubs;
             }).catch((e)=>{
                 console.log(e);
             });
+
             this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/relation',
                 {headers: {token: 'xx'}}
             ).then((res)=>{
                 this.relations = res.data.data;
-                console.log(this.relations);
-                this.showSeeksGraph();
+                this.dealWithData();
+                this.initEvent();
+                this.$refs.chart.updateSeries(this.series);
+                this.$refs.chart.updateOptions(this.chartOptions);
             }).catch((e)=>{
                 console.log(e);
             });
@@ -162,46 +164,38 @@
                 this.current = "home";
                 this.$router.push({ path: "/" });
             },
-            showSeeksGraph() {
-                var __graph_json_data = {
-                    rootId: '0',
-                    nodes: [
-                        { id: '0', text: this.authorName.replaceAll(' ', '&nbsp')},
-                        { id: '1', text: this.relations[0].name.replaceAll(' ', '&nbsp')},
-                        { id: '2', text: this.relations[1].name.replaceAll(' ', '&nbsp')},
-                        { id: '3', text: this.relations[2].name.replaceAll(' ', '&nbsp')},
-                        { id: '4', text: this.relations[3].name.replaceAll(' ', '&nbsp')},
-                        { id: '5', text: this.relations[4].name.replaceAll(' ', '&nbsp')},
-                        { id: '6', text: this.relations[5].name.replaceAll(' ', '&nbsp')},
-                        { id: '7', text: this.relations[6].name.replaceAll(' ', '&nbsp')},
-                        { id: '8', text: this.relations[7].name.replaceAll(' ', '&nbsp')},
-                        { id: '9', text: this.relations[8].name.replaceAll(' ', '&nbsp')},
-                        { id: '10', text: this.relations[9].name.replaceAll(' ', '&nbsp')},
-                    ],
-                    links: [
-                        { from: '0', to: '1', text: '关系1'},
-                        { from: '0', to: '2'},
-                        { from: '0', to: '3'},
-                        { from: '0', to: '4'},
-                        { from: '0', to: '5'},
-                        { from: '0', to: '6'},
-                        { from: '0', to: '7'},
-                        { from: '0', to: '8'},
-                        { from: '0', to: '9'},
-                        { from: '0', to: '10'}
-                    ]
+            clickChart() {
+                console.log("click");
+            },
+            dealWithData() {
+                let max = -1;
+                for (let i = 0; i < 10; i++) {
+                    this.series[i] = this.relations[i].weight;
+                    if (max < this.relations[i].name.length) max = this.relations[i].name.length;
+                    this.chartOptions.labels[i] = this.relations[i].name;
+                }
+                console.log(max);
+                for (let i = 0; i < 10; i++) {
+                    let len = this.chartOptions.labels[i].length;
+                    console.log(len);
+                    if (len < max) {
+                        for (let j = 0; j < max - len; j++) {
+                            this.chartOptions.labels[i] = this.chartOptions.labels[i] + "&ensp;";
+                        }
+                    }
+                }
+            },
+            initEvent() {
+                let _this = this;
+                this.chartOptions.chart.events = {
+                    legendClick: function(chartContext, seriesIndex, config) {
+                        console.log(config);
+                        _this.$router.push("/scientist/show/"+ _this.relations[seriesIndex].id);
+                    },
+                    dataPointSelection: function(event, chartContext, config) {
+                        _this.$router.push("/scientist/show/" + _this.relations[config.dataPointIndex].id);
+                    }
                 };
-                // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置
-                this.$refs.seeksRelationGraph.setJsonData(__graph_json_data, (seeksRGGraph) => {
-                    // Called when the relation-graph is completed
-                    console.log(seeksRGGraph);
-                })
-            },
-            onNodeClick(nodeObject) {
-                console.log('onNodeClick:', nodeObject)
-            },
-            onLineClick(lineObject) {
-                console.log('onLineClick:', lineObject)
             }
 
         }
@@ -294,5 +288,10 @@
 }
 .footer {
     background-color: #FAFAFA;
+}
+.expertWeb {
+    margin-top: 20px;
+    position: absolute;
+    left: 66%;
 }
 </style>
