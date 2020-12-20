@@ -18,7 +18,7 @@
                 <a-list-item slot="renderItem" slot-scope="item, index" :key="index">
                     <a-list-item-meta :description="item.description">
                     </a-list-item-meta>
-                    <a-card @click="Field" size="default" class="hippoCard-middle" >
+                    <a-card @click="Field(item.content)" size="default" class="hippoCard-middle" >
                         {{item.content}}
                     </a-card>
                 </a-list-item>
@@ -86,7 +86,7 @@
                 this.loading = true;
                 this.$axios({
                     method: 'get',
-                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/field',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/field',
                     params: {}
                 }).then(
                     response => {
@@ -120,8 +120,15 @@
                 }
             },
 
-            Field(){
-                this.$router.push("/Field");
+            Field(a){
+                this.$router.push({
+                    path:'/field',
+                    query:{
+                        FieldName:a
+                    }
+                })
+
+                console.log(a);
             },
 
             SearchField(){

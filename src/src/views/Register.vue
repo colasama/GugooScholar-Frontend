@@ -27,11 +27,11 @@
           <h1 style="margin-top:20px;margin-left:5px;font-size:38px;float:left">
             <b>注册账户</b>
           </h1>
-          <a-input size="large" placeholder="邮箱地址" v-model="email" style="margin-top:20px">
-            <a-icon slot="prefix" type="mail" />
-          </a-input>
           <a-input size="large" placeholder="用户名" v-model="username" style="margin-top:30px">
             <a-icon slot="prefix" type="user" />
+          </a-input>
+          <a-input size="large" placeholder="邮箱地址" v-model="email" style="margin-top:20px">
+            <a-icon slot="prefix" type="mail" />
           </a-input>
           <a-input-password
             size="large"
@@ -82,7 +82,6 @@
             <div style="text-align:left"><h1 style="margin-top:20px;margin-left:5px;font-size:38px">
                 <b>还差最后一步...</b>
             </h1></div>
-            <div style="text-align:left;margin-left:6px" v-if="!mailsended">激活邮箱后，就可以使用咕鸽学术的全部服务了！</div>
             <div style="text-align:left;margin-left:6px" v-if="mailsended">验证码已经发送到您的邮箱，请查收！</div>
             
             <div style="text-align:right"><a-button
@@ -115,7 +114,7 @@
           <div v-if="mailsended">
             <a-result
               status="success"
-              title="激活邮件已发送!"
+              title="一封激活邮件已发送!"
               sub-title="请您查看邮箱，根据邮件中的步骤进行最后的账户激活过程。"
             >
               <template #extra>
@@ -152,17 +151,10 @@
 
 <script>
 // @ is an alias to /src
-//import Vue from "vue";
-import firebase from "firebase";
-
-var config = {
-    apiKey: "AIzaSyCd3aIBhwTRZwYa2JzNWhou2-Mg-kAwv6A",
-    authDomain: "googoscholar-294912.firebaseapp.com",
-};
-firebase.initializeApp(config);
+import Vue from "vue";
 
 export default {
-  name: "Login",
+  name: "Register",
   components: {},
   data() {
     return {
@@ -201,71 +193,63 @@ export default {
         this.$message.error(errorTip);
         return;
       }
-      
-      firebase.auth().createUserWithEmailAndPassword(this.email,this.password)
-      .then(function (){
-        firebase.auth().currentUser.updateProfile({
-          miepu: "TESTDATA",
-          displayName: that.username,
-          //photoURL: "https://example.com/jane-q-user/profile.jpg"
-        }).then(function() {
-          that.regLoading = false;
-          console.log(that.isregister);
+      Vue.axios({
+        method: "post",
+        url: "https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/register",
+        data: {
+          username: this.username,
+          password: this.password,
+          email: this.email,
+        },
+      }).then(function (response) {
+        that.regLoading = false;
+        console.log(response.data);
+        if (response.data.success == true) {
           that.isregister = true;
-        }, function(error) {
-          console.log(error)
-        });
-      })
-      .catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        if (errorCode == 'auth/weak-password') {
-          alert('The password is too weak.');
-          that.$message.error("您输入的密码太弱了！");
+          that.mailsended = true;
+          Vue.axios({
+            method: "post",
+            url: "https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/sendmail",
+            data: {
+              username: that.username,
+              email: that.email,
+              url: "https://gugoo.fewings.xyz/#/auth",
+            },
+          }).then(function (response) {
+            that.regLoading = false;
+            console.log(response.data);
+            if (response.data.success == true) {
+              that.isregister = true;
+              that.mailsended = true;
+              
+              /*that.$message
+                .success("注册成功，即将跳转登录页面")
+                .then(() => that.$router.push({ path: "/login" }));
+                */
+            } else {
+              that.$message.error(response.data.message);
+            }
+          });
+          /*that.$message
+            .success("注册成功，即将跳转登录页面")
+            .then(() => that.$router.push({ path: "/login" }));
+            */
         } else {
-          alert(errorMessage);
+          that.$message.error(response.data.message);
         }
-        console.log(error);
       });
     },
     sendMail() {
-      var that = this;
-      this.mailsendLoading = true;
-      firebase.auth().currentUser.sendEmailVerification()
-      .then(function() {
-        console.log("Mail Sent Successfully!");
-        that.mailsended = true;
-        that.mailsendLoading = false;
-        //that.$message.success("激活邮件发送成功！");
-      })
-      .catch(function(error) {
-        // Error occurred. Inspect error.code.
-        alert(error.message);
-      });
     },
-    startTimer() {
-      this.count -= 1;
-      if (this.count == 0) {
-        clearInterval(this.timer);
-      }
+    created() {
+      this.$store.state.showNav = false;
     },
-  },
-  created() {
-    this.$store.state.showNav = false;
-  },
-  mounted(){
-    this.$store.state.showNav = false;
-  },
-  destroyed() {
-    this.$store.state.showNav = true;
-    firebase.app().delete()
-    .then(function() {
-      console.log("App deleted successfully");
-    })
-    .catch(function(error) {
-      console.log("Error deleting app:", error);
-    });
+    mounted(){
+      this.$store.state.showNav = false;
     },
-};
+    destroyed() {
+      this.$store.state.showNav = true;
+    }
+  }
+}
 </script>
