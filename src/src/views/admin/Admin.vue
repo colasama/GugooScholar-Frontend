@@ -1,5 +1,5 @@
 <template>
-<a-layout>
+<a-layout  style="minHeight:auto">
     <a-layout-content style="padding: 50px 100px 50px 100px ">
         <a-layout class="profileBox">
             <a-layout-sider width="250" style="background: #fff">
@@ -92,16 +92,17 @@
             </a-input-group>
 
             <a-divider style="margin-bottom:0px"/>
-            <a-spin tip="Loading..." style = "margin:auto" v-if="loading==true"></a-spin>
+            <a-spin tip="加载中..." style = "margin:auto" v-if="loading==true"></a-spin>
             <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_list">
                 <a-list-item slot="renderItem" slot-scope="paper_list, index" :key="index">
                     <!-- <a-card class="hippoCard-middle"> -->
                         <div name="aaa" style="text-align:left; width:80%; padding:0px 0px 0px 60px;" >
                                 <p style="font-weight:700;">
                                     <a-icon type="book" />&#12288;
-                                    {{paper_list.title}}
+                                    <span class="paperLink" v-if="paper_list.hasOwnProperty('url')" @click="paperLink(paper_list.url[0])">{{paper_list.title}}</span>
+                                    <span v-if="paper_list.hasOwnProperty('url')==false">{{paper_list.title}}</span>
                                 </p>
-                                <!-- <p style="font-family:Times New Roman;font-weight:100;">{{paper_list.venue.name}}</p> -->
+                                <p v-if="paper_list.hasOwnProperty('venue')" style="font-family:Times New Roman;font-weight:100;">{{paper_list.venue.name}}</p>
                                 <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
                                     <template v-for="(author,authorIndex) in paper_list.authors">
                                         {{author.name}}
@@ -139,34 +140,38 @@
             </a-breadcrumb>
 
             <a-input-group compact class="paperSearchInput">
-            <a-select size="large" default-value="title" style="width:100px">
+            <a-select v-model="searchPaperType" size="large" default-value="title" style="width:100px">
                 <a-select-option value="title">
                     作者
                 </a-select-option>
             </a-select>
-            <a-input-search style="width: 80%" placeholder="检索此作者的所有论文" size="large" enter-button @search="onSearch" />
+            <a-input-search v-model="searchAuthorPaperValue" style="width: 80%" placeholder="检索此作者的所有论文" size="large" enter-button @search="searchAuthorPaper" />
             </a-input-group>
 
             <a-divider style="margin-bottom:0px"/>
-
-            <!-- <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_list">
-                <a-list-item slot="renderItem" slot-scope="paper_list, index" :key="index">
+            <a-spin tip="加载中..." style = "margin:auto" v-if="loading==true"></a-spin>
+            <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_author_list">
+                <a-list-item slot="renderItem" slot-scope="paper_author_list, index" :key="index">
                         <div name="aaa" style="text-align:left; width:80%; padding:0px 0px 0px 60px;" >
                                 <p style="font-weight:700;">
                                     <a-icon type="book" />&#12288;
-                                    {{paper_list.title}}
+                                    <span class="paperLink" v-if="paper_author_list.hasOwnProperty('url')" @click="paperLink(paper_author_list.url[0])">{{paper_author_list.title}}</span>
+                                    <span v-if="paper_author_list.hasOwnProperty('url')==false">{{paper_author_list.title}}</span>
                                 </p>
-                                <p style="font-family:Times New Roman;font-weight:100;">{{paper_list.venue.name}}</p>
-                                <p style="margin:0px 0px 0px 0px;font-weight:100;font-family:Times New Roman;font-size:14px">
-                                    {{paper_list.authors}}
+                                <p v-if="paper_author_list.hasOwnProperty('venue')" style="font-family:Times New Roman;font-weight:100;">{{paper_author_list.venue.name}}</p>
+                                <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
+                                    <template v-for="(author,authorIndex) in paper_author_list.authors">
+                                        {{author.name}}
+                                        <template v-if="authorIndex < paper_author_list.authors.length-1">{{', '}}</template>
+                                    </template>
                                 </p>
                         </div>
                         <div slot="extra" style="width:200px;  margin-top:25px">
                             <a-button type="danger" icon="delete" shape="circle" :size="size"></a-button>
                         </div>
-                    
-                </a-list-item>
-            </a-list> -->
+            </a-list-item>
+            </a-list>
+
 
 
             </a-layout-content>
@@ -262,6 +267,11 @@
     margin-bottom: 10px
 }
 
+.paperLink:hover {
+    color: blue;
+    cursor: pointer;
+}
+
 </style>
 
 <script>
@@ -272,6 +282,7 @@ export default {
             sider_status: 1,
             searchPaperType: "title",
             searchPaperValue: "",
+            searchAuthorPaperValue: "",
             paper_info:{
                 title:"",
                 abstract:"",
@@ -288,6 +299,7 @@ export default {
                 isbn:"",
                 lang:""
             },
+            paper_author_list:[],
             paper_list:[],
             pagination: {
                 onChange: page => {
@@ -306,6 +318,10 @@ export default {
         searchPaper() {
             console.log(this.searchPaperValue);
             console.log(this.searchPaperType);
+            if(this.searchPaperValue=="") {
+                this.$message.error("搜索不能为空");
+                return;
+            }
             this.loading = true;
             this.$axios({
                 method: 'get',
@@ -322,8 +338,31 @@ export default {
                 console.log(this.loading)
                 
             })
-        }
+        },
+        searchAuthorPaper() {
+            console.log(this.searchAuthorPaperValue);
+            console.log(this.searchPaperType);
+            if(this.searchAuthorPaperValue=="") {
+                this.$message.error("搜索不能为空");
+                return;
+            }
+            this.loading = true;
+            this.$axios({
+                method: 'get',
+                url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/paper',
+            }).then((res) => {
+                console.log(res.data);
+                this.loading = false;
+                this.paper_author_list = res.data.data;
+                console.log(this.paper_author_list);
+            })
+        },
+        paperLink(url) {
+            console.log(url);
+            window.location.href=url;
+        },
     },
+    
     mounted() {
     }
 

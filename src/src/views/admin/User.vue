@@ -1,5 +1,5 @@
 <template>
-  <a-layout :style="layoutHeight"><!--这里有些微妙，理论上可以自适应来着-->
+  <a-layout style="minHeight:auto">
 
     <a-layout-content style="padding: 50px 100px 50px 100px" >
       <a-layout class="profileBox">
@@ -24,7 +24,7 @@
             </a-menu-item>
           </a-menu>
         </a-layout-sider>
-
+        <a-spin tip="加载中..." style = "margin:auto" v-if="sider_status==0"></a-spin>
         <!-- 个人信息的页面 -->
         <a-layout-content :style="{ padding: '0px', minHeight: '280px', }" v-if="sider_status==1">
 
@@ -99,7 +99,7 @@
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userName}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(2)"/></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(2)"/></a-col>
             <a-modal
               title="修改名字"
               :visible="modal_visible==2"
@@ -124,7 +124,7 @@
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userSex}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(3)"/></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(3)"/></a-col>
             <a-modal
               title="修改性别"
               :visible="modal_visible==3"
@@ -155,7 +155,7 @@
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userBirth}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(4)"/></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(4)"/></a-col>
             <a-modal
               title="修改生日"
               :visible="modal_visible==4"
@@ -187,7 +187,7 @@
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userEmail}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(5)"/></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(5)"/></a-col>
             <a-modal
               title="修改邮箱"
               :visible="modal_visible==5"
@@ -218,7 +218,7 @@
           <a-col :span="22">
             <div style=" work-break: keep-all; max-width:90%; margin:auto; text-align:left;">{{userInfo_orig.description}}</div>
           </a-col>
-          <a-col :span="2" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(6)"/></a-col>
+          <a-col :span="2" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(6)"/></a-col>
           </a-row>
           <a-modal
               title="修改个人简介"
@@ -396,13 +396,7 @@ export default {
     handleClick(e) {
       console.log("click", e);
       this.sider_status = e.key;
-      if(this.sider_status == 2){
-        console.log("Height Changed.")
-        this.layoutHeight = {"min-height":"500px"};//使用手动方式改变layout高度
-      }
-      else{
-        this.layoutHeight = {"min-height":"1400px"};
-      }
+    
     },
     set_modal_visible(e){
       this.modal_visible=e;
@@ -432,6 +426,22 @@ export default {
     modifyPwd() {
       console.log("Modify pwd");
     }
+  },
+  mounted() {
+    this.sider_status = 0;
+    let username=window.sessionStorage.getItem("username");
+    console.log(username);
+
+    this.$axios({
+      method: 'get',
+      url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+username+'info',
+    }).then((res) => {
+      console.log(res.data);
+      this.sider_status = 1;
+      this.loading = false;
+      this.paper_author_list = res.data.data;
+      console.log(this.paper_author_list);
+    })
   }
 }
 
