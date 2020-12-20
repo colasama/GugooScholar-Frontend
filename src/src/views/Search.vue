@@ -19,7 +19,7 @@
             </a-select-option>
           </a-select>
           <a-input style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
-          <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large" @click="search">搜索
+          <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large" @click="onSearch">搜索
           </a-button>
         </a-input-group>
       </div>
@@ -39,7 +39,7 @@
       <div class="content">
         <a-spin v-if="isSearchCompleted==false" size="large" style="margin-top:100px"/>
         <div v-for="(article,index) in paperResult" :key="index">
-          <a-card class="result" :hoverable="true" v-if="isAuthor==false&&index<10&&isSearchCompleted==true" @click="toPaper(article.id)">
+          <a-card class="result" :hoverable="true" v-if="isAuthor==false&&index<20&&isSearchCompleted==true" @click="toPaper(article.id)">
             <div style="text-align:left">
               <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
                 <a-icon type="book" />&#12288;{{article.title}}
@@ -80,7 +80,7 @@
         </div>
 
         <div v-for="(author,index4) in authorResult" :key="index4+'author'">
-          <a-card class="result" :hoverable="true" v-if="isAuthor==true && index4<10 && isSearchCompleted==true">
+          <a-card class="result" :hoverable="true" v-if="isAuthor==true && index4<20 && isSearchCompleted==true">
             <div style="text-align:left">
               <p style="font-weight:700;">
                 <a-icon type="user" />&#12288;{{author.name}}
@@ -121,11 +121,14 @@
           </a-card>
         </div>
       </div>
-      <div v-if="isSearched&&isSearchCompleted==true" style="margin-top:30px">
+      <div v-if="isSearched&&isSearchCompleted==true
+      " style="margin-top:30px;margin-left:28%;width:78%;backgound:black">
         <template>
           <!--<a-pagination v-model="searchOffset" :total="20" show-less-items @change="onChange()"/>-->
-          <a-button  @click="onChange(false)" size="large" type="primary" style="padding-left:20px;padding-right:20px;margin-right:30px">last</a-button>
-          <a-button v-if="this.authorResult" @click="onChange(true)" size="large" type="primary" style="padding-left:20px;padding-right:20px;">next</a-button>
+          <a-button  v-if="this.searchOffset>0 " @click="onChange(false)" size="large" type="primary" style="float:left;padding-left:20px;padding-right:20px;margin-right:30px"><a-icon type="left" /></a-button>
+          <a-button disabled v-else size="large" type="primary" style="float:left;padding-left:20px;padding-right:20px;margin-right:30px"><a-icon type="left" /></a-button>
+          <a-button v-if="(isAuthor==true&& this.authorResult.length==20) || (isAuthor==false && this.paperResult.length==20)" @click="onChange(true)" size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
+          <a-button disabled v-else size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
         </template>
       </div>
     </a-layout-content>
@@ -141,7 +144,7 @@
     },
     data() {
       return {
-        current:["paper"],
+        current:['paper'],
         memberName: "",
         comma: ", ",
         isSearched:false,
@@ -176,9 +179,9 @@
             }
           });*/
         let routeData = this.$router.resolve({
-          path: '/paper*',
+          path: '/paper',
           query: {
-              paperId: paperid,
+              id: paperid,
             }
         })
         window.open(routeData.href, '_blank')
@@ -193,17 +196,21 @@
         }
         this.search();
       },
+      onSearch(){
+        this.searchOffset=0;
+        this.search();
+      },
       search() {
         if(this.searchContent==''||this.searchContent==null)
           return
         this.isSearchCompleted=false;
         if(this.searchType == 'author')
         {
-          this.current=["user"];
+          this.current=['user'];
           this.searchAuthor();
         }else
         {
-          this.current=["paper"];
+          this.current=['paper'];
           this.searchPaper();
         }
       },
@@ -220,6 +227,7 @@
                 this.isSearched=true;
                 this.isAuthor=true;
                 this.isSearchCompleted=true;
+                console.log(this.authorResult.length);
             }).catch((e)=>{
                 console.log(e);
             });
