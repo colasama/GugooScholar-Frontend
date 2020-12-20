@@ -1,9 +1,11 @@
 <template>
   <a-layout>
     <a-layout-header class="headtext">
-      <a-icon type="arrow-left" @click="toRankList" />&nbsp;&nbsp;{{rankNameList[rankType]}}</a-layout-header>
+      <a-icon style="margin-right: 12px;" type="arrow-left" @click="toRankList" />{{rankNameList[rankType]}}
+    </a-layout-header>
     <a-layout-content>
-      <a-table :columns="rankColumns[rankType]" :data-source="rankData[rankType]" :loading="loading" class="rank-content">
+      <a-table :columns="rankColumns[rankType]" :data-source="rankData[rankType]" :loading="loading" 
+        class="rank-content">
         <span class="rankLink" slot="name" slot-scope="name, record" @click="toAuthor(record['id'])">{{ name }}</span>
         <div slot="url" slot-scope="url">
           <div style="width: 100px; text-align: center;" v-if="url[0]==='null'">无全文链接</div>
@@ -14,13 +16,16 @@
             </div>
           </div>
         </div>
-        <span class="rankLink" slot="paperTitle" slot-scope="title, record" @click="toPaper(record['id'])">{{ title }}</span>
+        <span class="rankLink" slot="paperTitle" slot-scope="title, record"
+          @click="toPaper(record['id'])">{{ title }}</span>
         <div slot="authors" slot-scope="authors">
-          <span v-for="author in authors" :key="author['id']" class="rankLink" @click="toAuthor(author['id'])">{{author['name']}}<br></span>
+          <span v-for="author in authors" :key="author['id']" class="rankLink"
+            @click="toAuthor(author['id'])">{{author['name']}}<br></span>
         </div>
       </a-table>
-    </a-layout-content>
+      </a-layout-content>
   </a-layout>
+
 </template>
 <script>
   // @ is an alias to /src
@@ -38,11 +43,11 @@
           "论文排行榜",
         ],
         rankColumns: [
-          [
-            {
+          [{
               dataIndex: 'name',
               key: 'name',
               title: '姓名',
+              align: 'center',
               scopedSlots: {
                 customRender: 'name'
               },
@@ -59,18 +64,21 @@
               dataIndex: 'h_index',
               key: 'h_index',
               // width: 100,
+              align: 'center',
               ellipsis: true,
             },
             {
               title: '论文数',
               key: 'n_pubs',
               dataIndex: 'n_pubs',
+              align: 'center',
               ellipsis: true,
             },
             {
               title: '被引量',
               key: 'n_citation',
               dataIndex: 'n_citation',
+              align: 'center',
               ellipsis: true,
             },
           ],
@@ -81,6 +89,7 @@
               scopedSlots: {
                 customRender: 'paperTitle'
               },
+              align: 'center',
             },
             {
               title: '作者',
@@ -89,8 +98,9 @@
               scopedSlots: {
                 customRender: 'authors'
               },
-              // width: 200,
+              width: 200,
               // ellipsis: true,
+              align: 'center',
             },
             // {
             //   title: '来源',
@@ -101,12 +111,14 @@
               title: '发表年份',
               key: 'year',
               dataIndex: 'year',
-              // width: 100,
+              width: 100,
+              align: 'center',
             },
             {
               title: '被引量',
               key: 'n_citation',
-              dataIndex: 'n_citation'
+              dataIndex: 'n_citation',
+              align: 'center',
             },
             {
               title: '下载',
@@ -115,6 +127,7 @@
               scopedSlots: {
                 customRender: 'url'
               },
+              align: 'center',
             },
           ],
         ],
@@ -296,13 +309,22 @@
     text-indent: 4em;
   }
 
+  .ant-layout-content {
+    background-color: white;
+  }
+
   .ant-layout-content .rank-content {
     width: 1200px;
     margin: 0 auto;
+    background-color: #f3f3f2;
   }
-  
+
   .ant-table-row .rankLink:hover {
-    color: blue;
+    color: #20bcdb;
     cursor: pointer;
+  }
+
+  .ant-table-pagination{
+    background-color: #fff;
   }
 </style>
