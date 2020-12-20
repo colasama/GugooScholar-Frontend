@@ -2,7 +2,7 @@
   <div class="re-header">
     <div @click="toIndex" class="top-logo" />
 
-    <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
+    <a-menu style="background-color:rgb(43, 46, 59)" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
       <a-menu-item key="1" @click="toRankList">排名榜</a-menu-item>
       <a-menu-item key="2" @click="toSubscribe">订阅</a-menu-item>
 
