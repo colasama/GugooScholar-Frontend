@@ -57,8 +57,6 @@
               <span style="font-size: 15px">上传头像来个性化您的信息</span>
             </div>
           </div>
-          <br>
-          <br>
           <!-- <a-avatar :size="128" icon="user" :src="userInfo.avatarSrc"></a-avatar> -->
           <a-upload
             style="margin:0 auto"
@@ -68,7 +66,7 @@
             :before-upload="beforeUpload"
             @change="handleChange"
           >
-          <a-avatar :size="256" class="avatarStyle" v-if="userInfo.avatarSrc!=null" :src="userInfo_orig.avatarSrc" />
+          <a-avatar :size="128" class="avatarStyle" v-if="userInfo.avatarSrc!=null" :src="userInfo_orig.avatarSrc" />
 
           <avatar
             :size="128"
@@ -85,7 +83,7 @@
           </div>
           <br>
           <br>
-          <a-row style="margin-top:24px">
+          <a-row style="margin-top:0px">
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="idcard"/> 账号
@@ -93,8 +91,8 @@
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userId}}</span></a-col>
           </a-row>
-          <a-divider />
-          <a-row style="margin-top:24px; vertical-align:middle">
+          <a-divider class="divider"/>
+          <a-row style="margin-top:0px; vertical-align:middle">
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="user"/> 名字
@@ -118,8 +116,8 @@
             </a-form-model>
             </a-modal>
           </a-row>
-          <a-divider />
-          <a-row style="margin-top:24px;" >
+          <a-divider class="divider"/>
+          <a-row style="margin-top:0px;" >
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="man"/> 性别
@@ -149,8 +147,8 @@
                   </a-form-item>
             </a-modal>
           </a-row>
-          <a-divider />
-          <a-row style="margin-top:24px">
+          <a-divider class="divider"/>
+          <a-row style="margin-top:0px">
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="gift" /> 生日
@@ -356,6 +354,10 @@
   vertical-align: middle;
 }
 
+.divider {
+  margin: 10px 0px 10px 0px;
+}
+
 
 </style>
 
@@ -399,7 +401,7 @@ export default {
         this.layoutHeight = {"min-height":"500px"};//使用手动方式改变layout高度
       }
       else{
-        this.layoutHeight = {"min-height":"1120px"};
+        this.layoutHeight = {"min-height":"1400px"};
       }
     },
     set_modal_visible(e){
