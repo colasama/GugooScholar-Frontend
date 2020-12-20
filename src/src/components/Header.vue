@@ -29,9 +29,9 @@
             :size="32"
             inline
             style="margin-right:6px"
+            :style="{ backgroundColor: '#9feaf9', verticalAlign: 'middle' }"
             v-if="$store.state.useravatar==null||$store.state.useravatar=='null'"
-            :username="`${$store.state.username}`"
-          ></a-avatar>
+          >{{$store.state.username[0]}}</a-avatar>
           <a-avatar
             v-else
             :src="$store.state.useravatar"
@@ -46,6 +46,7 @@
 </template>
 
 <style>
+
 .top-logo {
   cursor: pointer;
   width: 200px;
@@ -88,12 +89,14 @@
 
 
 <script>
+const colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
 export default {
   components: {
   },
   data() {
     return {
       showLogin: true,
+      color: colorList[0],
     };
   },
   created: function () {},
@@ -122,6 +125,7 @@ export default {
     exit() {
       this.$store.state.token = null;
       this.$store.state.username = "";
+      this.$store.state.useravatar = null;
       this.$store.state.email = "";
       this.$store.state.location = "";
       this.$store.state.introduction = "";
