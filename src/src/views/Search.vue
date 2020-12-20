@@ -53,8 +53,9 @@
                 </template>
               </p>
               <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
-                <template v-for="(author,index2) in article.authors">{{author.name}}
-                  <template v-if="index2 < article.authors.length-1">{{'，'}}</template>
+                <template v-for="(author,index2) in article.authors">
+                  <template v-if="index2 < 10 && index2 < article.authors.length">{{author.name}}</template>
+                  <template v-if="index2 < 9 && index2 < article.authors.length-1">{{'，'}}</template>
                 </template>
               </p>
               <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
@@ -62,9 +63,9 @@
                   <template v-if="index3 < 3" style="float:left">
                     <a-button   type="primary" style="height:25px;max-width:250px;padding-left:5px;padding-right:5px;
                     " :key="index3">
-                      <div class="test" style="text-overflow:ellipsis;">{{field}}</div>
+                      <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />{{field}}</div>
                     </a-button>
-                    <template v-if="index3 < article.keywords.length-1">{{'，'}}</template>
+                    <template v-if="index3 < article.keywords.length-1 && index3 < 2">{{'，'}}</template>
                   </template>
                 </template>
               </p>
