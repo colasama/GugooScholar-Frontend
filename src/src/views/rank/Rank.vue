@@ -3,9 +3,9 @@
     <a-layout-header class="headtext">
       <a-icon style="margin-right: 12px;" type="arrow-left" @click="toRankList" />{{rankNameList[rankType]}}
     </a-layout-header>
-    <a-layout-content>
-      <a-table :columns="rankColumns[rankType]" :data-source="rankData[rankType]" :loading="loading" 
-        class="rank-content">
+    <a-layout-content style="background-color:rgb(243,243,243);min-height:auto">
+      <a-table :columns="rankColumns[rankType]" :data-source="rankData[rankType]" :loading="loading"  
+        class="rank-content" bordered>
         <span class="rankLink" slot="name" slot-scope="name, record" @click="toAuthor(record['id'])">{{ name }}</span>
         <div slot="url" slot-scope="url">
           <div style="width: 100px; text-align: center;" v-if="url[0]==='null'">无全文链接</div>
@@ -299,8 +299,8 @@
 
   .ant-layout .headtext {
     width: 100%;
-    height: 100px;
-    line-height: 100px;
+    height: 120px;
+    line-height: 120px;
     color: #cae8ef;
     background-color: black;
     font-size: 30px;
@@ -315,7 +315,7 @@
 
   .ant-layout-content .rank-content {
     width: 1200px;
-    margin: 0 auto;
+    margin: 48px auto;
     background-color: #f3f3f2;
   }
 
