@@ -149,6 +149,10 @@ export default {
         } else {
           that.$message.error(response.data.message);
         }
+      })
+      .catch(function (response) {
+        that.$message.error("用户名或者密码错误！");
+        console.log(response);
       });
       
     },

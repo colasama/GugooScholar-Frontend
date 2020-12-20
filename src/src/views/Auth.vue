@@ -95,8 +95,9 @@ export default {
   methods: {
     toLogin() {
       this.$router.push({ path: "/login" });
-    }, 
-    created() {
+    },
+  },
+    /*created() {
       var that = this;
       this.$store.state.showNav = false;
       console.log("Page created.");
@@ -110,7 +111,7 @@ export default {
           console.log(response);
           that.isActivate = true;
       });
-    },
+    },*/
     mounted(){
       var that = this;
       this.$store.state.showNav = false;
@@ -125,11 +126,12 @@ export default {
       }).then(function (response) {
           console.log(response);
           that.isActivate = true;
+      }).catch((e)=>{
+          console.log(e);
       });
     },
     destroyed() {
       this.$store.state.showNav = true;
     }
   }
-}
 </script>
