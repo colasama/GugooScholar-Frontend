@@ -77,37 +77,44 @@
             </a-breadcrumb>
 
             <a-input-group compact class="paperSearchInput">
-            <a-select size="large" default-value="title" style="width:100px">
+            <a-select size="large" default-value="title" style="width:100px" v-model="searchPaperType">
                 <a-select-option value="title">
                 篇名
                 </a-select-option>
-                <a-select-option value="keyword">
+                <a-select-option value="keywords">
                 关键词
                 </a-select-option>
                 <a-select-option value="abstract">
                 摘要
                 </a-select-option>
             </a-select>
-            <a-input-search style="width: 80%" placeholder="检索论文" size="large" enter-button @search="onSearch" />
+            <a-input-search v-model="searchPaperValue" style="width: 80%" placeholder="检索论文" size="large" enter-button @search="searchPaper" />
             </a-input-group>
 
-            <a-divider/>
-
+            <a-divider style="margin-bottom:0px"/>
+            <!-- <a-spin tip="Loading..." style = "margin:auto" v-if="loading==true"></a-spin> -->
             <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_list">
-                <a-list-item slot="renderItem" slot-scope="paper_list, index" :key="index">
-                    <a-card class="hippoCard-middle" size="default" >
-                        <div style="text-align:left">
+                <a-list-item slot="rendItem" slot-scope="paper_list, index" :key="index">
+                    <!-- <a-card class="hippoCard-middle"> -->
+                        <div name="aaa" style="text-align:left; width:80%; padding:0px 0px 0px 60px;" >
                                 <p style="font-weight:700;">
                                     <a-icon type="book" />&#12288;
                                     {{paper_list.title}}
                                 </p>
-                                <p style="font-family:Times New Roman;font-weight:100;">{{paper_list.sources}}</p>
-                                <p style="margin:3px 0px 0px 0px;font-weight:100;font-family:Times New Roman;font-size:14px">
-                                    {{paper_list.author}}
+                                <p style="font-family:Times New Roman;font-weight:100;">{{paper_list.venue.name}}</p>
+                                <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
+                                    <template v-for="(author,authorIndex) in paper_list.authors">
+                                        {{author.name}}
+                                        <template v-if="authorIndex < paper_list.authors.length-1">{{', '}}</template>
+                                    </template>
                                 </p>
-                            </div>
-                    </a-card>
-                </a-list-item>
+                        </div>
+                        <div slot="extra" style="width:200px;  margin-top:25px">
+                            <a-button type="danger" icon="delete" shape="circle" :size="size"></a-button>
+                        </div>
+                    <!-- </a-card> -->
+                    
+            </a-list-item>
             </a-list>
 
                 
@@ -140,11 +147,26 @@
             <a-input-search style="width: 80%" placeholder="检索此作者的所有论文" size="large" enter-button @search="onSearch" />
             </a-input-group>
 
-            <a-divider/>
+            <a-divider style="margin-bottom:0px"/>
 
-            <a-list item-layout="vertical" size="large" :data-source="[]">
-                
-            </a-list>
+            <!-- <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_list">
+                <a-list-item slot="renderItem" slot-scope="paper_list, index" :key="index">
+                        <div name="aaa" style="text-align:left; width:80%; padding:0px 0px 0px 60px;" >
+                                <p style="font-weight:700;">
+                                    <a-icon type="book" />&#12288;
+                                    {{paper_list.title}}
+                                </p>
+                                <p style="font-family:Times New Roman;font-weight:100;">{{paper_list.venue.name}}</p>
+                                <p style="margin:0px 0px 0px 0px;font-weight:100;font-family:Times New Roman;font-size:14px">
+                                    {{paper_list.authors}}
+                                </p>
+                        </div>
+                        <div slot="extra" style="width:200px;  margin-top:25px">
+                            <a-button type="danger" icon="delete" shape="circle" :size="size"></a-button>
+                        </div>
+                    
+                </a-list-item>
+            </a-list> -->
 
 
             </a-layout-content>
@@ -248,6 +270,8 @@ export default {
     data(){
         return{
             sider_status: 1,
+            searchPaperType: "title",
+            searchPaperValue: "",
             paper_info:{
                 title:"",
                 abstract:"",
@@ -269,37 +293,38 @@ export default {
                 onChange: page => {
                     console.log(page);
                 },
-                pageSize: 6,
+                pageSize: 10 ,
             },
+            loading: false,
         }
     },
     methods:{
         handleClick(e) {
             console.log("click", e);
             this.sider_status = e.key;
+        },
+        searchPaper() {
+            console.log(this.searchPaperValue);
+            console.log(this.searchPaperType);
+            this.loading = true;
+            this.$axios({
+                method: 'get',
+                url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
+                params: {
+                    words: this.searchPaperValue,
+                    type: this.searchPaperType
+                }
+            }).then((res) => {
+                console.log(res.data);
+                this.loading = false;
+                this.paper_list = res.data.data;
+                console.log(this.paper_list);
+                console.log(this.loading)
+                
+            })
         }
     },
     mounted() {
-        for (let i = 0; i < 12; i++) {
-             this.paper_list.push({
-                href: `http://localhost:8080/field/` + `${i + 1}`,
-                title: `文章NO. ${i + 1}`,
-                    //avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                description:
-                    `Simple description for research Field ${i + 1}`,
-                content:
-                    `Content for research Field ${i + 1}`,
-                author:
-                    `Boy next door` + `${i + 1}`,
-                SubscribeTime:
-                    `100` + `${i + 1}`,
-                Fields:
-                    ['Field1', 'Field2'],
-                sources:
-                    `source ` + `${i + 1}`,
-                });
-        }
-        console.log(this.paper_list);
     }
 
 }
