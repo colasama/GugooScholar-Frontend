@@ -1,7 +1,7 @@
 <template>
 
   <a-layout>
-    <!--a-layout-header class="headtext">Gugu lives matter!</a-layout-header-->
+    <a-layout-header class="headtext">论文在做了，在做了</a-layout-header>
     <a-layout-header class="homemain"></a-layout-header>
     <a-layout-content >
     <div class="homemain">
