@@ -178,9 +178,9 @@
             }
           });*/
         let routeData = this.$router.resolve({
-          path: '/paper*',
+          path: '/paper',
           query: {
-              paperId: paperid,
+              id: paperid,
             }
         })
         window.open(routeData.href, '_blank')

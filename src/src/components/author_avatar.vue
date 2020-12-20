@@ -21,7 +21,7 @@
     .avatar {
         display: block;
         float: left;
-        min-width: 150px;
+        min-width: 180px;
         height: 100px;
         margin: 10px 20px 20px;
     }
