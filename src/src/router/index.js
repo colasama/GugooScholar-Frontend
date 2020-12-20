@@ -18,6 +18,12 @@ Vue.use(VueRouter)
     component:() => import('../views/Login.vue')
   },
   {
+    path: '/auth',
+    name: '邮箱验证',
+    meta: {title:'邮箱验证 - 咕鸽学术'},
+    component:() => import('../views/Auth.vue')
+  },
+  {
     path: '/register',
     name: '404',
     meta: {title:'注册 - 咕鸽学术'},
@@ -102,8 +108,10 @@ router.beforeResolve((to,from,next) => {
   if (store.state.token==null) {
     store.state.token=window.sessionStorage.getItem('token');
     store.state.username=window.sessionStorage.getItem('username');
-    store.state.userid=window.sessionStorage.getItem('userid');
-    store.state.useravatar=window.sessionStorage.getItem('useravatar');
+    store.state.email=window.sessionStorage.getItem('email');
+    store.state.location=window.sessionStorage.getItem('location');
+    store.state.introduction=window.sessionStorage.getItem('introduction');
+    store.state.activate=window.sessionStorage.getItem('activate');
   }
   if (store.state.token==null&&(to.name=="Home"||to.name=="Profile")) {
     next();

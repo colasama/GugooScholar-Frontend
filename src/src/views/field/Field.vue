@@ -22,7 +22,7 @@
                     </a-select>
                     <a-input style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent"/>
                     <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large"
-                              @click="onSearch">搜索
+                              @click="onSearch(searchContent)">搜索
                     </a-button>
                 </a-input-group>
             </a-layout-header>
@@ -35,7 +35,7 @@
                     </a-menu-item>
                     <a-menu-item style="width:180px" value="专利" @click="findTriChoice('专利')">
                         <a-icon type="reconciliation"/>
-                        专利
+                        科研成果
                     </a-menu-item>
                     <a-menu-item style="width:180px" value="科研人员" @click="findTriChoice('科研人员')">
                         <a-icon type="user"/>
@@ -45,7 +45,7 @@
 
                 <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="currentData">
                     <a-list-item slot="renderItem" slot-scope="essayData, index" :key="index">
-                        <a-card class="hippoCard-middle" size="default" >
+                        <a-card class="hippoCard-middle" :hoverable="true" size="default" @click="toPaper(essayData.id)">
                             <div style="text-align:left" v-if="Tri_choi == '论文'">
                                     <p style="font-weight:700;">
                                         <a-icon type="book" />&#12288;
@@ -64,8 +64,8 @@
                                     </p>
                                     <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
                                         <template v-for="(field,fieldIndex) in essayData.Fields">
-                                            <a-button style="height:25px;width:auto;padding-left:5px;padding-right:5px" :key="fieldIndex">
-                                                <a-icon style="padding-left:5px" type="experiment" />{{field}}
+                                            <a-button type="primary" style="height:25px;width:auto;padding-left:5px;padding-right:5px" :key="fieldIndex">
+                                                {{field}}
                                             </a-button>
                                             <template v-if="fieldIndex < essayData.Fields.length-1">{{'，'}}</template>
                                         </template>
@@ -129,10 +129,10 @@
         mounted() {
             this.fieldName=this.$route.query.FieldName;
             console.log(this.fieldName);
-            this.searchPaper();
+            this.searchPaper(this.fieldName);
             //this.searchPatent();
-            //this.searchAuthor();
-            this.researcherTester();
+            this.searchAuthor(this.fieldName);
+            //this.researcherTester();
             this.currentData = this.essayData;
         },
         methods: {
@@ -150,13 +150,13 @@
 
             },
 
-            searchPaper() {
+            searchPaper(searchName) {
                 this.$axios({
                     method: 'get',
                     url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
                     params: {
-                        words: this.fieldName,
-                        type:"title",
+                        words: searchName,
+                        type:"keywords",
                         offset: 0
                     }
                 }).then((res)=>{
@@ -173,6 +173,7 @@
                 for (let i = 0; i < this.Paper.length; i++) {
 
                     this.essayData.push({
+                        id: this.Paper[i].id,
                         title: this.Paper[i].title,
                         //avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
                         description:
@@ -194,19 +195,34 @@
                 }
             },
 
-            searchAuthor() {
+            toPaper(paperid) {
+                /*this.$router.push({
+                    name: "Paper",
+                    query: {
+                      paperId: paperid,
+                    }
+                  });*/
+                let routeData = this.$router.resolve({
+                    path: '/paper*',
+                    query: {
+                        paperId: paperid,
+                    }
+                })
+                window.open(routeData.href, '_blank')
+            },
+
+            searchAuthor(authorName) {
+                var that=this;
                 this.$axios({
                     method: 'get',
-                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/search',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/field/'+authorName+'/author',
                     params: {
-                        words: this.fieldName,
-                        offset: 0
                     }
                 }).then((res)=>{
-                    this.Reasearcher = res.data.data;
-                    this.ResearcherLoading();
-                    console.log(this.Researcher.length);
-                    console.log(this.Researcher);
+                    that.Reasearcher = res.data.data;
+                    that.ResearcherLoading();
+                    console.log(that.Researcher.length);
+                    console.log(that.Researcher);
                 }).catch((e)=>{
                     console.log(e);
                 });
@@ -302,7 +318,28 @@
             passSearchType(value) {
                 this.searchType = value;
             },
-            onSearch() {
+            onSearch(content) {
+                console.log(content);
+                if (content != "") {
+                    this.fieldName=content;
+                    this.clearData();
+                    this.searchPaper(content);
+                    //this.searchPatent();
+                    this.searchAuthor(content);
+                    //this.researcherTester();
+                    this.currentData = this.essayData;
+                    this.$forceUpdate();
+                }
+            },
+            clearData(){
+                this.currentData=[];
+                this.essayData=[];
+                this.patentData=[];
+                this.researcherData=[];
+                this.Paper=[];
+                this.Researcher=[];
+            },
+            onSearch2() {
                 console.log(this.searchContent);
                 if (this.searchContent != "") {
                     this.$router.push({

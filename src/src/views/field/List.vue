@@ -86,7 +86,7 @@
                 this.loading = true;
                 this.$axios({
                     method: 'get',
-                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/field',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/field',
                     params: {}
                 }).then(
                     response => {

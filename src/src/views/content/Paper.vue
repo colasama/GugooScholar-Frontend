@@ -148,10 +148,8 @@
             }
         },
         created() {
-            let paperId = this.$route.query.id;
-            console.log(paperId);
-            // let id = "1e60ZHlVd6xQjz9FX7j2"
-            let search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/"+paperId
+            let id = "1e60ZHlVd6xQjz9FX7j2"
+            let search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/"+id
             // while(this.search!==''){
             this.$axios.get(search_url,{
                 data: {
@@ -191,7 +189,6 @@
     #components-layout-demo-basic .topic {
         display: block;
         float: left;
-        margin-bottom: 15px;
         font-weight: 400;
         color: #ffffff;
         line-height: 50px;
@@ -209,7 +206,7 @@
         display: block;
         position: relative;
         min-width: 150px;
-        max-width: 1300px;
+        max-width: 1000px;
         height: fit-content;
         font-size: 20px;
         margin-top: -22px;
