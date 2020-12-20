@@ -92,16 +92,16 @@
             </a-input-group>
 
             <a-divider style="margin-bottom:0px"/>
-            <!-- <a-spin tip="Loading..." style = "margin:auto" v-if="loading==true"></a-spin> -->
+            <a-spin tip="Loading..." style = "margin:auto" v-if="loading==true"></a-spin>
             <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_list">
-                <a-list-item slot="rendItem" slot-scope="paper_list, index" :key="index">
+                <a-list-item slot="renderItem" slot-scope="paper_list, index" :key="index">
                     <!-- <a-card class="hippoCard-middle"> -->
                         <div name="aaa" style="text-align:left; width:80%; padding:0px 0px 0px 60px;" >
                                 <p style="font-weight:700;">
                                     <a-icon type="book" />&#12288;
                                     {{paper_list.title}}
                                 </p>
-                                <p style="font-family:Times New Roman;font-weight:100;">{{paper_list.venue.name}}</p>
+                                <!-- <p style="font-family:Times New Roman;font-weight:100;">{{paper_list.venue.name}}</p> -->
                                 <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
                                     <template v-for="(author,authorIndex) in paper_list.authors">
                                         {{author.name}}
