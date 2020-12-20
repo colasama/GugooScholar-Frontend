@@ -1,10 +1,8 @@
 <template>
     <div id="whole_page">
         <a-layout>
-            <a-layout-header>
-                <div>
-                    排行榜
-                </div>
+            <a-layout-header class="headtext">
+                排行榜列表
             </a-layout-header>
             <a-layout-content style="text-align:center">
                     <div @click="toAuthor" class="gutter-box" id="dcb1">
@@ -66,17 +64,21 @@ export default {
 </script>
 
 <style scoped>
+.ant-layout .headtext {
+    width: 100%;
+    height: 120px;
+    line-height: 120px;
+    color: #cae8ef;
+    background-color: black;
+    font-size: 30px;
+    font-weight: 500;
+    text-align: left;
+    text-indent: 8em;
+}
+
 .ant-layout-footer {
   background: #7dbcea;
   color: #fff;
-}
-.ant-layout-header {
-  background: rgb(3, 3, 3);
-  color: #fff;
-  font-size: 20px;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  text-align: left;
 }
 .ant-layout-content {
   background: #fff;
