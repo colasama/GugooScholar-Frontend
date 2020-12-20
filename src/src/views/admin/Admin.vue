@@ -76,7 +76,7 @@
             </div>
             </a-breadcrumb>
 
-            <a-input-group compact class="searchInput">
+            <a-input-group compact class="paperSearchInput">
             <a-select size="large" default-value="title" style="width:100px">
                 <a-select-option value="title">
                 篇名
@@ -91,8 +91,23 @@
             <a-input-search style="width: 80%" placeholder="检索论文" size="large" enter-button @search="onSearch" />
             </a-input-group>
 
-            <a-list style="margin-top:50px" item-layout="vertical" size="large" :data-source="[]">
-                
+            <a-divider/>
+
+            <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_list">
+                <a-list-item slot="renderItem" slot-scope="paper_list, index" :key="index">
+                    <a-card class="hippoCard-middle" size="default" >
+                        <div style="text-align:left">
+                                <p style="font-weight:700;">
+                                    <a-icon type="book" />&#12288;
+                                    {{paper_list.title}}
+                                </p>
+                                <p style="font-family:Times New Roman;font-weight:100;">{{paper_list.sources}}</p>
+                                <p style="margin:3px 0px 0px 0px;font-weight:100;font-family:Times New Roman;font-size:14px">
+                                    {{paper_list.author}}
+                                </p>
+                            </div>
+                    </a-card>
+                </a-list-item>
             </a-list>
 
                 
@@ -116,7 +131,7 @@
             </div>
             </a-breadcrumb>
 
-            <a-input-group compact class="searchInput">
+            <a-input-group compact class="paperSearchInput">
             <a-select size="large" default-value="title" style="width:100px">
                 <a-select-option value="title">
                     作者
@@ -125,7 +140,9 @@
             <a-input-search style="width: 80%" placeholder="检索此作者的所有论文" size="large" enter-button @search="onSearch" />
             </a-input-group>
 
-            <a-list style="margin-top:50px" item-layout="vertical" size="large" :data-source="[]">
+            <a-divider/>
+
+            <a-list item-layout="vertical" size="large" :data-source="[]">
                 
             </a-list>
 
@@ -150,6 +167,12 @@
                 </a-breadcrumb-item>
                 </div>
             </a-breadcrumb>
+
+            <div style="text-align:left">
+                <a-input-search style="margin: 30px 0 0px 20px; width:35%" placeholder="搜索用户" enter-button @search="onSearch" />
+            </div>
+            <a-divider style="width:80% " />
+
                 
             </a-layout-content>
 
@@ -175,11 +198,6 @@
             </a-layout-content>
 
 
-
-
-            
-
-            <!-- 删除论文页面 -->
             
         </a-layout>
     </a-layout-content>
@@ -211,9 +229,15 @@
   vertical-align: middle;
 }
 
-.searchInput{
+.paperSearchInput{
     text-align: center;
     margin-top: 50px;
+}
+
+.hippoCard-middle {
+    width: 700px;
+    margin: 0px auto;
+    margin-bottom: 10px
 }
 
 </style>
@@ -240,7 +264,13 @@ export default {
                 isbn:"",
                 lang:""
             },
-            paper_list:[]
+            paper_list:[],
+            pagination: {
+                onChange: page => {
+                    console.log(page);
+                },
+                pageSize: 6,
+            },
         }
     },
     methods:{
@@ -248,6 +278,28 @@ export default {
             console.log("click", e);
             this.sider_status = e.key;
         }
+    },
+    mounted() {
+        for (let i = 0; i < 12; i++) {
+             this.paper_list.push({
+                href: `http://localhost:8080/field/` + `${i + 1}`,
+                title: `文章NO. ${i + 1}`,
+                    //avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                description:
+                    `Simple description for research Field ${i + 1}`,
+                content:
+                    `Content for research Field ${i + 1}`,
+                author:
+                    `Boy next door` + `${i + 1}`,
+                SubscribeTime:
+                    `100` + `${i + 1}`,
+                Fields:
+                    ['Field1', 'Field2'],
+                sources:
+                    `source ` + `${i + 1}`,
+                });
+        }
+        console.log(this.paper_list);
     }
 
 }
