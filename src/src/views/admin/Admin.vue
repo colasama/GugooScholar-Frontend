@@ -196,7 +196,7 @@
             </a-breadcrumb>
 
             <div style="text-align:left">
-                <a-input-search style="margin: 30px 0 0px 20px; width:35%" placeholder="搜索用户" enter-button @search="onSearch" />
+                <a-input-search style="margin: 30px 0 0px 20px; width:35%" placeholder="搜索用户" enter-button @search="searchUser" />
             </div>
             <a-divider style="width:80% " />
 
@@ -221,10 +221,13 @@
                 </a-breadcrumb-item>
                 </div>
             </a-breadcrumb>
+
+            <div style="text-align:left">
+                <a-input-search style="margin: 30px 0 0px 20px; width:35%" placeholder="搜索用户" enter-button @search="searchUser" />
+            </div>
+            <a-divider style="width:80% " />
                 
             </a-layout-content>
-
-
             
         </a-layout>
     </a-layout-content>
@@ -301,6 +304,7 @@ export default {
             },
             paper_author_list:[],
             paper_list:[],
+            user_all_list:[],
             pagination: {
                 onChange: page => {
                     console.log(page);
@@ -314,6 +318,22 @@ export default {
         handleClick(e) {
             console.log("click", e);
             this.sider_status = e.key;
+
+            if(this.sider_status == 3) {    //如果是所有用户，则要将所有查询出所有用户
+                this.$axios({
+                    headers: {
+                        'token': window.sessionStorage.getItem('token')
+                    },
+                    method: 'get',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
+                    params: {
+                        words: this.searchPaperValue,
+                        type: this.searchPaperType
+                    }
+                }).then((res)=>{
+                    console.log(res);
+                })
+            }
         },
         searchPaper() {
             console.log(this.searchPaperValue);
@@ -357,13 +377,16 @@ export default {
                 console.log(this.paper_author_list);
             })
         },
+        searchUser() {
+
+        },
         paperLink(url) {
             console.log(url);
             window.location.href=url;
         },
     },
-    
     mounted() {
+
     }
 
 }

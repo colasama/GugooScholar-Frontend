@@ -379,6 +379,7 @@ export default {
         userSex:"",
         userEmail:"",
         description:"",
+        location:"",
       },
       userInfo_orig:{
         userId:0,
@@ -389,6 +390,7 @@ export default {
         userSex:"男",
         userEmail:"869693441@qq.com",
         description:"阿斯顿发水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费asdfasfasdfasdf水电费水电费水电费",
+        location:"",
       }
     }
   },
@@ -430,17 +432,23 @@ export default {
   mounted() {
     this.sider_status = 0;
     let username=window.sessionStorage.getItem("username");
-    console.log(username);
-
+    console.log('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+username+'info');
+    if(username==null) {
+      this.$message.error("用户名不存在,获取信息失败");
+    }
     this.$axios({
       method: 'get',
-      url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+username+'info',
+      url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+username+'/info',
     }).then((res) => {
       console.log(res.data);
       this.sider_status = 1;
       this.loading = false;
-      this.paper_author_list = res.data.data;
-      console.log(this.paper_author_list);
+      let user = res.data.data;
+      this.userInfo_orig.userId = user.username;
+      this.userInfo_orig.userName = user.name==null? "": user.name;
+      this.userInfo_orig.userEmail = user.email==null? "": user.email;
+      this.userInfo_orig.description = user.introduction==null? "":user.introduction;
+      this.userInfo_orig.location = user.location==null? "":user.location;
     })
   }
 }
