@@ -7,6 +7,7 @@ const state = {
     showNav: true,
     token: null,
     username: '',
+    useravatar: null,
     name: '',
     email:'',
     location:'',
