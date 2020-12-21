@@ -34,10 +34,11 @@
       <div class="content">
         <a-spin v-if="isSearchCompleted==false" size="large" style="margin-top:100px"/>
         <div v-for="(article,index) in paperResult" :key="index">
-          <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='paper'&&index<20&&isSearchCompleted==true" @click="toPaper(article.id)">
+          <a-card  class="result" @mouseover="changeShowText(index)"
+          :hoverable="true" v-if="searchClassify1[0]=='paper'&&index<20&&isSearchCompleted==true" @click="toPaper(article.id)">
             <div style="text-align:left">
-              <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
-                <a-icon type="book" />&#12288;{{article.title}}
+              <p v-html="ruleTitle(article.title)" style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
+                <a-icon type="book" />
                 <template>
                   <div style="float:right">{{article.n_citation}}{{'  citations'}}</div>
                 </template>
@@ -49,6 +50,7 @@
                 </template>
               </p>
               <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
+                <template v-if="article.authors.length>0">{{"By"+"  "}}</template>
                 <template v-for="(author,index2) in article.authors">
                   <template v-if="index2 < 10 && index2 < article.authors.length">{{author.name}}</template>
                   <template v-if="index2 < 9 && index2 < article.authors.length-1">{{'，'}}</template>
@@ -59,26 +61,38 @@
                   <template v-if="index3 < 3" style="float:left">
                     <a-button   type="primary" style="height:25px;max-width:250px;padding-left:5px;padding-right:5px;
                     " :key="index3+'fey'">
-                      <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />{{field}}</div>
+                      <div v-html="ruleTitle(field)" class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />{{field}}</div>
                     </a-button>
                     <template v-if="index3 < article.keywords.length-1 && index3 < 2">{{'，'}}</template>
                   </template>
                 </template>
               </p>
-              <p
+              <p v-html="ruleTitle(article.abstract)"
                 style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
-                <template>
-                  {{article.abstract}}
-                </template>
               </p>
+            </div>
+            <div slot="actions" v-if="index==currentHover && showText==true">              
+              <a-row>
+                <a-col :span="18" >
+                </a-col>
+                <a-col :span="2" >
+                  <a-icon key="setting" type="star" />
+                </a-col>
+                <a-col :span="2">
+                  <a-icon key="edit" type="read" />
+                </a-col>
+                <a-col :span="2">
+                  <a-icon key="ellipsis" type="share-alt" />
+                </a-col>
+              </a-row>
             </div>
           </a-card>
         </div>
         <div v-for="(fund,index7) in fundResult" :key="index7+'fund'">
           <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='fund'&&index7<20&&isSearchCompleted==true" @click="toPaper(fund.id)">
             <div style="text-align:left">
-              <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
-                <a-icon type="reconciliation" />&#12288;{{fund.title}}
+              <p v-html="ruleTitle(fund.title)" style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
+                <a-icon type="reconciliation" />
               </p>
               <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
                 <template>
@@ -93,20 +107,17 @@
                   <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />{{fund.type}}</div>
                 </a-button>
               </p>
-              <p
+              <p v-html="ruleTitle(fund.abstract)"
                 style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
-                <template>
-                  {{fund.abstract}}
-                </template>
               </p>
             </div>
           </a-card>
         </div>
         <div v-for="(author,index4) in authorResult" :key="index4+'author'">
-          <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='author' && index4<20 && isSearchCompleted==true">
+          <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='author' && index4<20 && isSearchCompleted==true" @click="toScientist(author.id)">
             <div style="text-align:left">
-              <p style="font-weight:700;">
-                <a-icon type="user" />&#12288;{{author.name}}
+              <p v-html="ruleTitle(author.name)" style="font-weight:700;">
+                <a-icon type="user" />
                 <template>
                   <div style="float:right">{{author.n_citation}}{{'  citations'}}</div>
                 </template>
@@ -165,6 +176,7 @@
           <a-button disabled v-else size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
         </template>
       </div>
+      <p v-html="ruleTitle(0)"></p>
     </a-layout-content>
   </a-layout>
 
@@ -179,8 +191,8 @@
     data() {
       return {
         current:['paper'],
-        memberName: "",
-        comma: ", ",
+        currentHover:-1,
+        showText:false,
         isSearched:false,
         searchClassify:[],//1:paer,2:fund,3:author
         searchClassify1:[],
@@ -239,7 +251,7 @@
 
     },
     updated() {},
-    mounted() {
+    created() {
       if (this.$route.query.searchClassify)
       {
         this.searchClassify = this.$route.query.searchClassify;
@@ -251,14 +263,32 @@
         this.search();
     },
     methods: {
+      changeShowText (index1) {
+        this.showText = true;
+        this.currentHover=index1;
+      },
+      ruleTitle(title_str) {
+        let titleString = title_str;
+        if (!titleString) {
+          return '';
+        }
+        if (this.searchContent && this.searchContent.length > 0) {
+          // 匹配关键字正则
+          let replaceReg = new RegExp(this.searchContent, 'gi');
+          // 高亮替换v-html值
+          let findContent = new RegExp(this.searchContent,'i');
+          let replaceString = '<span class="search-text">' + titleString.match(findContent) + '</span>';
+          // 开始替换
+          titleString = titleString.replace(replaceReg,replaceString);
+        }
+        return titleString;
+      },
       handleChange(value) {
         this.searchType = value;
       },
       test() {
-        console.log("searchClassify1[0]:"+this.searchClassify1[0]);
-        console.log("fundResult.length:"+this.fundResult.length);
-        console.log("isSearched:"+this.isSearched);
-        console.log("isCOmplete:"+this.isSearchCompleted);
+        console.log(this.currentHover);
+
       },
       toPaper(paperid) {
         let routeData = this.$router.resolve({
@@ -266,6 +296,12 @@
           query: {
               id: paperid,
             }
+        })
+        window.open(routeData.href, '_blank')
+      },
+      toScientist(scientistId) {
+        let routeData = this.$router.resolve({
+          path: '/scientist/show/'+scientistId,
         })
         window.open(routeData.href, '_blank')
       },
@@ -414,5 +450,13 @@
     width:auto; 
     max-width: 12em;
     overflow:hidden; 
+  }
+  >>> .search-text
+  {
+    color:#f7c94a
+  }
+   .search-text1
+  {
+    color:#f1eeeafd
   }
 </style>
