@@ -1,56 +1,87 @@
 <template>
-
   <a-layout>
     <a-layout-header class="headtext">论文在做了，在做了</a-layout-header>
     <a-layout-header class="homemain"></a-layout-header>
-    <a-layout-content >
-    <div class="homemain">
-      <div style="height:64px"/>
-      <div class="img"></div>
-      <!-- <a-button @click="showInfo">test</a-button> -->
-      <div class="search"  style="margin-bottom:24px">
-        <a-input-group compact>
-          <a-cascader
-            :options="options"
-            :allowClear="false"
-            trigger="hover"
-            v-model="searchClassify"
-            expand-trigger="hover"
-            placeholder="选择"
-            style="width: 120px;" size="large"
-            />
-          <a-input v-on:keyup.enter.native="onSearch()" placeholder="搜索你想要的" style="width: 40%" size="large" v-model="searchContent" />
-          <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
-          <a-button class="searchbutton" size="large" @click="onSearch">搜索
-          </a-button>
-        </a-input-group>
+    <a-layout-content>
+      <div class="homemain">
+        <div style="height:64px"></div>
+        <div class="img"></div>
+        <div class="search" style="margin-bottom:24px">
+          <a-input-group compact>
+            <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify"
+              expand-trigger="hover" placeholder="选择" style="width: 120px;" size="large" />
+            <a-input v-on:keyup.enter.native="onSearch()" placeholder="搜索你想要的" style="width: 40%" size="large"
+              v-model="searchContent" />
+            <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
+            <a-button class="searchbutton" size="large" @click="onSearch">搜索
+            </a-button>
+          </a-input-group>
+        </div>
+        <div class="keywords">
+          <a-button type="link" class="keyword" @click="searchKeyword(0)">{{keywords[0]}}</a-button>
+          <a-button type="link" class="keyword" @click="searchKeyword(1)">{{keywords[1]}}</a-button>
+          <a-button type="link" class="keyword" @click="searchKeyword(2)">{{keywords[2]}}</a-button>
+          <a-button type="link" class="keyword" @click="searchKeyword(3)">{{keywords[3]}}</a-button>
+          <a-button type="link" class="keyword" @click="searchKeyword(4)">{{keywords[4]}}</a-button>
+          <a-button type="link" class="keyword" @click="searchKeyword(5)">{{keywords[5]}}</a-button>
+        </div>
+        <div class="keywords">
+          <a-button type="link" class="keyword" @click="searchKeyword(6)">{{keywords[6]}}</a-button>
+          <a-button type="link" class="keyword" @click="searchKeyword(7)">{{keywords[7]}}</a-button>
+          <a-button type="link" class="keyword" @click="searchKeyword(8)">{{keywords[8]}}</a-button>
+          <a-button type="link" class="keyword" @click="searchKeyword(9)">{{keywords[9]}}</a-button>
+        </div>
       </div>
-      <div class="keywords">
-        <a-button type="link" class="keyword" @click="searchKeyword(0)">{{keywords[0]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(1)">{{keywords[1]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(2)">{{keywords[2]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(3)">{{keywords[3]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(4)">{{keywords[4]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(5)">{{keywords[5]}}</a-button>
-      </div>
-      <div class="keywords">
-        <a-button type="link" class="keyword" @click="searchKeyword(6)">{{keywords[6]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(7)">{{keywords[7]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(8)">{{keywords[8]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(9)">{{keywords[9]}}</a-button>
-      </div>
-      <div class="keywords">
-        <a-button type="link" class="keyword" @click="searchKeyword(10)">{{keywords[10]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(11)">{{keywords[11]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(12)">{{keywords[12]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(13)">{{keywords[13]}}</a-button>
-        <a-button type="link" class="keyword" @click="searchKeyword(14)">{{keywords[14]}}</a-button>
-      </div>
-      <div style="height:64px"/>
-    </div>
-    <div>
-      <!--首页展示的内容-->
-    </div>
+      <a-layout>
+        <a-layout-sider width="50%" class="rank">
+          <div class="rankName" style="
+          height: 80px;
+          text-align: left;
+          text-indent: 1em;
+          line-height: 80px;
+          color: #9feaf9;
+          font-size: 30px;
+          font-weight: 600;
+          background-color: black;
+          ">
+            <a-icon style="margin-right: 12px;" type="file" />热门论文
+          </div>
+          <div v-for="paper in rankData[0]" :key="paper.key">
+            <div class="rank-content" v-if="paper.key < 11">
+              <div style="height: 40px;">
+                <div class="seq" style="background-color: gold;font-size: 20px; color: red;" v-if="paper.key == 1">1
+                </div>
+                <div class="seq" style="background-color: #c8d2e2;font-size: 20px; color: blue;"
+                  v-else-if="paper.key == 2">2</div>
+                <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
+                  v-else-if="paper.key == 3">3</div>
+                <div class="seq" style="background-color: gray; color: white;" v-else> {{paper.key}} </div>
+                <div class="paperTitle rankLink" @click="toPaper(paper.id)"> {{paper.title}} </div>
+              </div>
+              <div class="paperDescription">
+                <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
+                  {{author.name}};&nbsp; </span>
+                <span> {{paper.year}} </span>
+              </div>
+              <div class="paperCitation"> 引用量：{{paper.n_citation}} </div>
+            </div>
+          </div>
+        </a-layout-sider>
+        <a-layout-content style="background-color: black;" class="rank">
+          <div class="rankName" style="
+          height: 80px;
+          text-align: left;
+          line-height: 80px;
+          color: #9feaf9;
+          font-size: 30px;
+          font-weight: 600;
+          text-indent: 1em;
+          background-color: black;
+          ">
+            <a-icon style="margin-right: 12px;" type="team" />热门学者
+          </div>
+        </a-layout-content>
+      </a-layout>
     </a-layout-content>
   </a-layout>
 
@@ -64,51 +95,47 @@
     },
     data() {
       return {
-        memberName: "",
         searchType: "abstract",
         searchContent: "",
-        searchClassify:[],
-        options: [
-        {
-          value: 'paper',
-          label: '论文',
-          children: [
-            {
-              value: 'title',
-              label: '标题',
-            },
-            {
-              value: 'keywords',
-              label: '关键词',
-            },
-            {
-              value: 'abstract',
-              label: '摘要',
-            },
-          ],
-        },
-        {
-          value: 'fund',
-          label: '项目',
-          children: [
-            {
-              value: 'title',
-              label: '标题',
-            },
-            {
-              value: 'desc',
-              label: '描述',
-            },
-            {
-              value: 'abstract',
-              label: '摘要',
-            },
-          ],
-        },
-        {
-          value: 'author',
-          label: '作者',
-        },
+        searchClassify: [],
+        options: [{
+            value: 'paper',
+            label: '论文',
+            children: [{
+                value: 'title',
+                label: '标题',
+              },
+              {
+                value: 'keywords',
+                label: '关键词',
+              },
+              {
+                value: 'abstract',
+                label: '摘要',
+              },
+            ],
+          },
+          {
+            value: 'fund',
+            label: '项目',
+            children: [{
+                value: 'title',
+                label: '标题',
+              },
+              {
+                value: 'desc',
+                label: '描述',
+              },
+              {
+                value: 'abstract',
+                label: '摘要',
+              },
+            ],
+          },
+          {
+            value: 'author',
+            label: '作者',
+          },
         ],
         keywords: [
           "新冠肺炎",
@@ -119,14 +146,93 @@
           "机械",
           "电子信息",
           "数据挖掘",
-          "关键词9",
-          "关键词10",
-          "关键词11",
-          "关键词12",
-          "关键词13",
-          "关键词14",
-          "关键词15",
-        ]
+          "AI赋能教育",
+          "FMRI",
+          // "关键词11",
+          // "关键词12",
+          // "关键词13",
+          // "关键词14",
+          // "关键词15",
+        ],
+        rankColumns: [
+          [{
+              title: '标题',
+              dataIndex: 'title',
+              key: 'title',
+              scopedSlots: {
+                customRender: 'paperTitle'
+              },
+              ellipsis: true,
+              align: 'center',
+            },
+            {
+              title: '作者',
+              dataIndex: 'authors',
+              key: 'authors',
+              scopedSlots: {
+                customRender: 'authors'
+              },
+              width: 200,
+              ellipsis: true,
+              align: 'center',
+            },
+            // {
+            //   title: '来源',
+            //   dataIndex: 'venue',
+            //   key: 'venue',
+            // },
+
+            {
+              title: '被引量',
+              key: 'n_citation',
+              dataIndex: 'n_citation',
+              align: 'center',
+              ellipsis: true,
+            },
+          ],
+          [{
+              dataIndex: 'name',
+              key: 'name',
+              title: '姓名',
+              align: 'center',
+              scopedSlots: {
+                customRender: 'name'
+              },
+              // width: 300,
+              ellipsis: true,
+            },
+            // {
+            //   title: '所属机构',
+            //   dataIndex: 'orgs',
+            //   key: 'orgs',
+            // },
+            {
+              title: 'H指数',
+              dataIndex: 'h_index',
+              key: 'h_index',
+              // width: 100,
+              align: 'center',
+              ellipsis: true,
+            },
+            {
+              title: '论文数',
+              key: 'n_pubs',
+              dataIndex: 'n_pubs',
+              align: 'center',
+              ellipsis: true,
+            },
+            {
+              title: '被引量',
+              key: 'n_citation',
+              dataIndex: 'n_citation',
+              align: 'center',
+              ellipsis: true,
+            },
+          ],
+        ],
+        rankData: [
+
+        ],
       };
     },
     watch: {
@@ -134,10 +240,11 @@
     },
     updated() {},
     mounted() {
-
+      this.getAuthorRank();
+      this.getPaperRank();
     },
     methods: {
-      showInfo(){
+      showInfo() {
         console.log(this.$store.state.token)
       },
       handleChange(value) {
@@ -149,8 +256,8 @@
           this.$router.push({
             name: "search",
             query: {
-              searchClassify: this.searchClassify, 
-              searchContent:this.searchContent
+              searchClassify: this.searchClassify,
+              searchContent: this.searchContent
             }
           });
         }
@@ -163,7 +270,71 @@
             searchContent: this.keywords[num],
           }
         });
-      }
+      },
+      toAuthor(id) {
+        this.$router.push("/scientist/show/" + id);
+      },
+      toPaper(id) {
+        this.$router.push({
+          path: "/paper",
+          query: {
+            id: id
+          }
+        });
+      },
+      getAuthorRank() {
+        var that = this;
+        this.loading2 = true;
+        this.$axios({
+          method: 'get',
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/rank',
+          params: {
+            order_by: "h_index"
+          }
+        }).then(
+          response => {
+            var list = response.data["data"];
+            for (let index = 0; index < list.length; index++) {
+              list[index]["key"] = index + 1;
+            }
+            that.$set(that.rankData, 1, list);
+            console.log("authorList!");
+            that.loading2 = false;
+          },
+          err => {
+            console.log(err);
+          }).catch((error) => {
+          console.log(error);
+        });
+      },
+      getPaperRank() {
+        var that = this;
+        this.loading1 = true;
+        this.$axios({
+          method: 'get',
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/rank',
+          params: {
+            order_by: "n_citation"
+          }
+        }).then(
+          response => {
+            var list = response.data["data"];
+            for (let index = 0; index < list.length; index++) {
+              list[index]["key"] = index + 1;
+              if (list[index]["url"] == null) {
+                list[index]["url"] = ["null"];
+              }
+            }
+            that.$set(that.rankData, 0, list);
+            console.log("paperList!");
+            that.loading1 = false;
+          },
+          err => {
+            console.log(err);
+          }).catch((error) => {
+          console.log(error);
+        });
+      },
     },
   };
 </script>
@@ -189,6 +360,7 @@
     width: 100%;
     text-align: center;
     background-color: #2f3141;
+    padding-bottom: 50px;
   }
 
   .homemain .img {
@@ -220,8 +392,82 @@
   .searchbutton_old {
     width: 80px;
     font-size: 14px;
-    color:white;
+    color: white;
     background-color: #3A585F;
-    border-color:#3A585F; 
+    border-color: #3A585F;
+  }
+
+  .a-layout>.a-layout>.rank {
+    width: 30%;
+    height: 100px;
+  }
+
+  .rank .rank-name {
+    height: 80px;
+    text-align: left;
+    line-height: 80px;
+    color: #9feaf9;
+    background-color: black;
+    font-size: 24px !important;
+    font-weight: 400;
+  }
+
+  .rank .rank-content {
+    position: relative;
+    width: 100%;
+    margin: 5px auto;
+    background-color: #f3f3f2;
+    height: 80px;
+    text-align: left;
+    border-radius: 15px;
+  }
+
+  .rank .rank-content .seq {
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+    text-align: center;
+    line-height: 40px;
+    vertical-align: top;
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+
+  .rank .rank-content .paperTitle {
+    display: inline-block;
+    width: 550px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 25px;
+    font-weight: 500;
+    vertical-align: top;
+    margin-left: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rank .rank-content .rankLink:hover {
+    color: #20bcdb;
+    cursor: pointer;
+  }
+
+  .rank .rank-content .paperDescription {
+    width: 550px;
+    height: 40px;
+    line-height: 40px;
+    margin-left: 60px;
+    margin-top: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rank .rank-content .paperCitation {
+    position: absolute;
+    right: 20px;
+    top: 20px;
   }
 </style>
