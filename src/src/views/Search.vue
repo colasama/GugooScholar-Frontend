@@ -13,7 +13,7 @@
             placeholder="选择"
             style="width: 120px;" size="large"
             />
-          <a-input style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
+          <a-input v-on:keyup.enter.native="search()" style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
           <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large" @click="onSearch">搜索
           </a-button>
         </a-input-group>
@@ -58,7 +58,7 @@
                 <template v-for="(field,index3) in article.keywords">
                   <template v-if="index3 < 3" style="float:left">
                     <a-button   type="primary" style="height:25px;max-width:250px;padding-left:5px;padding-right:5px;
-                    " :key="index3">
+                    " :key="index3+'fey'">
                       <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />{{field}}</div>
                     </a-button>
                     <template v-if="index3 < article.keywords.length-1 && index3 < 2">{{'，'}}</template>
@@ -74,7 +74,7 @@
             </div>
           </a-card>
         </div>
-        <div v-for="(fund,index7) in fundResult" :key="index7">
+        <div v-for="(fund,index7) in fundResult" :key="index7+'fund'">
           <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='fund'&&index7<20&&isSearchCompleted==true" @click="toPaper(fund.id)">
             <div style="text-align:left">
               <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">

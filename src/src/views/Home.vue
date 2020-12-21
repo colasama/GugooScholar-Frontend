@@ -19,7 +19,7 @@
             placeholder="选择"
             style="width: 120px;" size="large"
             />
-          <a-input placeholder="搜索你想要的" style="width: 40%" size="large" v-model="searchContent" />
+          <a-input v-on:keyup.enter.native="onSearch()" placeholder="搜索你想要的" style="width: 40%" size="large" v-model="searchContent" />
           <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
           <a-button class="searchbutton" size="large" @click="onSearch">搜索
           </a-button>
