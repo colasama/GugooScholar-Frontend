@@ -49,6 +49,12 @@ Vue.use(VueRouter)
     component:() => import('../views/regTest.vue')
   },
   {
+    path: '/admin/scientist',
+    name: 'adminScientist',
+    meta: {title: '科研人员管理 - 咕鸽学术'},
+    component:() => import('../views/admin/Scientist.vue')
+  },
+  {
     path: '/admin/user',
     name: 'adminUser',
     meta: {title: '用户管理 - 咕鸽学术'},
