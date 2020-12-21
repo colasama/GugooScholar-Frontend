@@ -1,62 +1,103 @@
 <template>
     <div>
         <a-layout>
-            <a-layout-content class="scientist-show">
-                <div class="leftContent">
-                    <div class="avatar">
-                        <a-avatar :size="256" icon="user" :src="avatarSrc"/>
+            <a-layout-content >
+                <div class="scientist-show">
+                    <div class="leftContent">
+                        <div class="avatar">
+                            <a-avatar :size="256" icon="user" :src="avatarSrc"/>
+                        </div>
+                        <div class="authorInfo">
+                            <div class="authorName">
+                                {{authorName}}
+                            </div>
+                            <div class="authorDes">
+                                {{career}}<br/>{{university}}<br/>{{universityChineseName}}
+                            </div>
+                        </div>
+                        <div class="authorAchieve">
+                            <div class="achieve">
+                                H指数<br/>{{hIndex}}
+                            </div>
+                            <div class="achieve" style="margin-left: 120px">
+                                论文数<br/>{{nPubs}}
+                            </div>
+                            <div class="achieve" style="margin-left: 120px">
+                                被引量<br/>{{nCitation}}
+                            </div>
+                        </div>
                     </div>
-                    <div class="authorInfo">
-                        <div class="authorName">
-                            {{authorName}}
-                        </div>
-                        <div class="authorDes">
-                            {{career}}<br/>{{university}}<br/>{{universityChineseName}}
-                        </div>
-                    </div>
-                    <div class="authorAchieve">
-                        <div class="achieve">
-                            论文数<br/>{{paperNum}}
-                        </div>
-                        <div class="achieve" style="margin-left: 120px">
-                            专利数<br/>{{patentNum}}
-                        </div>
-                        <div class="achieve" style="margin-left: 120px">
-                            科研项目数<br/>{{researchNum}}
+                    <div class="rightContent">
+                        <div style="font-size: 18px; color: #BDD9E1;">专家关系网络</div>
+                        <a-spin v-if="isCompleted == false" size="large" style="margin-top:100px"/>
+                        <div class="expertWeb" >
+                            <VueApexCharts  v-if="isCompleted" ref="chart" type="polarArea" :options="chartOptions" :series="series">
+                            </VueApexCharts>
                         </div>
                     </div>
                 </div>
-                <div class="rightContent">
-                    <div style="font-size: 18px; color: #BDD9E1;">专家关系网络</div>
-                    <a-spin v-if="isCompleted == false" size="large" style="margin-top:100px"/>
-                    <div class="expertWeb" >
-                        <VueApexCharts  v-if="isCompleted" ref="chart" type="polarArea" :options="chartOptions" :series="series">
-                        </VueApexCharts>
+                <div class="specificInfo">
+                    <div class="leftDownContent" >
+                        <a-card class="leftCard" :hoverable="true" @click="toPaper(article.id)" v-for="(article,index) in pubList" :key="index">
+                                <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
+                                    <a-icon type="book"/>&#12288;
+                                    <span v-html="article.title.length > 90 ? article.title.substr(0, 90) + '...' : article.title"></span>
+                                    <template>
+                                        <div style="float:right">{{article.n_citation}}{{'  citations'}}</div>
+                                    </template>
+                                </p>
+                                <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
+                                    <template>
+                                        <div v-if="article.year && article.venue">{{article.year+"  "}}{{article.venue.name}}</div>
+                                    </template>
+                                </p>
+                                <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
+                                    <template v-for="(author, index2) in article.authors">
+
+                                        <template v-if="index2 < 10 && index2 < article.authors.length">{{author.name}}</template>
+                                        <template v-if="index2 < 9 && index2 < article.authors.length-1">{{' & '}}</template>
+                                    </template>
+                                </p>
+                                <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
+                                    <template v-for="(field,index3) in article.keywords">
+                                        <template v-if="index3 < 3" style="float:left">
+                                            <a-button   type="primary" style="height:25px;max-width:250px;padding-left:5px;padding-right:5px;
+                        " :key="index3">
+                                                <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />{{field}}</div>
+                                            </a-button>
+                                            <template v-if="index3 < article.keywords.length-1 && index3 < 2">{{'&nbsp;'}}</template>
+                                        </template>
+                                    </template>
+                                </p>
+                                <p style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
+                                    <template>
+                                        {{article.abstract.substr(0, 200) + '...'}}
+                                    </template>
+                                </p>
+                        </a-card>
                     </div>
-                    <!--TODO 专家网络可视化-->
-                </div>
-            </a-layout-content>
-            <a-layout-content class="specificInfo">
-                <div class="leftDownContent">
-                    <a-card class="leftCard" :head-style="headStyle" :body-style="bodyStyle">
-                        <div style="text-align: left; margin: 0" slot="title"><a-icon type="audit"/> 工作经历</div>
-                        <div class="author-contents">{{experience}}</div>
-                    </a-card>
-                    <a-card class="leftCard" style="margin-top: 20px">
-                        <div style="text-align: left" slot="title"><a-icon type="trophy" theme="filled"/> 教育背景</div>
-                        <div class="author-contents">{{education}}</div>
-                    </a-card>
-                    <a-card class="leftCard" style="margin-top: 20px">
-                        <div style="text-align: left" slot="title"><a-icon type="edit" theme="filled"/> 个人简介</div>
-                        <div class="author-contents">{{selfIntro}}</div>
-                    </a-card>
-                </div>
-                <div class="rightDownContent">
-                    <a-card title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
-                        <a-card-grid class="cardGrid" v-for="s in 12" :key="s">
-                            <div><a-avatar shape="square" :size="64" icon="user" /><br>{{s}}</div>
-                        </a-card-grid>
-                    </a-card>
+                    <!--<div class="leftDownContent">
+                        <a-card class="leftCard" :head-style="headStyle" :body-style="bodyStyle">
+                            <div style="text-align: left; margin: 0" slot="title"><a-icon type="audit"/> 工作经历</div>
+                            <div class="author-contents">{{experience}}</div>
+                        </a-card>
+                        <a-card class="leftCard" style="margin-top: 20px">
+                            <div style="text-align: left" slot="title"><a-icon type="trophy" theme="filled"/> 教育背景</div>
+                            <div class="author-contents">{{education}}</div>
+                        </a-card>
+                        <a-card class="leftCard" style="margin-top: 20px">
+                            <div style="text-align: left" slot="title"><a-icon type="edit" theme="filled"/> 个人简介</div>
+                            <div class="author-contents">{{selfIntro}}</div>
+                        </a-card>
+                    </div>-->
+                    <div class="rightDownContent">
+                        <a-card title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
+                            <a-card-grid class="cardGrid" v-for="s in 12" :key="s">
+                                <div><a-avatar shape="square" :size="64" icon="user" /><br>{{s}}</div>
+                            </a-card-grid>
+                        </a-card>
+                    </div>
+                    <div style="clear:both;height:0;font-size: 1px;line-height: 0px;"></div>
                 </div>
             </a-layout-content>
             <a-layout-footer class="footer">
@@ -88,9 +129,9 @@
                 career: "教授 北京航空航天大学通信与信息系统博士",
                 university: "School of Software,Beijing University of Aeronautics and Astronautics,Beijing ,China",
                 universityChineseName: "北京航空航天大学软件学院",
-                paperNum: "65536",
-                patentNum: "65536",
-                researchNum: "65536",
+                hIndex: 0,
+                nPubs: 0,
+                nCitation: 0,
                 experience: "主持参与航天预研、“核高基”重大专项、“863”高科技重大专项、航空基金等国家级课题近20项" +
                     "，主持多项大型软件研发项目。近几年在国内外期刊会议上发表SCI/EI学术论文40余篇，" +
                     "授权国家专利12项，2项已转让。",
@@ -100,6 +141,7 @@
                     "在内的多项课题和工程的设计和开发。已发表科研论文十余篇，其中多篇被 EI 收录。是" +
                     "软件学院“操作系统”、“ Linux 内核分析”、“软件工程专业实践一级”等课程的主讲教师。" +
                     "主要研究领域为嵌入式系统开发、信息安全、软件开发技术等。著有多种专业论文。",
+                pubList: [],
                 series: [
                     0,0,0,0
                 ],
@@ -145,31 +187,9 @@
             console.log(scientistId);
             //let scientistId = '53f4474cdabfaee43ec81506';
             this.university = '暂无所属机构';
-            this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId,
-                {headers: {token: 'xx'}}
-            ).then((res)=>{
-                let data = res.data.data
-                this.authorName = data.name;
-                if (data.orgs != null) this.university = data.orgs;
-                this.paperNum = data.n_pubs;
-            }).catch((e)=>{
-                console.log(e);
-            });
-
-            this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/relation',
-                {headers: {token: 'xx'}}
-            ).then((res)=>{
-                this.relations = res.data.data;
-                this.dealWithData();
-                this.initEvent();
-                this.isCompleted = true;
-                //this.$refs.chart.render();
-                this.$refs.chart.updateSeries(this.series);
-                this.$refs.chart.updateOptions(this.chartOptions);
-
-            }).catch((e)=>{
-                console.log(e);
-            });
+            this.getAuthor(scientistId);
+            this.getRelations(scientistId);
+            this.getPubs(scientistId);
         },
         mounted() {
 
@@ -212,8 +232,58 @@
                         _this.$router.push("/scientist/show/" + _this.relations[config.dataPointIndex].id);
                     }
                 };
-            }
+            },
+            getAuthor(scientistId) {
+                this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId,
+                    {headers: {token: 'xx'}}
+                ).then((res)=>{
+                    let data = res.data.data
+                    this.authorName = data.name;
+                    if (data.orgs != null) this.university = data.orgs;
+                    this.nPubs = data.n_pubs;
+                    this.hIndex = data.h_index;
+                    this.nCitation = data.n_citation;
+                }).catch((e)=>{
+                    console.log(e);
+                });
+            },
+            getRelations(scientistId) {
+                this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/relation',
+                    {headers: {token: 'xx'}}
+                ).then((res)=>{
+                    this.relations = res.data.data;
+                    this.dealWithData();
+                    this.initEvent();
+                    this.isCompleted = true;
+                    //this.$refs.chart.render();
+                    this.$refs.chart.updateSeries(this.series);
+                    this.$refs.chart.updateOptions(this.chartOptions);
 
+                }).catch((e)=>{
+                    console.log(e);
+                });
+            },
+            getPubs(scientistId) {
+                this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/paper',
+                    {headers: {token: 'xx'}}
+                ).then((res)=>{
+                    let pubs = res.data.data;
+                    if (pubs.length >= 5) this.pubList = pubs.slice(0, 5);
+                    else this.pubList = pubs;
+                    console.log(this.pubList);
+                }).catch((e)=>{
+                    console.log(e);
+                });
+            },
+            toPaper(paperid) {
+                let routeData = this.$router.resolve({
+                    path: '/paper',
+                    query: {
+                        id: paperid,
+                    }
+                });
+                window.open(routeData.href, '_blank');
+            },
         }
     }
 </script>
@@ -227,7 +297,6 @@
 }
 .specificInfo {
     background: white;
-    height: 620px;
 }
 .avatar {
     position: absolute;
@@ -272,17 +341,17 @@
 .leftDownContent {
     margin-top: 40px;
     float: left;
-    position: absolute;
-    left: 20%;
+    margin-left: 7%;
 }
 .rightDownContent {
     margin-top: 40px;
     float: left;
-    position: absolute;
-    left: 65%;
+    margin-left:  10%;
 }
 .leftCard {
-    width: 600px;
+    text-align: left;
+    margin-bottom: 5px;
+    width: 800px;
     border-radius: 0;
     box-shadow: -2px -2px 1px #F2F2F2;
 }
