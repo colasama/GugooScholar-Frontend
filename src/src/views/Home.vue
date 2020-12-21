@@ -10,33 +10,15 @@
       <!-- <a-button @click="showInfo">test</a-button> -->
       <div class="search"  style="margin-bottom:24px">
         <a-input-group compact>
-          <a-select v-model="searchType" style="width: 120px;" size="large" @change="handleChange">
-            <!-- <a-select-option value="主题">
-              主题
-            </a-select-option> -->
-            <a-select-option value="abstract">
-              摘要
-            </a-select-option>
-            <a-select-option value="keywords">
-              关键词
-            </a-select-option>
-            <a-select-option value="title">
-              篇名
-            </a-select-option>
-            <a-select-option value="author">
-              作者
-            </a-select-option>
-            <!-- <a-select-option value="全文">
-              全文
-            </a-select-option> -->
-
-            <!-- <a-select-option value="分类号">
-              分类号
-            </a-select-option>
-            <a-select-option value="学术领域">
-              学术领域
-            </a-select-option> -->
-          </a-select>
+          <a-cascader
+            :options="options"
+            :allowClear="false"
+            trigger="hover"
+            v-model="searchClassify"
+            expand-trigger="hover"
+            placeholder="选择"
+            style="width: 120px;" size="large"
+            />
           <a-input placeholder="搜索你想要的" style="width: 40%" size="large" v-model="searchContent" />
           <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
           <a-button class="searchbutton" size="large" @click="onSearch">搜索
@@ -85,6 +67,49 @@
         memberName: "",
         searchType: "abstract",
         searchContent: "",
+        searchClassify:[],
+        options: [
+        {
+          value: 'paper',
+          label: '论文',
+          children: [
+            {
+              value: 'title',
+              label: '标题',
+            },
+            {
+              value: 'keywords',
+              label: '关键词',
+            },
+            {
+              value: 'abstract',
+              label: '摘要',
+            },
+          ],
+        },
+        {
+          value: 'fund',
+          label: '项目',
+          children: [
+            {
+              value: 'title',
+              label: '标题',
+            },
+            {
+              value: 'desc',
+              label: '描述',
+            },
+            {
+              value: 'abstract',
+              label: '摘要',
+            },
+          ],
+        },
+        {
+          value: 'author',
+          label: '作者',
+        },
+        ],
         keywords: [
           "新冠肺炎",
           "机器学习",
@@ -124,8 +149,8 @@
           this.$router.push({
             name: "search",
             query: {
-              searchType: this.searchType,
-              searchContent: this.searchContent,
+              searchClassify: this.searchClassify, 
+              searchContent:this.searchContent
             }
           });
         }

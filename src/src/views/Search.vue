@@ -4,20 +4,15 @@
     <a-layout-header class="headtext">
       <div class="search">
         <a-input-group compact>
-          <a-select v-model="searchType" style="width: 120px;" size="large" @change="handleChange" title="篇名">
-            <a-select-option value="title">
-              篇名
-            </a-select-option>
-            <a-select-option value="abstract">
-              摘要
-            </a-select-option>
-            <a-select-option value="keywords">
-              关键词
-            </a-select-option>
-            <a-select-option value="author">
-              作者
-            </a-select-option>
-          </a-select>
+          <a-cascader
+            :options="options"
+            :allowClear="false"
+            trigger="hover"
+            v-model="searchClassify"
+            expand-trigger="hover"
+            placeholder="选择"
+            style="width: 120px;" size="large"
+            />
           <a-input style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
           <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large" @click="onSearch">搜索
           </a-button>
@@ -29,8 +24,8 @@
         <a-menu mode="horizontal" v-model="this.current">
           <a-menu-item style="width:180px;" key="paper">
             <a-icon type="book" />论文 </a-menu-item>
-          <a-menu-item style="width:180px" key="patent">
-            <a-icon type="reconciliation" />专利 </a-menu-item>
+          <a-menu-item style="width:180px" key="fund">
+            <a-icon type="reconciliation" />项目 </a-menu-item>
           <a-menu-item style="width:180px" key="user">
             <a-icon type="user" />科研人员</a-menu-item>
         </a-menu>
@@ -39,7 +34,7 @@
       <div class="content">
         <a-spin v-if="isSearchCompleted==false" size="large" style="margin-top:100px"/>
         <div v-for="(article,index) in paperResult" :key="index">
-          <a-card class="result" :hoverable="true" v-if="isAuthor==false&&index<20&&isSearchCompleted==true" @click="toPaper(article.id)">
+          <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='paper'&&index<20&&isSearchCompleted==true" @click="toPaper(article.id)">
             <div style="text-align:left">
               <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
                 <a-icon type="book" />&#12288;{{article.title}}
@@ -49,7 +44,8 @@
               </p>
               <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
                 <template>
-                  <div v-if="article.year && article.venue">{{article.year+"  "}}{{article.venue.name}}</div>
+                  <div v-if="article.year && article.venue"><p style="display: -webkit-box;-webkit-box-orient: vertical;
+                  -webkit-line-clamp: 4;overflow: hidden;">{{article.year+"  "}}{{article.venue.name}}</p></div>
                 </template>
               </p>
               <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
@@ -78,9 +74,36 @@
             </div>
           </a-card>
         </div>
-
+        <div v-for="(fund,index7) in fundResult" :key="index7">
+          <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='fund'&&index7<20&&isSearchCompleted==true" @click="toPaper(fund.id)">
+            <div style="text-align:left">
+              <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
+                <a-icon type="reconciliation" />&#12288;{{fund.title}}
+              </p>
+              <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
+                <template>
+                  <div v-if="fund.start_year && fund.end_year">{{fund.start_year+"--"}}{{fund.end_year}}</div>
+                </template>
+              </p>
+              <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
+                  <template >{{fund.author.name}}</template>
+              </p>
+              <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
+                <a-button  v-if="fund.type" type="primary" style="height:25px;max-width:250px;padding-left:5px;padding-right:5px;" >
+                  <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />{{fund.type}}</div>
+                </a-button>
+              </p>
+              <p
+                style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
+                <template>
+                  {{fund.abstract}}
+                </template>
+              </p>
+            </div>
+          </a-card>
+        </div>
         <div v-for="(author,index4) in authorResult" :key="index4+'author'">
-          <a-card class="result" :hoverable="true" v-if="isAuthor==true && index4<20 && isSearchCompleted==true">
+          <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='author' && index4<20 && isSearchCompleted==true">
             <div style="text-align:left">
               <p style="font-weight:700;">
                 <a-icon type="user" />&#12288;{{author.name}}
@@ -120,6 +143,16 @@
             </div>
           </a-card>
         </div>
+        <div v-if=" this.isSearched==true && this.isSearchCompleted==true ">
+          <a-result v-if="((searchClassify1[0]=='author'&& this.authorResult.length==0) 
+        || (searchClassify1[0]=='paper' && this.paperResult.length==0) || (searchClassify1[0]=='fund' && this.fundResult.length==0))"  sub-title="Sorry, the result you searched is empty." status="404" >
+            <template #icon>
+              <a-icon type="smile" theme="twoTone" />
+            </template>
+            <template #extra>
+            </template>
+          </a-result>
+        </div>
       </div>
       <div v-if="isSearched&&isSearchCompleted==true
       " style="margin-top:30px;margin-left:28%;width:78%;backgound:black">
@@ -127,7 +160,8 @@
           <!--<a-pagination v-model="searchOffset" :total="20" show-less-items @change="onChange()"/>-->
           <a-button  v-if="this.searchOffset>0 " @click="onChange(false)" size="large" type="primary" style="float:left;padding-left:20px;padding-right:20px;margin-right:30px"><a-icon type="left" /></a-button>
           <a-button disabled v-else size="large" type="primary" style="float:left;padding-left:20px;padding-right:20px;margin-right:30px"><a-icon type="left" /></a-button>
-          <a-button v-if="(isAuthor==true&& this.authorResult.length==20) || (isAuthor==false && this.paperResult.length==20)" @click="onChange(true)" size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
+          <a-button v-if="(searchClassify1[0]=='author'&& this.authorResult.length==20) 
+          || (searchClassify1[0]=='paper' && this.paperResult.length==20) || (searchClassify1[0]=='fund' && this.fundResult.length==20)" @click="onChange(true)" size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
           <a-button disabled v-else size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
         </template>
       </div>
@@ -148,13 +182,57 @@
         memberName: "",
         comma: ", ",
         isSearched:false,
-        isAuthor:false,
+        searchClassify:[],//1:paer,2:fund,3:author
+        searchClassify1:[],
         isSearchCompleted:true,
         paperResult:[],
         authorResult:[],
+        fundResult:[],
         searchType: "title",
         searchContent: "",
-        searchOffset:0
+        searchOffset:0,
+        options: [
+        {
+          value: 'paper',
+          label: '论文',
+          children: [
+            {
+              value: 'title',
+              label: '标题',
+            },
+            {
+              value: 'keywords',
+              label: '关键词',
+            },
+            {
+              value: 'abstract',
+              label: '摘要',
+            },
+          ],
+        },
+        {
+          value: 'fund',
+          label: '项目',
+          children: [
+            {
+              value: 'title',
+              label: '标题',
+            },
+            {
+              value: 'desc',
+              label: '描述',
+            },
+            {
+              value: 'abstract',
+              label: '摘要',
+            },
+          ],
+        },
+        {
+          value: 'author',
+          label: '作者',
+        },
+        ],
       };
     },
     watch: {
@@ -162,22 +240,27 @@
     },
     updated() {},
     mounted() {
-      if (this.$route.query.searchType)
-        this.searchType = this.$route.query.searchType;
+      if (this.$route.query.searchClassify)
+      {
+        this.searchClassify = this.$route.query.searchClassify;
+        this.searchClassify1[1] = this.$route.query.searchClassify;
+      }
       if (this.$route.query.searchContent)
         this.searchContent = this.$route.query.searchContent;
+      if(this.$route.query.searchClassify && this.$route.query.searchContent)
+        this.search();
     },
     methods: {
       handleChange(value) {
         this.searchType = value;
       },
+      test() {
+        console.log("searchClassify1[0]:"+this.searchClassify1[0]);
+        console.log("fundResult.length:"+this.fundResult.length);
+        console.log("isSearched:"+this.isSearched);
+        console.log("isCOmplete:"+this.isSearchCompleted);
+      },
       toPaper(paperid) {
-        /*this.$router.push({
-            name: "Paper",
-            query: {
-              paperId: paperid,
-            }
-          });*/
         let routeData = this.$router.resolve({
           path: '/paper',
           query: {
@@ -203,15 +286,22 @@
       search() {
         if(this.searchContent==''||this.searchContent==null)
           return
+        if(this.searchClassify[0]=='' || this.searchClassify[0]==null || this.searchClassify.length==0)
+          return
         this.isSearchCompleted=false;
-        if(this.searchType == 'author')
+        this.isSearched=true;
+        this.searchClassify1=this.searchClassify;
+        if(this.searchClassify1[0] == 'author')
         {
           this.current=['user'];
           this.searchAuthor();
-        }else
+        }else if(this.searchClassify1[0] == 'paper')
         {
           this.current=['paper'];
           this.searchPaper();
+        }else{
+          this.current=['fund'];
+          this.searchFund();
         }
       },
       searchAuthor() {
@@ -224,10 +314,7 @@
           }
         }).then((res)=>{
                 this.authorResult = res.data.data;
-                this.isSearched=true;
-                this.isAuthor=true;
                 this.isSearchCompleted=true;
-                console.log(this.authorResult.length);
             }).catch((e)=>{
                 console.log(e);
             });
@@ -238,14 +325,29 @@
           url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
           params: {
             words: this.searchContent,
-            type:this.searchType,
+            type:this.searchClassify[1],
             offset: this.searchOffset*10
           }
         }).then((res)=>{
                 this.paperResult = res.data.data;
-                this.isSearched=true;
                 this.isSearchCompleted=true;
-                this.isAuthor=false;
+            }).catch((e)=>{
+                console.log(e);
+            });
+      },
+      searchFund() {
+        this.$axios({
+          method: 'get',
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/fund/search',
+          params: {
+            words: this.searchContent,
+            type:this.searchClassify[1],
+            offset: this.searchOffset*10
+          }
+        }).then((res)=>{
+                this.fundResult = res.data.data;
+                this.isSearchCompleted=true;
+                console.log(this.isSearchCompleted);
             }).catch((e)=>{
                 console.log(e);
             });
