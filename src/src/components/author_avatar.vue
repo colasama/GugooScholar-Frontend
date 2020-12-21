@@ -1,7 +1,8 @@
 <template>
         <div class="avatar">
-            <a-avatar :size="64" icon="user" :src="[this.link]"/>
+            <a-avatar :size="64" class="profile" :style="color">{{name.charAt(0).toUpperCase()}}</a-avatar>
             <p class="au_name">{{name}}</p>
+<!--            :src="[this.link]"-->
         </div>
 </template>
 
@@ -10,7 +11,8 @@
         name: "author_avatar",
         props: {
             link: String,
-            name: String
+            name: String,
+            color: String,
         }
     }
 </script>
@@ -19,7 +21,7 @@
     .avatar {
         display: block;
         float: left;
-        min-width: 150px;
+        min-width: 180px;
         height: 100px;
         margin: 10px 20px 20px;
     }
@@ -29,5 +31,8 @@
         float: bottom;
         line-height: 50px;
         margin: 0 20px 0 20px;
+    }
+    .avatar .profile {
+        font-size: 25px;
     }
 </style>

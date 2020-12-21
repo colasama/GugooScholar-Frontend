@@ -1,7 +1,7 @@
 <template>
 
   <a-layout>
-    <!--a-layout-header class="headtext">Gugu lives matter!</a-layout-header-->
+    <a-layout-header class="headtext">论文在做了，在做了</a-layout-header>
     <a-layout-header class="homemain"></a-layout-header>
     <a-layout-content >
     <div class="homemain">
@@ -10,32 +10,15 @@
       <!-- <a-button @click="showInfo">test</a-button> -->
       <div class="search"  style="margin-bottom:24px">
         <a-input-group compact>
-          <a-select v-model="searchType" style="width: 120px;" size="large" @change="handleChange">
-            <a-select-option value="主题">
-              主题
-            </a-select-option>
-            <a-select-option value="摘要">
-              摘要
-            </a-select-option>
-            <a-select-option value="关键词">
-              关键词
-            </a-select-option>
-            <a-select-option value="篇名">
-              篇名
-            </a-select-option>
-            <a-select-option value="全文">
-              全文
-            </a-select-option>
-            <a-select-option value="作者">
-              作者
-            </a-select-option>
-            <a-select-option value="分类号">
-              分类号
-            </a-select-option>
-            <a-select-option value="学术领域">
-              学术领域
-            </a-select-option>
-          </a-select>
+          <a-cascader
+            :options="options"
+            :allowClear="false"
+            trigger="hover"
+            v-model="searchClassify"
+            expand-trigger="hover"
+            placeholder="选择"
+            style="width: 120px;" size="large"
+            />
           <a-input placeholder="搜索你想要的" style="width: 40%" size="large" v-model="searchContent" />
           <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
           <a-button class="searchbutton" size="large" @click="onSearch">搜索
@@ -82,17 +65,60 @@
     data() {
       return {
         memberName: "",
-        searchType: "摘要",
+        searchType: "abstract",
         searchContent: "",
+        searchClassify:[],
+        options: [
+        {
+          value: 'paper',
+          label: '论文',
+          children: [
+            {
+              value: 'title',
+              label: '标题',
+            },
+            {
+              value: 'keywords',
+              label: '关键词',
+            },
+            {
+              value: 'abstract',
+              label: '摘要',
+            },
+          ],
+        },
+        {
+          value: 'fund',
+          label: '项目',
+          children: [
+            {
+              value: 'title',
+              label: '标题',
+            },
+            {
+              value: 'desc',
+              label: '描述',
+            },
+            {
+              value: 'abstract',
+              label: '摘要',
+            },
+          ],
+        },
+        {
+          value: 'author',
+          label: '作者',
+        },
+        ],
         keywords: [
-          "关键词1",
-          "关键词2",
-          "关键词3",
-          "关键词4",
-          "关键词5",
-          "关键词6",
-          "关键词7",
-          "关键词8",
+          "新冠肺炎",
+          "机器学习",
+          "心理健康",
+          "大数据",
+          "人工智能",
+          "机械",
+          "电子信息",
+          "数据挖掘",
           "关键词9",
           "关键词10",
           "关键词11",
@@ -123,8 +149,8 @@
           this.$router.push({
             name: "search",
             query: {
-              searchType: this.searchType,
-              searchContent: this.searchContent,
+              searchClassify: this.searchClassify, 
+              searchContent:this.searchContent
             }
           });
         }
@@ -133,7 +159,7 @@
         this.$router.push({
           name: "search",
           query: {
-            searchType: '关键词',
+            searchType: 'keywords',
             searchContent: this.keywords[num],
           }
         });

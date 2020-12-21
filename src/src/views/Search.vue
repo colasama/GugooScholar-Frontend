@@ -4,32 +4,15 @@
     <a-layout-header class="headtext">
       <div class="search">
         <a-input-group compact>
-          <a-select v-model="searchType" style="width: 120px;" size="large" @change="handleChange">
-            <a-select-option value="主题">
-              主题
-            </a-select-option>
-            <a-select-option value="摘要">
-              摘要
-            </a-select-option>
-            <a-select-option value="关键词">
-              关键词
-            </a-select-option>
-            <a-select-option value="篇名">
-              篇名
-            </a-select-option>
-            <a-select-option value="全文">
-              全文
-            </a-select-option>
-            <a-select-option value="作者">
-              作者
-            </a-select-option>
-            <a-select-option value="分类号">
-              分类号
-            </a-select-option>
-            <a-select-option value="学术领域">
-              学术领域
-            </a-select-option>
-          </a-select>
+          <a-cascader
+            :options="options"
+            :allowClear="false"
+            trigger="hover"
+            v-model="searchClassify"
+            expand-trigger="hover"
+            placeholder="选择"
+            style="width: 120px;" size="large"
+            />
           <a-input style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
           <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large" @click="onSearch">搜索
           </a-button>
@@ -38,49 +21,149 @@
     </a-layout-header>
     <a-layout-content class="homemain">
       <div class="classify" style="margin-top:10px">
-        <a-menu mode="horizontal">
-          <a-menu-item style="width:180px;">
+        <a-menu mode="horizontal" v-model="this.current">
+          <a-menu-item style="width:180px;" key="paper">
             <a-icon type="book" />论文 </a-menu-item>
-          <a-menu-item style="width:180px">
-            <a-icon type="reconciliation" />专利 </a-menu-item>
-          <a-menu-item style="width:180px">
+          <a-menu-item style="width:180px" key="fund">
+            <a-icon type="reconciliation" />项目 </a-menu-item>
+          <a-menu-item style="width:180px" key="user">
             <a-icon type="user" />科研人员</a-menu-item>
         </a-menu>
 
       </div>
       <div class="content">
-        <div v-for="(article,index) in localData" :key="index">
-          <a-card class="result" :hoverable="true">
+        <a-spin v-if="isSearchCompleted==false" size="large" style="margin-top:100px"/>
+        <div v-for="(article,index) in paperResult" :key="index">
+          <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='paper'&&index<20&&isSearchCompleted==true" @click="toPaper(article.id)">
             <div style="text-align:left">
-              <p style="font-weight:700;">
-                <a-icon type="book" />&#12288;{{article.Title}}
+              <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
+                <a-icon type="book" />&#12288;{{article.title}}
                 <template>
-                  <div style="float:right">{{article.Time}}{{'  citations'}}</div>
+                  <div style="float:right">{{article.n_citation}}{{'  citations'}}</div>
                 </template>
               </p>
-              <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">{{article.Source}}</p>
+              <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
+                <template>
+                  <div v-if="article.year && article.venue"><p style="display: -webkit-box;-webkit-box-orient: vertical;
+                  -webkit-line-clamp: 4;overflow: hidden;">{{article.year+"  "}}{{article.venue.name}}</p></div>
+                </template>
+              </p>
               <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
-                <template v-for="(author,index2) in article.Authors">{{author}}
-                  <template v-if="index2 < article.Authors.length-1">{{'，'}}</template>
+                <template v-for="(author,index2) in article.authors">
+                  <template v-if="index2 < 10 && index2 < article.authors.length">{{author.name}}</template>
+                  <template v-if="index2 < 9 && index2 < article.authors.length-1">{{'，'}}</template>
                 </template>
               </p>
               <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
-                <template v-for="(field,index3) in article.Fields">
-                  <a-button style="height:25px;width:auto;padding-left:5px;padding-right:5px" :key="index3">
-                    <a-icon style="padding-left:5px" type="experiment" />{{field}}
-                  </a-button>
-                  <template v-if="index3 < article.Fields.length-1">{{'，'}}</template>
+                <template v-for="(field,index3) in article.keywords">
+                  <template v-if="index3 < 3" style="float:left">
+                    <a-button   type="primary" style="height:25px;max-width:250px;padding-left:5px;padding-right:5px;
+                    " :key="index3">
+                      <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />{{field}}</div>
+                    </a-button>
+                    <template v-if="index3 < article.keywords.length-1 && index3 < 2">{{'，'}}</template>
+                  </template>
                 </template>
               </p>
               <p
                 style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
                 <template>
-                  {{article.Abstract}}
+                  {{article.abstract}}
                 </template>
               </p>
             </div>
           </a-card>
         </div>
+        <div v-for="(fund,index7) in fundResult" :key="index7">
+          <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='fund'&&index7<20&&isSearchCompleted==true" @click="toPaper(fund.id)">
+            <div style="text-align:left">
+              <p style="font-weight:700;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
+                <a-icon type="reconciliation" />&#12288;{{fund.title}}
+              </p>
+              <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
+                <template>
+                  <div v-if="fund.start_year && fund.end_year">{{fund.start_year+"--"}}{{fund.end_year}}</div>
+                </template>
+              </p>
+              <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
+                  <template >{{fund.author.name}}</template>
+              </p>
+              <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
+                <a-button  v-if="fund.type" type="primary" style="height:25px;max-width:250px;padding-left:5px;padding-right:5px;" >
+                  <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />{{fund.type}}</div>
+                </a-button>
+              </p>
+              <p
+                style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
+                <template>
+                  {{fund.abstract}}
+                </template>
+              </p>
+            </div>
+          </a-card>
+        </div>
+        <div v-for="(author,index4) in authorResult" :key="index4+'author'">
+          <a-card class="result" :hoverable="true" v-if="searchClassify1[0]=='author' && index4<20 && isSearchCompleted==true">
+            <div style="text-align:left">
+              <p style="font-weight:700;">
+                <a-icon type="user" />&#12288;{{author.name}}
+                <template>
+                  <div style="float:right">{{author.n_citation}}{{'  citations'}}</div>
+                </template>
+              </p>
+              <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
+                <template>
+                  <div v-if="author.h_index" style="display:inline-block;text-align:center;border-style:solid;border-width:1px;border-color:#66CCCC;border-radius:3px;width:70px">
+                    <a-row>
+                      <a-col :span="8" style="background-color:#66CCCC;color:white">
+                        {{"H"}}
+                      </a-col>
+                      <a-col :span="16">
+                        {{author.h_index}}
+                      </a-col>
+                    </a-row>
+                  </div>
+                  <div v-if="author.h_index" style="display:inline-block;margin-left:10px;text-align:center;border-style:solid;border-width:1px;border-color:	#D8D8D8;border-radius:3px;width:70px">
+                    <a-row>
+                      <a-col :span="8" style="background-color:#B0B0B0;color:white">
+                        {{"P"}}
+                      </a-col>
+                      <a-col :span="16">
+                        {{author.n_pubs}}
+                      </a-col>
+                    </a-row>
+                  </div>
+                </template>
+              </p>
+              <p v-if="author.orgs" style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">
+                <template>
+                   <a-icon type="bank" />{{"  "+author.orgs}}
+                </template>
+              </p>
+            </div>
+          </a-card>
+        </div>
+        <div v-if=" this.isSearched==true && this.isSearchCompleted==true ">
+          <a-result v-if="((searchClassify1[0]=='author'&& this.authorResult.length==0) 
+        || (searchClassify1[0]=='paper' && this.paperResult.length==0) || (searchClassify1[0]=='fund' && this.fundResult.length==0))"  sub-title="Sorry, the result you searched is empty." status="404" >
+            <template #icon>
+              <a-icon type="smile" theme="twoTone" />
+            </template>
+            <template #extra>
+            </template>
+          </a-result>
+        </div>
+      </div>
+      <div v-if="isSearched&&isSearchCompleted==true
+      " style="margin-top:30px;margin-left:28%;width:78%;backgound:black">
+        <template>
+          <!--<a-pagination v-model="searchOffset" :total="20" show-less-items @change="onChange()"/>-->
+          <a-button  v-if="this.searchOffset>0 " @click="onChange(false)" size="large" type="primary" style="float:left;padding-left:20px;padding-right:20px;margin-right:30px"><a-icon type="left" /></a-button>
+          <a-button disabled v-else size="large" type="primary" style="float:left;padding-left:20px;padding-right:20px;margin-right:30px"><a-icon type="left" /></a-button>
+          <a-button v-if="(searchClassify1[0]=='author'&& this.authorResult.length==20) 
+          || (searchClassify1[0]=='paper' && this.paperResult.length==20) || (searchClassify1[0]=='fund' && this.fundResult.length==20)" @click="onChange(true)" size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
+          <a-button disabled v-else size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
+        </template>
       </div>
     </a-layout-content>
   </a-layout>
@@ -95,59 +178,61 @@
     },
     data() {
       return {
+        current:['paper'],
         memberName: "",
-        keywords: [
-          "关键词1",
-          "关键词2",
-          "关键词3",
-          "关键词4",
-          "关键词5",
-          "关键词6",
-          "关键词7",
-          "关键词8",
-          "关键词9",
-          "关键词10",
-          "关键词11",
-          "关键词12",
-        ],
         comma: ", ",
-        localData: [{
-            Title: 'Automobile pollution control using catalysis',
-            Authors: ['Dey S.', 'Mehta N.S.'],
-            Source: 'Environmental Engineering Department, RGPV Bhopal, India;Department of Electronics and Communication, Roorkee College of Engineering, India',
-            Time: 7777,
-            Fields: ['Engine and fuel modification', 'Catalytic converter'],
-            Abstract: 'The emissions of pollutants from vehicles are generally low but the numbers of vehicles increasing on the road therefore the environmental pollutions are also increases. About 35% of CO, 30% of HC and 25% percent of NOx produced into the atmosphere is from the transportation sector. These pollutants have adverse effec'+
-            'ts on the environment and human health. The emissions from vehicles are' +
-              'generally depends upon the air–fuel ratio. The control techniques for exhaust gas emissions are engine modifications, fuel pretreatment, fuel additives, exhaust gas recirculation (EGR), positive crankcase ventilation (PCV) and an application of catalytic converters. A catalytic converter is a device that'+' converts more toxic exhaust gas pollutants into less toxic pollutants. There are different types of catalysts used in'}
-              ,
-          {
-            Title: '基于深度学习的人脸识别',
-            Authors: ['任志玲', '薛新根'],
-            Source: '辽宁工程技术大学电气与控制工程学院',
-            Time: 546,
-            Fields: ['机器学习', '人工智能'],
-            Abstract: '人脸识别是图像领域的经典问题，为解决目前人脸识别中普遍存在的识别精度不高、' +
-              '特征点估计较为粗糙等问题，采用一种基于R-CNN（ResNet-Convolutional Neural Network）算法的人脸识别方法。' +
-              '该方法用人脸特征探测器有效的提取了人脸特征，同时将R-CNN卷积神经网络用于2D人脸识别，' +
-              '采集了400张目标脸，和人脸库中的1000张样本脸混合，模型共训练130轮,其网络识别的准确率达到了90%以上，结合了深度学习方法，具有较高的识别率。人脸识别是图像领域的经典问题，为解决目前人脸识别中普遍存在的识别精度不高、' +
-              '特征点估计较为粗糙等问题，采用一种基于R-CNN（ResNet-Convolutional Neural Network）算法的人脸识别方法。' +
-              '该方法用人脸特征探测器有效的提取了人脸特征，同时将R-CNN卷积神经网络用于2D人脸识别，' +
-              '采集了400张目标脸，和人脸库中的1000张样本脸混合，模型共训练130轮,其网络识别的准确率达到了90%以上，结合了'
-          },
-          {
-            Title: '爱情心理学',
-            Authors: ['韦志中', '薄艳艳'],
-            Source: '北京:台海出版社',
-            Time: 1,
-            Fields: ['恋爱心理学-通俗读物'],
-            Abstract: '本书精选了关于婚姻爱情的20个非常重要的主题, 包括找一个什么样的人结婚、婆媳关系、家庭文化的冲突与融合、角' +
-              '色匹配、爱情仪式、离婚、再婚、破解家庭暴力、婚姻危机干预、亲子关系、女性的自我成长、家庭未来建设等等, 并针对每' +
-              '个主题都提供了与之相应的心理成长技术。通过这20个主题的学习和成长, 人们将会揭开美满爱情的神秘面纱, 通过爱情和婚姻, 遇见一个更好的自己。'
-          },
-        ],
-        searchType: "主题",
+        isSearched:false,
+        searchClassify:[],//1:paer,2:fund,3:author
+        searchClassify1:[],
+        isSearchCompleted:true,
+        paperResult:[],
+        authorResult:[],
+        fundResult:[],
+        searchType: "title",
         searchContent: "",
+        searchOffset:0,
+        options: [
+        {
+          value: 'paper',
+          label: '论文',
+          children: [
+            {
+              value: 'title',
+              label: '标题',
+            },
+            {
+              value: 'keywords',
+              label: '关键词',
+            },
+            {
+              value: 'abstract',
+              label: '摘要',
+            },
+          ],
+        },
+        {
+          value: 'fund',
+          label: '项目',
+          children: [
+            {
+              value: 'title',
+              label: '标题',
+            },
+            {
+              value: 'desc',
+              label: '描述',
+            },
+            {
+              value: 'abstract',
+              label: '摘要',
+            },
+          ],
+        },
+        {
+          value: 'author',
+          label: '作者',
+        },
+        ],
       };
     },
     watch: {
@@ -155,19 +240,120 @@
     },
     updated() {},
     mounted() {
-      if (this.$route.query.searchType)
-        this.searchType = this.$route.query.searchType;
+      if (this.$route.query.searchClassify)
+      {
+        this.searchClassify = this.$route.query.searchClassify;
+        this.searchClassify1[1] = this.$route.query.searchClassify;
+      }
       if (this.$route.query.searchContent)
         this.searchContent = this.$route.query.searchContent;
+      if(this.$route.query.searchClassify && this.$route.query.searchContent)
+        this.search();
     },
     methods: {
       handleChange(value) {
         this.searchType = value;
       },
-      onSearch() {
-        this.$router.push("/404");
+      test() {
+        console.log("searchClassify1[0]:"+this.searchClassify1[0]);
+        console.log("fundResult.length:"+this.fundResult.length);
+        console.log("isSearched:"+this.isSearched);
+        console.log("isCOmplete:"+this.isSearchCompleted);
+      },
+      toPaper(paperid) {
+        let routeData = this.$router.resolve({
+          path: '/paper',
+          query: {
+              id: paperid,
+            }
+        })
+        window.open(routeData.href, '_blank')
+      },
+      onChange(isNext) 
+      {
+        if(isNext){
+          this.searchOffset+=1;
+        }else{
+          if(this.searchOffset>0)
+            this.searchOffset-=1;
+        }
+        this.search();
+      },
+      onSearch(){
+        this.searchOffset=0;
+        this.search();
+      },
+      search() {
+        if(this.searchContent==''||this.searchContent==null)
+          return
+        if(this.searchClassify[0]=='' || this.searchClassify[0]==null || this.searchClassify.length==0)
+          return
+        this.isSearchCompleted=false;
+        this.isSearched=true;
+        this.searchClassify1=this.searchClassify;
+        if(this.searchClassify1[0] == 'author')
+        {
+          this.current=['user'];
+          this.searchAuthor();
+        }else if(this.searchClassify1[0] == 'paper')
+        {
+          this.current=['paper'];
+          this.searchPaper();
+        }else{
+          this.current=['fund'];
+          this.searchFund();
+        }
+      },
+      searchAuthor() {
+        this.$axios({
+          method: 'get',
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/search',
+          params: {
+            words: this.searchContent,
+            offset: this.searchOffset*10
+          }
+        }).then((res)=>{
+                this.authorResult = res.data.data;
+                this.isSearchCompleted=true;
+            }).catch((e)=>{
+                console.log(e);
+            });
+      },
+      searchPaper() {
+        this.$axios({
+          method: 'get',
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
+          params: {
+            words: this.searchContent,
+            type:this.searchClassify[1],
+            offset: this.searchOffset*10
+          }
+        }).then((res)=>{
+                this.paperResult = res.data.data;
+                this.isSearchCompleted=true;
+            }).catch((e)=>{
+                console.log(e);
+            });
+      },
+      searchFund() {
+        this.$axios({
+          method: 'get',
+          url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/fund/search',
+          params: {
+            words: this.searchContent,
+            type:this.searchClassify[1],
+            offset: this.searchOffset*10
+          }
+        }).then((res)=>{
+                this.fundResult = res.data.data;
+                this.isSearchCompleted=true;
+                console.log(this.isSearchCompleted);
+            }).catch((e)=>{
+                console.log(e);
+            });
       },
     },
+    
   };
 </script>
 <style scoped>
@@ -221,5 +407,12 @@
 
   .keywords .keyword {
     margin: 0 3px;
+  }
+  .test
+  {
+    white-space:nowrap; 
+    width:auto; 
+    max-width: 12em;
+    overflow:hidden; 
   }
 </style>

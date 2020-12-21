@@ -18,6 +18,12 @@ Vue.use(VueRouter)
     component:() => import('../views/Login.vue')
   },
   {
+    path: '/auth',
+    name: '邮箱验证',
+    meta: {title:'邮箱验证 - 咕鸽学术'},
+    component:() => import('../views/Auth.vue')
+  },
+  {
     path: '/register',
     name: '404',
     meta: {title:'注册 - 咕鸽学术'},
@@ -31,7 +37,7 @@ Vue.use(VueRouter)
   },
   {
     // 暂时先这样 测试用 后面具体再改
-    path: '/scientist/show',
+    path: '/scientist/show/:id',
     name: 'scientist',
     meta: {title: '科研人员展示 - 咕鸽学术'},
     component: () => import('../views/content/Scientist')
@@ -53,6 +59,12 @@ Vue.use(VueRouter)
     name: 'adminUser',
     meta: {title: '用户管理 - 咕鸽学术'},
     component:() => import('../views/admin/User.vue')
+  },
+  {
+    path: '/admin/admin',
+    name: 'adminAdmin',
+    meta: {title: '管理员管理 - 咕鸽学术'},
+    component:() => import('../views/admin/Admin.vue')
   },
   {
     path: '/ranklist',
@@ -86,7 +98,7 @@ Vue.use(VueRouter)
       component:() => import('../views/field/List.vue')
     },
     {
-      path: '/field',
+      path: '/field*',
       name: 'Field',
       meta: {title:'学科领域 - 咕鸽学术'},
       component:() => import('../views/field/Field.vue')
@@ -108,8 +120,10 @@ router.beforeResolve((to,from,next) => {
   if (store.state.token==null) {
     store.state.token=window.sessionStorage.getItem('token');
     store.state.username=window.sessionStorage.getItem('username');
-    store.state.userid=window.sessionStorage.getItem('userid');
-    store.state.useravatar=window.sessionStorage.getItem('useravatar');
+    store.state.email=window.sessionStorage.getItem('email');
+    store.state.location=window.sessionStorage.getItem('location');
+    store.state.introduction=window.sessionStorage.getItem('introduction');
+    store.state.activate=window.sessionStorage.getItem('activate');
   }
   if (store.state.token==null&&(to.name=="Home"||to.name=="Profile")) {
     next();

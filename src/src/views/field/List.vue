@@ -2,9 +2,15 @@
     <div id="whole_page">
         <a-layout>
             <a-layout-header class="ant-layout-header">
-                <div>
-                    学科领域
+                <div class="ant-layout-header-title">
+                    科研领域
                 </div>
+                <a-input-group compact class="ant-layout-header-search">
+                    <a-input style="width: 30%;" placeholder="搜索目标科研领域" size="large" v-model="searchContent"/>
+                    <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large"
+                              @click="SearchField">搜索
+                    </a-button>
+                </a-input-group>
             </a-layout-header>
 
             <a-layout-content class="ant-layout-content">
@@ -12,8 +18,7 @@
                 <a-list-item slot="renderItem" slot-scope="item, index" :key="index">
                     <a-list-item-meta :description="item.description">
                     </a-list-item-meta>
-                    <a-card size="default" class="hippoCard-middle" >
-                        <a slot="actions" :href="item.href">more</a>
+                    <a-card @click="Field(item.content)" size="default" class="hippoCard-middle" >
                         {{item.content}}
                     </a-card>
                 </a-list-item>
@@ -49,9 +54,16 @@
         });
     }
     export default {
+        mounted(){
+            this.getField();
+            //console.log(this.fieldReturn.length);
+        },
         data() {
             return {
-                listData,
+                searchContent: "",
+                fieldReturn:[],
+                fieldSaver:[],
+                listData:[],
                 pagination: {
                     onChange: page => {
                         console.log(page);
@@ -69,9 +81,81 @@
 
         },
         methods:{
-          Field(){
-              this.$router.push("/Field");
-          },
+            getField(){
+                var that = this;
+                this.loading = true;
+                this.$axios({
+                    method: 'get',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/field',
+                    params: {}
+                }).then(
+                    response => {
+                        this.fieldReturn = response.data.data;
+                        // that.rankData[that.rankType] = list;
+                        //that.$set(that.rankData, 1, list);
+                        this.dataInput();
+                        this.fieldSaver=this.fieldReturn;
+                        console.log(this.fieldReturn);
+                        console.log(this.fieldReturn.length);
+                        that.loading = false;
+                    },
+                    err => {
+                        console.log(err);
+                    }).catch((error) => {
+                    console.log(error);
+                });
+            },
+
+            dataInput(){
+                for (let i = 0; i < this.fieldReturn.length; i++) {
+                    this.listData.push({
+                        href: `http://localhost:8080/#/field/`,
+                        //title: `研究领域 ${i+1}`,
+                        //avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                        description:
+                            this.fieldReturn[i],
+                        content:
+                            this.fieldReturn[i],
+                    });
+                }
+            },
+
+            Field(a){
+                this.$router.push({
+                    path:'/field',
+                    query:{
+                        FieldName:a
+                    }
+                })
+
+                console.log(a);
+            },
+
+            SearchField(){
+                console.log(this.fieldReturn.length);
+                if(this.searchContent!=""){
+                    this.listData=[];
+                    for(let i=0;i<this.fieldSaver.length;i++){
+                        console.log(this.fieldSaver[i]);
+                        if(this.fieldSaver[i].search(this.searchContent)!=-1){
+                            this.listData.push({
+                                href: `http://localhost:8080/#/field/`,
+                                //title: `研究领域 ${i+1}`,
+                                //avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                                description:
+                                this.fieldReturn[i],
+                                content:
+                                this.fieldReturn[i],
+                            });
+                        }
+                    }
+                    this.$forceUpdate();
+                    this.reload();
+                }else {
+                    this.$forceUpdate();
+                    this.reload();
+                }
+            },
         },
     }
 </script>
@@ -88,10 +172,30 @@
     .ant-layout-header {
         background: rgb(3, 3, 3);
         color: #fff;
+        height: 120px;
         font-size: 25px;
         flex-wrap: nowrap;
         justify-content: flex-start;
         text-align: left;
+        text-align: center;
+    }
+
+    .ant-layout-header-title {
+        font-size: 25px;
+        color: #ffffff;
+        background-color: black;
+    }
+    .ant-layout-content {
+        background: #fff;
+        color: #fff;
+        min-height: 120px;
+        line-height: 120px;
+    }
+    .ant-layout-header-search {
+        width: 100%;
+        height: 50px;
+        margin: auto;
+
     }
     .ant-layout-content {
         background: #fff;
@@ -100,6 +204,9 @@
         line-height: 120px;
     }
 
+    .hippoCard-slot{
+
+    }
     .hippoCard-middle {
         background: rgb(47 50 65);
         padding: 10%;
@@ -109,6 +216,7 @@
         font-size: 20px;
         color: #ffffff;
         width: 400px;
+        height:200px;
     }
 
     .ant-col {

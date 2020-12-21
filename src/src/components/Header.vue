@@ -1,9 +1,9 @@
 <template>
   <div class="re-header">
-    <div @click="toIndex" class="top-logo" />
+    <div @click="toIndex" class="top-logo" style="margin-left:320px" />
 
-    <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
-      <a-menu-item key="1" @click="toRankList">排名榜</a-menu-item>
+    <a-menu style="background-color:rgb(43, 46, 59)" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
+      <a-menu-item key="1" @click="toRankList">排行榜</a-menu-item>
       <a-menu-item key="2" @click="toSubscribe">订阅</a-menu-item>
 
       <a-button
@@ -15,17 +15,23 @@
       <a-button
         type="ghost"
         @click="toLogin"
-        style="margin-left:15px;margin-right:48px"
+        style="margin-left:15px;margin-right:320px"
         v-if="$store.state.token==null"
       >登录</a-button>
-      <a-button type="link" @click="toUserindex" style="margin-right:12px;" v-if="$store.state.token!=null">
+
+      <a-dropdown v-if="$store.state.token!=null">
+      <a-menu style="margin-top:4px" slot="overlay">
+          <a-menu-item key="1" @click="toUserindex">账户信息</a-menu-item>
+          <a-menu-item key="3" @click="exit">退出</a-menu-item>
+        </a-menu>
+      <a-button type="link" @click="toUserindex" style="margin-right:320px;" v-if="$store.state.token!=null">
           <a-avatar
             :size="32"
             inline
             style="margin-right:6px"
+            :style="{ backgroundColor: '#9feaf9', verticalAlign: 'middle' }"
             v-if="$store.state.useravatar==null||$store.state.useravatar=='null'"
-            :username="`${$store.state.username}`"
-          ></a-avatar>
+          >{{$store.state.username[0]}}</a-avatar>
           <a-avatar
             v-else
             :src="$store.state.useravatar"
@@ -34,11 +40,13 @@
           {{$store.state.username}}
           <a-icon type="down" />
         </a-button>
+        </a-dropdown>
     </a-menu>
   </div>
 </template>
 
 <style>
+
 .top-logo {
   cursor: pointer;
   width: 200px;
@@ -81,12 +89,14 @@
 
 
 <script>
+const colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
 export default {
   components: {
   },
   data() {
     return {
       showLogin: true,
+      color: colorList[0],
     };
   },
   created: function () {},
@@ -95,6 +105,9 @@ export default {
   methods: {
     toRegister() {
       this.$router.push({ path: "/register"});
+    },
+    toUserIndex() {
+      this.$router.push({ path: "/admin/user"});
     },
     toLogin() {
       this.$router.push({ path: "/login"});
@@ -112,8 +125,11 @@ export default {
     exit() {
       this.$store.state.token = null;
       this.$store.state.username = "";
-      this.$store.state.userid = "";
-      this.$store.state.useravatar = "";
+      this.$store.state.useravatar = null;
+      this.$store.state.email = "";
+      this.$store.state.location = "";
+      this.$store.state.introduction = "";
+      this.$store.state.name = "";
       window.sessionStorage.clear();
       this.$router.push({ path: "/" });
     },

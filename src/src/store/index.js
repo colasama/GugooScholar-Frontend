@@ -7,8 +7,11 @@ const state = {
     showNav: true,
     token: null,
     username: '',
-    userid: '',
-    useravatar:'',
+    useravatar: null,
+    name: '',
+    email:'',
+    location:'',
+    introduction:'',
     message: [],
     messageRead:[],
 };

@@ -29,9 +29,9 @@
           </h1>
           <a-input
             size="large"
-            placeholder="邮箱"
+            placeholder="用户名"
             ref="usernameInput"
-            v-model="email"
+            v-model="username"
             style="margin-top:20px"
           >
             <a-icon slot="prefix" type="user" />
@@ -83,22 +83,14 @@
 
 <script>
 // @ is an alias to /src
-import firebase from "firebase";
-
-var config = {
-    apiKey: "AIzaSyCd3aIBhwTRZwYa2JzNWhou2-Mg-kAwv6A",
-    authDomain: "googoscholar-294912.firebaseapp.com",
-};
-firebase.initializeApp(config);
-
-
+import Vue from "vue";
 
 export default {
   name: "Login",
   components: {},
   data() {
     return {
-      email: "",
+      username: "",
       password: "",
       token: "",
       count: "",
@@ -112,27 +104,57 @@ export default {
     },
     checkLogin() {
       var that = this;
-      firebase.auth().signInWithEmailAndPassword(this.email,this.password)
-      .then((response) =>{
-        console.log(response)
-        that.$store.state.username = response.user.displayName;
-        that.$store.state.userid = response.user.uid;
-        that.$store.state.token = response.user.refreshToken;
-        window.sessionStorage.setItem('token',response.user.refreshToken)
-        window.sessionStorage.setItem('username',response.user.displayName)
-        window.sessionStorage.setItem('userid',response.user.uid)
-        //window.sessionStorage.setItem('useravatar',that.$store.state.useravatar)
-        that.$message.success("登录成功，即将跳转回主页！", 1.5).then(() => {
+      Vue.axios({
+        method: "post",
+        url: "https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/login",
+        data: {
+          username: this.username,
+          password: this.password,
+        },
+      }).then(function (response) {
+        if (response.data.[0].success == true) {
+          that.$store.state.token = response.data.[0].data.token;
+          var userinfo_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/"+that.username+"/info";
+          console.log(userinfo_url)
+          Vue.axios({
+            method: "get",
+            url: userinfo_url,
+            headers: {
+              token: that.$store.state.token,
+            },
+          })
+            .then((response) => {
+              console.log(response.data)
+              that.$store.state.username = response.data.data.username;
+              that.$store.state.email = response.data.data.email;
+              that.$store.state.name = response.data.data.name;
+              that.$store.state.introduction = response.data.data.introduction;
+              that.$store.state.location = response.data.data.location;
+              that.$store.state.activate = response.data.data.activate;
+              window.sessionStorage.setItem('token',that.$store.state.token)
+              window.sessionStorage.setItem('name',that.$store.state.name)
+              window.sessionStorage.setItem('username',that.$store.state.username)
+              window.sessionStorage.setItem('email',that.$store.state.email)
+              window.sessionStorage.setItem('introduction',that.$store.state.introduction)
+              window.sessionStorage.setItem('location',that.$store.state.location)
+              window.sessionStorage.setItem('activate',that.$store.state.activate)
+            })
+            .catch(function (response) {
+              console.log(response);
+            });
+          that.$message.success("登录成功，即将跳转主页", 1.5).then(() => {
             that.$router.push({ path: "/" });
             that.$store.state.showNav = true;
           });
+        } else {
+          that.$message.error(response.data.message);
+        }
       })
-      .catch((error) =>{
-        that.setError();
-        var errorMessage = error.message;
-        console.log(errorMessage)
-        //var errorMessage = error.message;
-      })
+      .catch(function (response) {
+        that.$message.error("用户名或者密码错误！");
+        console.log(response);
+      });
+      
     },
     setError(){
       this.errorLogin = true;

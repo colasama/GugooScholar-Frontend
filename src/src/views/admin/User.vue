@@ -26,10 +26,11 @@
         </a-layout-sider>
 
         <!-- 个人信息的页面 -->
-        <a-layout-content :style="{ padding: '0 24px', minHeight: '280px', }" v-if="sider_status==1">
+        <a-layout-content :style="{ padding: '0px', minHeight: '280px', }" v-if="sider_status==1">
 
-        <a-breadcrumb style="margin:0px 0 0px -730px;">
-            <a-breadcrumb-item href="" :style="{ padding: '0px'}">
+        <a-breadcrumb style="margin:0px 0 0px 0px;">
+          <div style="text-align:left">
+            <a-breadcrumb-item href="" style="margin-left:30px">
                 <a-icon type="home" />
                 <span>主页</span>
             </a-breadcrumb-item>
@@ -40,7 +41,9 @@
             <a-breadcrumb-item>
                 用户信息
             </a-breadcrumb-item>
+          </div>
         </a-breadcrumb>
+        <br>
         <span style="font-size:40px; "><b>用户信息</b></span>
         <br>
         <span style="font-size:15px">您在Gugoo学术的个人信息，例如名字和电话</span>
@@ -65,7 +68,7 @@
             :before-upload="beforeUpload"
             @change="handleChange"
           >
-          <a-avatar :size="256" class="avatarStyle" v-if="userInfo.avatarSrc!=null" :src="userInfo.avatarSrc" />
+          <a-avatar :size="256" class="avatarStyle" v-if="userInfo.avatarSrc!=null" :src="userInfo_orig.avatarSrc" />
 
           <avatar
             :size="128"
@@ -88,16 +91,16 @@
                 <a-icon type="idcard"/> 账号
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo.userId}}</span></a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userId}}</span></a-col>
           </a-row>
           <a-divider />
-          <a-row style="margin-top:24px">
+          <a-row style="margin-top:24px; vertical-align:middle">
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="user"/> 名字
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo.userName}}</span></a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userName}}</span></a-col>
             <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(2)"/></a-col>
             <a-modal
               title="修改名字"
@@ -116,13 +119,13 @@
             </a-modal>
           </a-row>
           <a-divider />
-          <a-row style="margin-top:24px">
+          <a-row style="margin-top:24px;" >
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="man"/> 性别
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo.userSex}}</span></a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userSex}}</span></a-col>
             <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(3)"/></a-col>
             <a-modal
               title="修改性别"
@@ -153,7 +156,7 @@
                 <a-icon type="gift" /> 生日
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo.userBirth}}</span></a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userBirth}}</span></a-col>
             <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(4)"/></a-col>
             <a-modal
               title="修改生日"
@@ -185,7 +188,7 @@
                 <a-icon type="mail"/> 邮箱
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo.userEmail}}</span></a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userEmail}}</span></a-col>
             <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(5)"/></a-col>
             <a-modal
               title="修改邮箱"
@@ -213,14 +216,12 @@
           </div>
           <br>
           <br>
-          <transition name="slide-fade">
           <a-row style="margin-top:24px">
           <a-col :span="22">
-            <div style=" work-break: keep-all; max-width:90%; margin:auto; text-align:left;">{{userInfo.description}}</div>
+            <div style=" work-break: keep-all; max-width:90%; margin:auto; text-align:left;">{{userInfo_orig.description}}</div>
           </a-col>
           <a-col :span="2" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(6)"/></a-col>
           </a-row>
-          </transition>
           <a-modal
               title="修改个人简介"
               :visible="modal_visible==6"
@@ -236,14 +237,12 @@
         </a-layout-content>
 
 
-
-
-
         <!-- 修改密码的页面 -->
-        <a-layout-content :style="{ overflow: 'initial', padding: '0 24px', minHeight: '280px'}" v-if="sider_status==2">
+        <a-layout-content :style="{ overflow: 'initial', padding: '0px', minHeight: '280px'}" v-if="sider_status==2">
 
-        <a-breadcrumb style="margin:0px 0 0px -730px;">
-            <a-breadcrumb-item href="" :style="{ padding: '0px'}">
+        <a-breadcrumb style="margin:0px 0 0px 0px;">
+          <div style="text-align:left">
+            <a-breadcrumb-item href="/" style="margin-left:30px">
                 <a-icon type="home" />
                 <span>主页</span>
             </a-breadcrumb-item>
@@ -254,6 +253,7 @@
             <a-breadcrumb-item>
                 密码修改
             </a-breadcrumb-item>
+          </div>
         </a-breadcrumb>
         <br>
         <span style="font-size:40px; "><b>密码修改</b></span>
@@ -321,24 +321,6 @@
   margin: 16px;
 }
 
-.avatar-uploader > .ant-upload {
-  width: 128px;
-  height: 128px;
-  text-align: center;
-  margin: auto;
-}
-.ant-upload-select-picture-card i {
-  font-size: 32px;
-  color: #999;
-  margin: auto;
-  text-align: center;
-}
-
-.ant-upload-select-picture-card .ant-upload-text {
-  margin-top: 8px 0 0 0;
-  color: #666;
-  text-align: center;
-}
 
 .infoCard{
   width: 80%; 
@@ -371,14 +353,7 @@
 
 .profile_col_content{
   text-align: left;
-  vertical-align:middle;
-}
-
-.slide-fade-enter-active {
-  transition: all .3s ease;
-}
-.slide-fade-leave-active {
-  transition: all .0s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  vertical-align: middle;
 }
 
 
@@ -395,6 +370,16 @@ export default {
       loading_visible: 0,
       userInfo:{
         userId:0,
+        userName:"",
+        password:"",
+        avatarSrc:"",
+        userBirth:"",
+        userSex:"",
+        userEmail:"",
+        description:"",
+      },
+      userInfo_orig:{
+        userId:0,
         userName:"wzk",
         password:"asdfasdfasfd",
         avatarSrc:"https://i.loli.net/2020/11/26/ANYtuRaPrLJTDwy.jpg",
@@ -402,7 +387,7 @@ export default {
         userSex:"男",
         userEmail:"869693441@qq.com",
         description:"阿斯顿发水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费asdfasfasdfasdf水电费水电费水电费",
-      },
+      }
     }
   },
   methods:{
@@ -433,6 +418,13 @@ export default {
     },
     handleCancel() {
       console.log('Clicked cancel button');
+      this.userInfo.userName = "";
+      this.userInfo.password = "";
+      this.userInfo.avatarSrc = "";
+      this.userInfo.userBirth = "";
+      this.userInfo.userSex = "";
+      this.userInfo.userEmail = "";
+      this.userInfo.description = "";
       this.modal_visible = 0;
     },
     modifyPwd() {
