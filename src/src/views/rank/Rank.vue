@@ -323,8 +323,4 @@
     color: #20bcdb;
     cursor: pointer;
   }
-
-  .ant-table-pagination{
-    background-color: #fff;
-  }
 </style>
