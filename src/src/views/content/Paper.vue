@@ -6,12 +6,10 @@
                 <div class="topic">{{searchResult.title}}</div>
             </a-layout-content>
             <a-layout-content>
-                <div class="author">
-                    <div v-for="(author,i) in searchResult.authors"
-                         :key="author.length">
-                        <author_avatar
-                                :name=author.name :color="colorList[i%6]"></author_avatar>
-                    </div>
+                <div class="author" v-for="(author,i) in searchResult.authors"
+                     :key="author.length">
+                    <author_avatar
+                            :name=author.name :color="colorList[i%6]"></author_avatar>
                 </div>
             </a-layout-content>
             <a-layout-content>
@@ -28,9 +26,9 @@
                 </div>
             </a-layout-content>
             <a-layout-content>
-                <div style="background-color:#ffffff;padding-top: 10px; max-width: 80%; margin:0 auto 20px;">
-                    <template style="border-radius: 20px;">
-                        <a-descriptions title="详细信息" bordered >
+                <div style="background-color:#ffffff;padding-top: 10px; max-width: 60%; margin:0 auto 20px;border-radius: 10px;">
+                    <template>
+                        <a-descriptions title="详细信息" layout="vertical" bordered size="middle">
                             <a-descriptions-item label="DOI" v-if="searchResult.doi!=null">
                                 <span class="abstract-text">{{searchResult.doi}}</span>
                             </a-descriptions-item>
@@ -80,11 +78,11 @@
             </a-layout-content>
         </a-layout>
         <div style="margin: 50px 0">
-            <div>
-                <a-card title="摘要" style="width: 80%;margin:auto;">
-                    <p>{{searchResult.abstract}}</p>
-                </a-card>
-            </div>
+                <div style="border-radius: 5px;">
+                    <a-card title="摘要" style="width: 80%;margin:auto;">
+                        <p style="font-size: 16px;">{{searchResult.abstract}}</p>
+                    </a-card>
+                </div>
 
             <!--            <div class="details" v-if="searchResult.abstract!=null">-->
 <!--                <span class="rowtit">摘要：</span>-->
