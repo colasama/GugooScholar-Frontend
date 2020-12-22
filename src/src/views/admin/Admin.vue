@@ -59,7 +59,7 @@
             </a-layout-sider >
 
             <!-- 所有论文页面 -->
-            <a-layout-content v-if="sider_status==1">
+            <a-layout-content :style="{ padding: '0px', minHeight: '280px', }" v-if="sider_status==1">
             <a-breadcrumb style="margin:0px 0 0px 0px;">
             <div style="text-align:left">
             <a-breadcrumb-item href="" style="margin-left:30px">
@@ -198,7 +198,18 @@
             <div style="text-align:left">
                 <a-input-search style="margin: 30px 0 0px 20px; width:35%" placeholder="搜索用户" enter-button @search="searchUser" />
             </div>
-            <a-divider style="width:80% " />
+            <a-divider style="width:80%; margin-bottom:0px" />
+            <div style="text-align:center">
+            <a-table :columns="columns" :data-source="user_list">
+                <a slot="user_list.username" slot-scope="text">{{ text }}</a>
+                <span slot="customTitle"><a-icon type="user" /> 用户名</span>
+                <span slot="name" slot-scope="name">{{name}}</span>
+                <span slot="email" slot-scope="email">{{email}}</span>
+                <span slot="action" slot-scope="user">
+                    <a-button type="danger" shape="circle" icon="delete,index" @click="deleteUser(user,index)"></a-button>
+                </span>
+            </a-table>
+            </div>
 
                 
             </a-layout-content>
@@ -278,6 +289,29 @@
 </style>
 
 <script>
+const columns = [
+  {
+    dataIndex: 'username',
+    key: 'username',
+    slots: { title: 'customTitle' },
+    scopedSlots: { customRender: 'username' },
+  },
+  {
+    title: '昵称',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: '邮箱',
+    dataIndex: 'email',
+    key: 'email',
+  },
+  {
+    title: '操作',
+    key: 'action',
+    scopedSlots: { customRender: 'action' },
+  },
+];
 export default {
     name: 'Admin',
     data(){
@@ -304,7 +338,7 @@ export default {
             },
             paper_author_list:[],
             paper_list:[],
-            user_all_list:[],
+            user_list:[],
             pagination: {
                 onChange: page => {
                     console.log(page);
@@ -312,6 +346,7 @@ export default {
                 pageSize: 10 ,
             },
             loading: false,
+            columns,
         }
     },
     methods:{
@@ -320,18 +355,18 @@ export default {
             this.sider_status = e.key;
 
             if(this.sider_status == 3) {    //如果是所有用户，则要将所有查询出所有用户
+                this.loading == true;
+                console.log(window.sessionStorage.getItem('token'));
                 this.$axios({
                     headers: {
                         'token': window.sessionStorage.getItem('token')
                     },
-                    method: 'get',
-                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
-                    params: {
-                        words: this.searchPaperValue,
-                        type: this.searchPaperType
-                    }
+                    method: 'post',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/user/all'
                 }).then((res)=>{
+                    this.loading == false;
                     console.log(res);
+                    this.user_list = res.data.data; 
                 })
             }
         },
@@ -377,8 +412,25 @@ export default {
                 console.log(this.paper_author_list);
             })
         },
+        deleteUser(user,index) {
+            console.log(user.username);
+            this.$axios({
+                headers: {
+                    'token': window.sessionStorage.getItem('token')
+                },
+                method: 'post',
+                url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/user/delete',
+                params: {
+                    username: user.username
+                }
+            }).then((res)=>{
+                this.loading == false;
+                console.log(res);
+                this.user_list.splice(index, 1); 
+            })
+        },
         searchUser() {
-
+            
         },
         paperLink(url) {
             console.log(url);
