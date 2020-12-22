@@ -33,16 +33,16 @@
         </div>
       </div>
       <a-layout>
-        <a-layout-sider width="50%" class="rank">
+        <a-layout-sider width="50%" class="rank" style="background-color: #2f3141;">
           <div class="rankName" style="
           height: 80px;
           text-align: left;
-          text-indent: 1em;
+          text-indent: 1.5em;
           line-height: 80px;
           color: #9feaf9;
           font-size: 30px;
           font-weight: 600;
-          background-color: black;
+          background-color: #2f3141;
           ">
             <a-icon style="margin-right: 12px;" type="file" />热门论文
           </div>
@@ -56,18 +56,18 @@
                 <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
                   v-else-if="paper.key == 3">3</div>
                 <div class="seq" style="background-color: gray; color: white;" v-else> {{paper.key}} </div>
-                <div class="paperTitle rankLink" @click="toPaper(paper.id)"> {{paper.title}} </div>
+                <div class="title rankLink" @click="toPaper(paper.id)"> {{paper.title}} </div>
               </div>
-              <div class="paperDescription">
+              <div class="description">
                 <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
                   {{author.name}};&nbsp; </span>
                 <span> {{paper.year}} </span>
               </div>
-              <div class="paperCitation"> 引用量：{{paper.n_citation}} </div>
+              <div class="citation"> 被引量：{{paper.n_citation}} </div>
             </div>
           </div>
         </a-layout-sider>
-        <a-layout-content style="background-color: black;" class="rank">
+        <a-layout-content style="background-color: #2f3141;" class="rank">
           <div class="rankName" style="
           height: 80px;
           text-align: left;
@@ -75,10 +75,31 @@
           color: #9feaf9;
           font-size: 30px;
           font-weight: 600;
-          text-indent: 1em;
-          background-color: black;
+          text-indent: 1.5em;
+          background-color: #2f3141;
           ">
             <a-icon style="margin-right: 12px;" type="team" />热门学者
+          </div>
+          <div v-for="author in rankData[1]" :key="author.key">
+            <div class="rank-content" v-if="author.key < 11">
+              <div style="height: 40px;">
+                <div class="seq" style="background-color: gold;font-size: 20px; color: red;" v-if="author.key == 1">1
+                </div>
+                <div class="seq" style="background-color: #c8d2e2;font-size: 20px; color: blue;"
+                  v-else-if="author.key == 2">2</div>
+                <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
+                  v-else-if="author.key == 3">3</div>
+                <div class="seq" style="background-color: gray; color: white;" v-else> {{author.key}} </div>
+                <div class="title rankLink" @click="toAuthor(author.id)"> {{author.name}} </div>
+              </div>
+              <div class="description">
+                <!-- <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
+                  {{author.name}};&nbsp; </span>
+                <span> {{paper.year}} </span> -->
+                <span>发表了{{author.n_pubs}}篇论文，被引用了{{author.n_citation}}次</span>
+              </div>
+              <div class="citation"> H指数：{{author.h_index}} </div>
+            </div>
           </div>
         </a-layout-content>
       </a-layout>
@@ -244,12 +265,6 @@
       this.getPaperRank();
     },
     methods: {
-      showInfo() {
-        console.log(this.$store.state.token)
-      },
-      handleChange(value) {
-        this.searchType = value;
-      },
       onSearch() {
         console.log(this.searchContent);
         if (this.searchContent != "") {
@@ -260,13 +275,14 @@
               searchContent: this.searchContent
             }
           });
-        }
+        } else
+          this.$router.push('/search');
       },
       searchKeyword(num) {
         this.$router.push({
           name: "search",
           query: {
-            searchType: 'keywords',
+            searchClassify: ['paper', 'keywords'],
             searchContent: this.keywords[num],
           }
         });
@@ -414,10 +430,10 @@
 
   .rank .rank-content {
     position: relative;
-    width: 100%;
-    margin: 5px auto;
+    width: 90%;
+    margin: 10px auto;
     background-color: #f3f3f2;
-    height: 80px;
+    height: 90px;
     text-align: left;
     border-radius: 15px;
   }
@@ -434,9 +450,9 @@
     margin-top: 10px;
   }
 
-  .rank .rank-content .paperTitle {
+  .rank .rank-content .title {
     display: inline-block;
-    width: 550px;
+    width: 500px;
     height: 40px;
     line-height: 40px;
     font-size: 25px;
@@ -454,8 +470,8 @@
     cursor: pointer;
   }
 
-  .rank .rank-content .paperDescription {
-    width: 550px;
+  .rank .rank-content .description {
+    width: 500px;
     height: 40px;
     line-height: 40px;
     margin-left: 60px;
@@ -465,7 +481,7 @@
     white-space: nowrap;
   }
 
-  .rank .rank-content .paperCitation {
+  .rank .rank-content .citation {
     position: absolute;
     right: 20px;
     top: 20px;
