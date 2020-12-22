@@ -8,8 +8,8 @@
         <div class="img"></div>
         <div class="search" style="margin-bottom:24px">
           <a-input-group compact>
-            <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify"
-              expand-trigger="hover" placeholder="选择" style="width: 120px;" size="large" />
+            <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify" change-on-select 
+              expand-trigger="hover"  style="width: 120px;" size="large" />
             <a-input v-on:keyup.enter.native="onSearch()" placeholder="搜索你想要的" style="width: 40%" size="large"
               v-model="searchContent" />
             <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
@@ -118,8 +118,12 @@
       return {
         searchType: "abstract",
         searchContent: "",
-        searchClassify: [],
-        options: [{
+        searchClassify: ['all'],
+        options: [
+          {
+            value: 'all',
+            label: '全部'
+          },{
             value: 'paper',
             label: '论文',
             children: [{
