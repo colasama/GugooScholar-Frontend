@@ -141,9 +141,6 @@ export default {
         return;
       }
 
-
-      this.isregister = true;
-      this.isActive = true;
       
       Vue.axios({
         method: "post",
