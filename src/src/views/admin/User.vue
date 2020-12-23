@@ -1,5 +1,5 @@
 <template>
-  <a-layout :style="layoutHeight"><!--这里有些微妙，理论上可以自适应来着-->
+  <a-layout style="minHeight:auto">
 
     <a-layout-content style="padding: 50px 100px 50px 100px" >
       <a-layout class="profileBox">
@@ -12,7 +12,7 @@
             mode="inline"
             :default-selected-keys="['1']"
             :default-open-keys="['1']"
-            style="height: 80%"
+            style="height: 90%"
             @click="handleClick"
           >
             <a-menu-item key="1">
@@ -24,7 +24,7 @@
             </a-menu-item>
           </a-menu>
         </a-layout-sider>
-
+        <a-spin tip="加载中..." style = "margin:auto" v-if="sider_status==0"></a-spin>
         <!-- 个人信息的页面 -->
         <a-layout-content :style="{ padding: '0px', minHeight: '280px', }" v-if="sider_status==1">
 
@@ -50,25 +50,21 @@
         <br>
         <br>
         <br>
-        <a-card class="infoCard">
+        <!-- <a-card class="infoCard">
           <div class="cardTitle">
             <span >头像</span>
             <div>
               <span style="font-size: 15px">上传头像来个性化您的信息</span>
             </div>
           </div>
-          <br>
-          <br>
-          <!-- <a-avatar :size="128" icon="user" :src="userInfo.avatarSrc"></a-avatar> -->
+          <a-avatar :size="128" icon="user" :src="userInfo.avatarSrc"></a-avatar>
           <a-upload
             style="margin:0 auto"
             name="image"
             :show-upload-list="false"
             action="http://182.92.57.178:5000/pictures/add"
-            :before-upload="beforeUpload"
-            @change="handleChange"
           >
-          <a-avatar :size="256" class="avatarStyle" v-if="userInfo.avatarSrc!=null" :src="userInfo_orig.avatarSrc" />
+          <a-avatar :size="128" class="avatarStyle" v-if="userInfo.avatarSrc!=null" :src="userInfo_orig.avatarSrc" />
 
           <avatar
             :size="128"
@@ -78,14 +74,14 @@
           ></avatar>
         </a-upload>
         </a-card>
-        <br>
+        <br> -->
         <a-card class="infoCard">
           <div class="cardTitle">
             <span >基本资料</span>
           </div>
           <br>
           <br>
-          <a-row style="margin-top:24px">
+          <a-row style="margin-top:0px">
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="idcard"/> 账号
@@ -93,22 +89,22 @@
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userId}}</span></a-col>
           </a-row>
-          <a-divider />
-          <a-row style="margin-top:24px; vertical-align:middle">
+          <a-divider class="divider"/>
+          <a-row style="margin-top:0px; vertical-align:middle">
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="user"/> 名字
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userName}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(2)"/></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(2)"/></a-col>
             <a-modal
               title="修改名字"
               :visible="modal_visible==2"
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="submit"
+              @ok="modifyUserInfo('name')"
               @cancel="handleCancel"
             >
             <a-form-model >
@@ -118,22 +114,22 @@
             </a-form-model>
             </a-modal>
           </a-row>
-          <a-divider />
-          <a-row style="margin-top:24px;" >
+          <!-- <a-divider class="divider"/> -->
+          <!-- <a-row style="margin-top:0px;" >
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="man"/> 性别
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userSex}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(3)"/></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(3)"/></a-col>
             <a-modal
               title="修改性别"
               :visible="modal_visible==3"
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="submit"
+              @ok="modifyUserInfo"
               @cancel="handleCancel"
             >
                   <a-form-item>
@@ -149,15 +145,15 @@
                   </a-form-item>
             </a-modal>
           </a-row>
-          <a-divider />
-          <a-row style="margin-top:24px">
+          <a-divider class="divider"/>
+          <a-row style="margin-top:0px">
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="gift" /> 生日
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userBirth}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(4)"/></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(4)"/></a-col>
             <a-modal
               title="修改生日"
               :visible="modal_visible==4"
@@ -171,7 +167,7 @@
               <a-calendar :fullscreen="false" style="margin:auto;"/>
             </div>
             </a-modal>
-          </a-row>
+          </a-row> -->
         </a-card>
 
         <br>
@@ -189,19 +185,58 @@
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userEmail}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(5)"/></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(5)"/></a-col>
             <a-modal
               title="修改邮箱"
               :visible="modal_visible==5"
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="submit"
+              @ok="changeMail"
+              @cancel="handleCancel"
+            >
+              <a-form-model v-if="mailsended==false">
+                <a-form-item>
+                  <a-icon type="mail" /> 邮箱:<a-input v-model="userInfo.userEmail" />
+                </a-form-item>
+                
+              </a-form-model>
+              <div v-if="mailsended==true">
+                  <a-result
+                    status="success"
+                    title="一封激活邮件已发送!"
+                    sub-title="请您查看邮箱，根据邮件中的步骤完成邮箱修改最后一步操作。"
+                  >
+                    <template #extra>
+                      <a-button key="buy" @click="handleCancel">
+                        完成
+                      </a-button>
+                    </template>
+                  </a-result>
+              </div>
+            </a-modal>
+          </a-row>
+          <a-divider class="divider"/>
+          <a-row style="margin-top:0px">
+            <a-col :span="8" class="profile_col_title">
+              <b>
+                <a-icon type="environment"/> 住址
+              </b>
+            </a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.location}}</span></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(7)"/></a-col>
+            <a-modal
+              title="修改住址"
+              :visible="modal_visible==7"
+              :confirm-loading="confirmLoading"
+              okText="提交"
+              cancelText="取消"
+              @ok="modifyUserInfo('location')"
               @cancel="handleCancel"
             >
             <a-form-model >
               <a-form-item>
-                <a-icon type="mail" /> 邮箱:<a-input v-model="userInfo.userEmail" />
+                <a-icon type="environment" /> 住址:<a-input v-model="userInfo.location" />
               </a-form-item>
             </a-form-model>
             </a-modal>
@@ -220,7 +255,7 @@
           <a-col :span="22">
             <div style=" work-break: keep-all; max-width:90%; margin:auto; text-align:left;">{{userInfo_orig.description}}</div>
           </a-col>
-          <a-col :span="2" class="profile_col_edit"><a-button shape="circle" icon="edit" @click="set_modal_visible(6)"/></a-col>
+          <a-col :span="2" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(6)"/></a-col>
           </a-row>
           <a-modal
               title="修改个人简介"
@@ -228,7 +263,7 @@
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="submit"
+              @ok="modifyUserInfo('description')"
               @cancel="handleCancel"
             >
             <a-input v-model="userInfo.description" type="textarea" :rows="5"/>
@@ -356,6 +391,10 @@
   vertical-align: middle;
 }
 
+.divider {
+  margin: 10px 0px 10px 0px;
+}
+
 
 </style>
 
@@ -364,73 +403,142 @@ export default {
   name: 'Home',
   data(){
     return{
-      sider_status: 1,
-      layoutHeight: {"min-height":"1120px"},
-      modal_visible: 0,
-      loading_visible: 0,
-      userInfo:{
-        userId:0,
-        userName:"",
-        password:"",
-        avatarSrc:"",
-        userBirth:"",
-        userSex:"",
-        userEmail:"",
-        description:"",
-      },
-      userInfo_orig:{
-        userId:0,
-        userName:"wzk",
-        password:"asdfasdfasfd",
-        avatarSrc:"https://i.loli.net/2020/11/26/ANYtuRaPrLJTDwy.jpg",
-        userBirth:"",
-        userSex:"男",
-        userEmail:"869693441@qq.com",
-        description:"阿斯顿发水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费asdfasfasdfasdf水电费水电费水电费",
-      }
-    }
+		sider_status: 1,
+		layoutHeight: {"min-height":"1120px"},
+		modal_visible: 0,
+		loading_visible: 0,
+    confirmLoading: false,
+    mailsended: false,
+		userInfo:{
+			userId:"",
+			userName:"",
+			password:"",
+			avatarSrc:"",
+			userBirth:"",
+			userSex:"",
+			userEmail:"",
+			description:"",
+			location:"",
+		},
+		userInfo_orig:{
+			userId:"",
+			userName:"",
+			password:"",
+			avatarSrc:"",
+			userBirth:"",
+			userSex:"",
+			userEmail:"",
+			description:"",
+			location:"",
+		}
+		}
   },
-  methods:{
-    handleClick(e) {
-      console.log("click", e);
-      this.sider_status = e.key;
-      if(this.sider_status == 2){
-        console.log("Height Changed.")
-        this.layoutHeight = {"min-height":"500px"};//使用手动方式改变layout高度
-      }
-      else{
-        this.layoutHeight = {"min-height":"1120px"};
-      }
-    },
-    set_modal_visible(e){
-      this.modal_visible=e;
-    },
-    submit(e) {
-      console.log(e);
-      this.$message.success('提交成功',1);
-      this.confirmLoading = true;
-      this.loading_visible = 1;
-      setTimeout(() => {
-        this.modal_visible = 0;
-        this.confirmLoading = false;
-        this.loading_visible = 0;
-      }, 1000);
-    },
-    handleCancel() {
-      console.log('Clicked cancel button');
-      this.userInfo.userName = "";
-      this.userInfo.password = "";
-      this.userInfo.avatarSrc = "";
-      this.userInfo.userBirth = "";
-      this.userInfo.userSex = "";
-      this.userInfo.userEmail = "";
-      this.userInfo.description = "";
+	methods:{
+		handleClick(e) {
+			console.log("click", e);
+			this.sider_status = e.key;
+		},
+		set_modal_visible(e){
+			this.modal_visible=e;
+		},
+		handleCancel() {
+			console.log('Clicked cancel button');
+			this.userInfo.userName = "";
+			this.userInfo.password = "";
+			this.userInfo.avatarSrc = "";
+			this.userInfo.userBirth = "";
+			this.userInfo.userSex = "";
+			this.userInfo.userEmail = "";
+			this.userInfo.description = "";
       this.modal_visible = 0;
-    },
-    modifyPwd() {
-      console.log("Modify pwd");
-    }
-  }
+      this.mailsended = false;
+		},
+		modifyPwd() {
+			console.log("Modify pwd");
+		},
+		modifyUserInfo(type) {
+			console.log(type);
+			console.log(window.sessionStorage.getItem('token'));
+			this.confirmLoading = true;
+			var paramsTemp = {};
+			if(type=='name'){
+				paramsTemp = {name: this.userInfo.userName}
+				console.log(this.userInfo.userName);
+			}
+			if(type=='location') {
+				paramsTemp = {location: this.userInfo.location}
+				console.log(this.userInfo.location);
+			}
+			if(type=='description') {
+				paramsTemp = {introduction: this.userInfo.description}
+				console.log(this.userInfo.description);
+			}
+			this.$axios({
+				headers: {
+                    'token': window.sessionStorage.getItem('token')
+                },
+				method: 'post',
+				url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/modifyinfo',
+				params: paramsTemp
+			}).then((res) => {
+				console.log(res);
+				this.userTemp = res.data.data
+				let user = res.data.data;
+				this.userInfo_orig.userId = user.username;
+				this.userInfo_orig.userName = user.name==null? "": user.name;
+				this.userInfo_orig.userEmail = user.email==null? "": user.email;
+				this.userInfo_orig.description = user.introduction==null? "":user.introduction;
+				this.userInfo_orig.location = user.location==null? "":user.location;
+				this.modal_visible = 0;
+				this.confirmLoading = false;
+				this.$message.success("更新成功",1);
+				return;
+			}).catch((error) => {
+				console.log(error);
+				this.modal_visible = 0;
+				this.confirmLoading = false;
+				this.$message.error("更新失败",1);
+			})
+		},
+		changeMail() {
+      console.log(this.userInfo_orig.userId);
+      console.log(this.userInfo.userEmail);
+			this.$axios({
+				method:'post',
+        url:'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/sendmail',
+        params: {
+          username: this.userInfo_orig.userId,
+          email: this.userInfo.userEmail,
+          url: "https://gugoo.fewings.xyz/#/auth",
+        }
+			}).then((res)=> {
+        this.mailsended = true;
+        console.log(res);
+      })
+		}
+	},
+	mounted() {
+		this.sider_status = 0;
+		let username=window.sessionStorage.getItem("username");
+		console.log('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+username+'info');
+		if(username==null) {
+			this.$message.error("用户名不存在,获取信息失败");
+		}
+		this.$axios({
+			method: 'get',
+			url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+username+'/info',
+		}).then((res) => {
+			console.log(res.data);
+			this.sider_status = 1;
+			this.loading = false;
+			let user = res.data.data;
+			this.userInfo_orig.userId = user.username;
+			this.userInfo_orig.userName = user.name==null? "": user.name;
+			this.userInfo_orig.userEmail = user.email==null? "": user.email;
+			this.userInfo_orig.description = user.introduction==null? "":user.introduction;
+			this.userInfo_orig.location = user.location==null? "":user.location;
+		})
+	}
 }
 
 

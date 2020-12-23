@@ -14,13 +14,11 @@
             </a-layout-header>
 
             <a-layout-content class="ant-layout-content">
-                <a-list size="small" bordered :grid="{ gutter: 16, column: 3 }" :pagination="pagination" :data-source="listData">
+                <a-list size="small" bordered :grid="{ gutter: 16, column: 1 }" :pagination="pagination" :data-source="listData">
                 <a-list-item slot="renderItem" slot-scope="item, index" :key="index">
-                    <a-list-item-meta :description="item.description">
-                    </a-list-item-meta>
-                    <a-card :hoverable="true" @click="Field(item.content)" size="default" class="hippoCard-middle" >
-                        {{item.content}}
-                    </a-card>
+                        <div @click="Field(item.content)" class="hippoCard-middle" style="font-size: 30px;">
+                            {{item.content}}
+                        </div>
                 </a-list-item>
             </a-list>
 
@@ -62,7 +60,7 @@
                     onChange: page => {
                         console.log(page);
                     },
-                    pageSize: 9,
+                    pageSize: 6,
                 },
                 actions: [
                     { type: 'star-o', text: '156' },
@@ -201,16 +199,49 @@
     .hippoCard-slot{
 
     }
+
+    .gutter-box {
+        margin: 48px 0;
+        height: 180px;
+        width: 1231px;
+        display:inline-block;
+        cursor: pointer;
+    }
+
+    .in-box {
+        margin: 48px 0;
+        height: 180px;
+        width: 1231px;
+        display:inline-block;
+        cursor: pointer;
+        opacity: 100%;
+        padding-left: 5%;
+        line-height: 100px;
+        font-family: Roboto-Bold,Roboto;
+        font-weight: 700;
+        transition: all .2s;
+        text-align: left;
+    }
+    .box-paper {
+        background: url("https://i.loli.net/2020/12/23/lLved2O1BmHZSx9.png");
+        display:inline-block;
+    }
     .hippoCard-middle {
-        background: rgb(47 50 65);
-        padding: 10%;
-        /*margin-top: 20px;*/
-        /*margin-bottom: 20px;*/
-        margin:auto;
-        font-size: 20px;
+        margin: 20px 0;
+        height: 180px;
+        width: 1231px;
+        display:inline-block;
+        cursor: pointer;
+        opacity: 100%;
+        padding-left: 5%;
+        line-height: 100px;
+        font-family: Roboto-Bold,Roboto;
+        font-weight: 700;
+        transition: all .2s;
+        text-align: left;
+        background: url("https://i.loli.net/2020/12/23/lLved2O1BmHZSx9.png");
+        font-size: 60px;
         color: #ffffff;
-        width: 400px;
-        height:200px;
     }
 
     .ant-col {

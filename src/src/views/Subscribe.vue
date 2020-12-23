@@ -238,7 +238,7 @@ export default {
           paper_id: id,
         },
       }).then(()=>{
-        this.subscribePaper[index].isSub = false;
+        this.subscribePaper.splice(index,1);
         this.$forceUpdate()
         this.$message.info("已取消收藏");
       }).catch((e)=>{
@@ -256,7 +256,7 @@ export default {
           author_id: id,
         },
       }).then(()=>{
-        this.subscribeScientist[index].isSub = false;
+        this.subscribeScientist.splice(index, 1);
         this.$forceUpdate()
         this.$message.info("已取消收藏");
       }).catch((e)=>{
