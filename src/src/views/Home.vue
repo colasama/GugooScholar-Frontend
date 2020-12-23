@@ -30,19 +30,33 @@
           <a-button type="primary" class="keyword" @click="searchKeyword(8)"><div class="test">{{keywords[8]}}</div></a-button>
           <a-button type="primary" class="keyword" @click="searchKeyword(9)"><div class="test">{{keywords[9]}}</div></a-button>
         </div>
+
+        <div class="sum">
+           <a-row type="flex" justify="center">
+            <a-col :span="4" class="suminfo">
+              <div style="font-size:24px;color:white;text-align:center">8,657,431</div>
+              <div style="font-size:18px;color:white;text-align:center">论文数量</div>
+            </a-col>
+            <a-col :span="4" class="suminfo">
+              <div style="font-size:24px;color:white;text-align:center">3,141,874</div>
+              <div style="font-size:18px;color:white;text-align:center">科研人员</div>
+            </a-col>
+            <a-col :span="4" class="suminfo">
+              <div style="font-size:24px;color:white;text-align:center">11,203</div>
+              <div style="font-size:18px;color:white;text-align:center">科研项目</div>
+            </a-col>
+            <a-col :span="4" class="suminfo">
+              <div style="font-size:24px;color:white;text-align:center">412,546,129</div>
+              <div style="font-size:18px;color:white;text-align:center">引用关系</div>
+            </a-col>
+          </a-row>
+        </div>
       </div>
-      <a-layout style="margin:0 320px 0 320px;min-width:calc(100% - 640px)">
+      
+      <div style="margin:0 320px 0 320px;min-width:calc(100% - 640px)">
         <a-row>
           <a-col :span="12" class="rank">
-            <div class="rankName" style="
-            height: 80px;
-            text-align: left;
-            text-indent: 1.5em;
-            line-height: 80px;
-            color: #9feaf9;
-            font-size: 30px;
-            font-weight: 600;
-            ">
+            <div class="rank-name">
               <a-icon style="margin-right: 12px;" type="file" />热门论文
             </div>
             <div v-for="paper in rankData[0]" :key="paper.key">
@@ -68,15 +82,7 @@
           </a-col>
           
           <a-col :span="12" class="rank">
-            <div class="rankName" style="
-            height: 80px;
-            text-align: left;
-            line-height: 80px;
-            color: #9feaf9;
-            font-size: 30px;
-            font-weight: 600;
-            text-indent: 1.5em;
-            ">
+            <div class="rank-name">
               <a-icon style="margin-right: 12px;" type="team" />热门学者
             </div>
             <div v-for="author in rankData[1]" :key="author.key">
@@ -102,7 +108,7 @@
             </div>
           </a-col>
         </a-row>
-      </a-layout>
+      </div>
     </a-layout-content>
   </a-layout>
 
@@ -380,7 +386,7 @@
     width: 100%;
     text-align: center;
     background-color: #2c2e3b;
-    padding-bottom: 50px;
+    padding-bottom: 36px;
   }
 
   .homemain .img {
@@ -422,18 +428,16 @@
     border-color: #3A585F;
   }
 
-  .a-layout>.a-layout>.rank {
-    width: 30%;
-    height: 100px;
+  .rank {
+    margin-top: 24px;
   }
 
   .rank .rank-name {
     height: 80px;
-    text-align: left;
+    text-align: center;
     line-height: 80px;
-    color: #9feaf9;
-    background-color: black;
-    font-size: 24px !important;
+    color: #4078c0;
+    font-size: 28px !important;
     font-weight: 400;
   }
 
@@ -441,10 +445,9 @@
     position: relative;
     width: 90%;
     margin: 10px auto;
-    background-color: #f3f3f2;
+    border: 2px solid #f3f3f2;
     height: 90px;
     text-align: left;
-    border-radius: 15px;
   }
 
   .rank .rank-content .seq {
@@ -503,5 +506,20 @@
     overflow:hidden; 
     text-overflow:ellipsis;
     font-family:Book Antiqua;
+  }
+
+  .suminfo{
+    width:150px;
+    height:64px;
+    background: rgb(73,96,106);
+    color:white;
+    margin:0 24px 0 24px;
+  }
+
+  .sum >>> .ant-row > div {
+    background: transparent;
+    margin:0 320px 0 320px;
+    min-width:calc(100% - 640px);
+    border: 0;
   }
 </style>

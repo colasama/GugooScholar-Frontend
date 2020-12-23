@@ -45,7 +45,7 @@
 
                 <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="currentData">
                     <a-list-item slot="renderItem" slot-scope="essayData, index" :key="index">
-                        <a-card class="hippoCard-middle" :hoverable="true" size="default" @click="toPaper(essayData.id)">
+                        <a-card class="hippoCard-middle" :hoverable="true" size="default" @click="toContent(essayData.id,Tri_choi)">
                             <div style="text-align:left" v-if="Tri_choi == '论文'">
                                     <p style="font-weight:700;">
                                         <a-icon type="book" />&#12288;
@@ -75,6 +75,25 @@
                                             {{essayData.description}}
                                         </template>
                                     </p>
+                            </div>
+                            <div style="text-align:left" v-if="Tri_choi == '专利'">
+                                <p style="font-weight:700;">
+                                    <a-icon type="reconciliation" />&#12288;
+                                    {{essayData.title}}
+                                </p>
+                                <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">{{essayData.start_year+'--'+essayData.end_year}}</p>
+                                <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">{{essayData.src}}</p>
+                                <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
+                                    <template v-for="(author,authorIndex) in essayData.author">
+                                        {{author.name}}
+                                        <template v-if="authorIndex < essayData.author.length-1">{{'，'}}</template>
+                                    </template>
+                                </p>
+                                <p style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
+                                    <template>
+                                        {{essayData.abstract}}
+                                    </template>
+                                </p>
                             </div>
                             <div style="text-align:left" v-if="Tri_choi == '科研人员'">
                                     <p style="font-weight:700;">
@@ -113,10 +132,11 @@
                 searchContent: "",
                 currentData:[],
                 essayData:[],
-                patentData:[],
+                fundData:[],
                 researcherData:[],
                 Paper:[],
                 Researcher:[],
+                Fund:[],
                 Tri_choi: "论文",
                 pagination: {
                     onChange: page => {
@@ -131,6 +151,7 @@
             console.log(this.fieldName);
             this.searchPaper(this.fieldName);
             //this.searchPatent();
+            this.searchFund(this.fieldName);
             this.searchAuthor(this.fieldName);
             //this.researcherTester();
             this.currentData = this.essayData;
@@ -195,6 +216,51 @@
                 }
             },
 
+            searchFund(fundName) {
+                this.$axios({
+                    method: 'get',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/fund/search',
+                    params: {
+                        words: fundName,
+                        type:"abstract",
+                        offset: 0
+                    }
+                }).then((res)=>{
+                    this.Fund = res.data.data
+                    this.Fundloding();
+                    console.log(this.Fund.length);
+                    console.log(this.Fund);
+                }).catch((e)=>{
+                    console.log(e);
+                });
+            },
+
+            Fundloding() {
+                for (let i = 0; i < this.Fund.length; i++) {
+                    const { id,title,author,abstract,start_year,end_year,src,type } =this.Fund[i];
+                    this.fundData.push({
+                        id,
+                        title,
+                        author,
+                        abstract,
+                        start_year,
+                        end_year,
+                        src,
+                        type,
+                    });
+                }
+                console.log('123123');
+                console.log(this.fundData);
+            },
+
+            toContent(id,type){
+              if(type=='论文'){
+                  this.toPaper(id);
+              }else if(type=='科研人员'){
+                  this.toScientist(id);
+              }
+            },
+
             toPaper(paperid) {
                 /*this.$router.push({
                     name: "Paper",
@@ -211,6 +277,13 @@
                 window.open(routeData.href, '_blank')
             },
 
+            toScientist(scientistId) {
+                let routeData = this.$router.resolve({
+                    path: '/scientist/show/'+scientistId,
+                })
+                window.open(routeData.href, '_blank')
+            },
+
             searchAuthor(authorName) {
                 var that=this;
                 this.$axios({
@@ -221,6 +294,7 @@
                 }).then((res)=>{
                     that.Researcher = res.data.data;
                     that.ResearcherLoading();
+                    console.log(that.Researcher);
                 }).catch((e)=>{
                     console.log(e);
                 });
@@ -305,7 +379,7 @@
                     this.currentData= this.essayData;
                     this.$forceUpdate();
                 }else if(this.Tri_choi=="专利"){
-                    this.currentData= this.patentData;
+                    this.currentData= this.fundData;
                     this.$forceUpdate();
                 }else if(this.Tri_choi=="科研人员"){
                     this.currentData= this.researcherData;
