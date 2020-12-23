@@ -2,7 +2,7 @@
   <div id="app" style="display:flex;flex-direction:column;">
     <AppHeader v-if="$store.state.showNav" style="min-width:100%"></AppHeader>
     <!--transition name="fade" mode="out-in"-->
-      <router-view style="text-align: center;flex:1;min-width:100%" :key="$route.path"/>
+      <router-view style="text-align: center;flex:1;min-width:100%" :key="$route.path" v-if="isRouterActive"/>
 
     <!--a-layout-footer>Footer</！a-layout-footer-->
     <!--/transition-->
@@ -21,11 +21,17 @@ html,body,#app{
 <script>
 import AppHeader from './components/Header.vue';
 export default {
+  provide(){
+    return{
+      reload: this.reload
+    }
+  },
   components:{
     AppHeader,
   },
   data() {
     return {
+      isRouterActive: true
     }
   },
   created: function(){
@@ -37,6 +43,12 @@ export default {
     }
   },
   methods: {
+    reload(){
+      this.isRouterActive = false;
+      this.$nextTick(function () {
+        this.isRouterActive = true;
+      })
+    }
   }
 };
 </script>
