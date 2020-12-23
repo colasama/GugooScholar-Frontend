@@ -3,7 +3,7 @@
         <a-layout id="components-layout-demo-basic" style="background:#2c2e3b">
             <!--            <a-layout-content v-if="isEmpty">当前暂无数据！</a-layout-content>-->
             <a-layout-content style="margin:48px 16% 0 16%">
-                <div class="topic" v-if="searchResult.title!=null">
+                <div class="topic" v-if="searchResult.title!=null" style="max-width:calc(100% - 32%)">
                     {{searchResult.title}}
                     <a-tooltip>
                         <template slot="title">点击收藏论文</template>
@@ -24,8 +24,11 @@
                 <div style="overflow:auto;max-width:calc(100% - 32%)" v-if="searchResult.authors!=null">
                     <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors"
                         :key="author.length">
-                        <author_avatar
-                                :name=author.name :color="colorList[i%6]"></author_avatar>
+
+                        <div class="avatar">
+                            <a-avatar :size="48" class="profile" :style="colorList[i%6]">{{author.name[0].toUpperCase()}}</a-avatar>
+                            <span class="au_name">{{author.name}}</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -184,12 +187,12 @@
 </template>
 
 <script>
-    import author_avatar from "../../components/author_avatar";
+    //import author_avatar from "../../components/author_avatar";
 
     export default {
         name: 'paper',
         components: {
-            author_avatar
+            //author_avatar
         },
         data() {
             return {
@@ -275,6 +278,7 @@
                     let origin = this.searchResult;
                     this.searchResult = response.data["data"];
                     console.log(response.data.length);
+                    console.log(this.searchResult.authors);
                     if (response.data.length === 0)
                         this.isEmpty = true;
                     else if (response.data["data"] !== origin)
@@ -402,11 +406,25 @@
 
     
   .keyword {
-    height: 24px;
-    max-width: 250px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-right: 5px;
-    margin-left: 5px;
+        height: 24px;
+        max-width: 250px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-right: 5px;
+        margin-left: 5px;
   }
+
+    .avatar {
+        display: block;
+        float: left;
+        margin: 10px 5px 24px 5px;
+    }
+
+    .avatar .au_name {
+        color:#f1f1f1;
+        margin: 0 5px 0 5px;
+    }
+    .avatar .profile {
+        font-size: 25px;
+    }
 </style>
