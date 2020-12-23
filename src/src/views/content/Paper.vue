@@ -85,10 +85,12 @@
                             </a-col>
                         </a-row>
                         <a-row>
-                            <a-col :span="6">
-                                <div style="font-size:16px" v-if="searchResult.pdf!=null" @click="open(searchResult.pdf)" ><b>原文链接 </b> {{searchResult.pdf}}</div>
+                            <a-col :span="12">
+                                <div style="font-size:16px" v-if="searchResult.pdf!=null" @click="open(searchResult.pdf)" ><b>原文链接 </b>
+                                    <span class="paper_url">{{searchResult.pdf}}</span>
+                                </div>
                             </a-col>
-                            <a-col :span="6">    
+                            <a-col :span="6">
                                 <div style="font-size:16px" v-if="searchResult.url!=null"><div><b>相关链接 </b></div>
                                     <span :href="searchResult.url" class="paper_url" v-for="(url,i) in searchResult.url.slice(0,2)"
                                         :key="url.length"
