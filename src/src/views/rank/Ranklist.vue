@@ -107,11 +107,11 @@ export default {
     text-align: left;
 }
 .box-paper {
-    background: url("../../assets/dark-background-papers.png");
+    background: url("https://i.loli.net/2020/12/23/lLved2O1BmHZSx9.png");
     display:inline-block;
 }
 .box-author {
-    background: url("../../assets/dark-background-experts.png");
+    background: url("https://i.loli.net/2020/12/23/cJpDYwLIxR53uzT.png");
     display:inline-block;
 }
 
