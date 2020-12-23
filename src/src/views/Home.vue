@@ -2,48 +2,46 @@
   <a-layout>
     <a-layout-header class="headtext">论文在做了，在做了</a-layout-header>
     <a-layout-header class="homemain"></a-layout-header>
-    <a-layout-content>
+    <a-layout-content style="background:#fff">
       <div class="homemain">
-        <div style="height:64px"></div>
         <div class="img"></div>
-        <div class="search" style="margin-bottom:24px">
+        <div class="search">
           <a-input-group compact>
             <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify" change-on-select 
               expand-trigger="hover"  style="width: 120px;" size="large" />
-            <a-input v-on:keyup.enter.native="onSearch()" placeholder="搜索你想要的" style="width: 40%" size="large"
+            <a-input v-on:keyup.enter.native="onSearch()" placeholder="搜索你想要的" style="width: 40%;" size="large"
               v-model="searchContent" />
             <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
             <a-button class="searchbutton" size="large" @click="onSearch">搜索
             </a-button>
           </a-input-group>
         </div>
-        <div class="keywords">
+        <div class="keywords" style="margin-bottom:48px">
           <a-icon type="fire"></a-icon>
           <b> 热点：</b> 
-          <a-button type="link" class="keyword" @click="searchKeyword(0)">{{keywords[0]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(1)">{{keywords[1]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(2)">{{keywords[2]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(3)">{{keywords[3]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(4)">{{keywords[4]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(5)">{{keywords[5]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(6)">{{keywords[6]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(7)">{{keywords[7]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(8)">{{keywords[8]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(9)">{{keywords[9]}}</a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(0)"><div class="test">{{keywords[0]}}</div></a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(1)"><div class="test">{{keywords[1]}}</div></a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(2)"><div class="test">{{keywords[2]}}</div></a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(3)"><div class="test">{{keywords[3]}}</div></a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(4)"><div class="test">{{keywords[4]}}</div></a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(5)"><div class="test">{{keywords[5]}}</div></a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(6)"><div class="test">{{keywords[6]}}</div></a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(7)"><div class="test">{{keywords[7]}}</div></a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(8)"><div class="test">{{keywords[8]}}</div></a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(9)"><div class="test">{{keywords[9]}}</div></a-button>
         </div>
       </div>
-      <a-layout style="margin:0 320px 0 320px">
+      
+      <div style="margin:0 320px 0 320px;min-width:calc(100% - 640px)">
         <a-row>
           <a-col :span="12" class="rank">
-            <div class="rankName" style="
+            <div class="rank-name" style="
             height: 80px;
             text-align: left;
             text-indent: 1.5em;
             line-height: 80px;
-            color: #9feaf9;
             font-size: 30px;
             font-weight: 600;
-            background-color: #2c2e3b;
             ">
               <a-icon style="margin-right: 12px;" type="file" />热门论文
             </div>
@@ -70,15 +68,13 @@
           </a-col>
           
           <a-col :span="12" class="rank">
-            <div class="rankName" style="
+            <div class="rank-name" style="
             height: 80px;
             text-align: left;
             line-height: 80px;
-            color: #9feaf9;
             font-size: 30px;
             font-weight: 600;
             text-indent: 1.5em;
-            background-color: #2c2e3b;
             ">
               <a-icon style="margin-right: 12px;" type="team" />热门学者
             </div>
@@ -105,7 +101,7 @@
             </div>
           </a-col>
         </a-row>
-      </a-layout>
+      </div>
     </a-layout-content>
   </a-layout>
 
@@ -368,9 +364,6 @@
     list-style: none;
   }
 
-.a-layout .a-layout-content{
-  background:red;
-}
   .headtext {
     width: 100%;
     height: 80px;
@@ -390,15 +383,15 @@
   }
 
   .homemain .img {
-    width: 250px;
-    height: 250px;
-    margin: 0 auto 40px;
-    background: url(../assets/logo_s.png) no-repeat;
+    width: 1080px;
+    height: 282px;
+    margin: 0 auto 48px;
+    background: url(../assets/banner_1080.png) no-repeat;
   }
 
   .homemain .search {
     width: 100%;
-    height: 50px;
+    height: 64px;
     margin: 0 auto;
   }
 
@@ -407,7 +400,12 @@
   }
 
   .keywords .keyword {
-    margin: 0 3px;
+    height:20px;
+    max-width:250px;
+    padding-left:10px;
+    padding-right:10px;
+    margin-right:5px;
+    margin-left:5px;
   }
 
   .searchbutton {
@@ -423,7 +421,7 @@
     border-color: #3A585F;
   }
 
-  .a-layout>.a-layout>.rank {
+  .rank {
     width: 30%;
     height: 100px;
   }
@@ -432,8 +430,7 @@
     height: 80px;
     text-align: left;
     line-height: 80px;
-    color: #9feaf9;
-    background-color: black;
+    color: #4078c0;
     font-size: 24px !important;
     font-weight: 400;
   }
@@ -495,5 +492,14 @@
     position: absolute;
     right: 20px;
     top: 20px;
+  }
+
+  .test{
+    white-space:nowrap; 
+    width:auto; 
+    max-width: 12em;
+    overflow:hidden; 
+    text-overflow:ellipsis;
+    font-family:Book Antiqua;
   }
 </style>
