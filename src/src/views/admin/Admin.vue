@@ -267,12 +267,12 @@
                                     <span slot="customTitle"><a-icon type="user"/> 用户名</span>
                                     <span slot="description" slot-scope="description">{{description}}</span>
                                     <span slot="status" slot-scope="status">{{status}}</span>
-                                    <span slot="action" slot-scope="report">
+                                    <span slot="action" slot-scope="report, key, index">
                                     <a-popconfirm
                                             title="通过此条申诉？通过后此用户将会与此作者绑定"
                                             ok-text="确认"
                                             cancel-text="取消"
-                                            @confirm="passReport(report)"
+                                            @confirm="passReport(report, index)"
                                             @cancel="cancel"
                                     >
                                         <a-button type="primary" shape="circle" icon="check"></a-button>
@@ -282,7 +282,7 @@
                                             title="拒绝此条申诉？"
                                             ok-text="确认"
                                             cancel-text="取消"
-                                            @confirm="denyReport(report)"
+                                            @confirm="denyReport(report, index)"
                                             @cancel="cancel"
                                     >
                                         <a-button type="danger" shape="circle" icon="close"></a-button>
@@ -293,7 +293,8 @@
                             <a-tab-pane key="2" tab="所有申诉" force-render>
                                 <a-table :columns="report_columns" :data-source="report_all_list">
                                     <a class="usernameLink" slot="username" slot-scope="username">{{ username }}</a>
-                                    <span slot="customTitle"><a-icon type="user"/> 用户名</span>
+                                    <span slot="customTitle"><a-icon type="user"/>用户名</span>
+                                    <span slot="author" slot-scope="authorname">{{authorname}}</span>
                                     <span slot="description" slot-scope="description">{{description}}</span>
                                     <span slot="status" slot-scope="status">{{status}}</span>
                                     <span slot="action">
@@ -445,6 +446,12 @@
             align: 'center',
         },
         {
+            title: '学者名',
+            dataIndex: 'authorname',
+            key: 'authorname',
+            align: 'center',
+        },
+        {
             title: '描述',
             dataIndex: 'description',
             key: 'description',
@@ -553,6 +560,7 @@
                         this.report_list = res.data.data;
                         for (var i = 0; i < this.report_list.length; i++) {
                             this.report_list[i]['status'] = this.report_list[i]['status'] == 0 ? "未处理" : "已处理";
+                            this.report_list[i]['authorname'] = this.report_list[i]['author']['name'];
                         }
                         console.log("Wuhu，Qifei");
                         console.log(this.report_list);
@@ -668,7 +676,8 @@
             goToUser() {
                 console.log(1);
             },
-            passReport(report) {
+            passReport(report, index) {
+                console.log(index)
                 console.log(report);
                 this.$axios({
                     headers: {
@@ -679,13 +688,21 @@
                     params: {
                         report_id: report.report_id,
                     }
-                }).then(() => {
-                    this.$message.success("已成功通过此申诉");
-                }).catch(() => {
-                    this.$message.error("操作失败，请重新登录");
+                }).then((res) => {
+                    this.report_list.splice(index, 1);
+                    if(res.data.success == true){
+                        this.$message.success("已成功通过此申诉");
+                    }
+                    else if(res.data.success == false){
+                        this.$message.error("此学者以取消绑定");
+                    }
+                }).catch((res) => {
+                    console.log(res)
+                    this.$message.error("操作失败");
                 })
             },
-            denyReport(report) {
+            denyReport(report, index) {
+                console.log(index);
                 console.log(report);
                 this.$axios({
                     headers: {
@@ -696,10 +713,18 @@
                     params: {
                         report_id: report.report_id,
                     }
-                }).then(() => {
-                    this.$message.success("已成功拒绝此申诉");
-                }).catch(() => {
-                    this.$message.error("操作失败，请重新登录");
+                }).then((res) => {
+                    console.log(res);
+                    this.report_list.splice(index, 1);
+                    if(res.data.success == true){
+                        this.$message.success("拒绝此申诉成功");
+                    }
+                    else if(res.data.success == false){
+                        this.$message.error("此学者以取消绑定");
+                    }
+                }).catch((res) => {
+                    console.log(res);
+                    this.$message.error("操作失败");
                 })
             },
             searchUser() {
