@@ -17,9 +17,7 @@
             </a-menu>
         </a-layout-sider>
         <a-layout>
-            <a-layout-content
-                    :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }"
-            >
+            <a-layout-content>
                 <div v-for="(article,index) in subscribePaper" :key="index">
                     <a-card class="result" v-if="current ==='paper'">
                         <div style="text-align:left">
@@ -154,9 +152,9 @@
                                             @click="cancelSubscribeFund(article.id,index)"/>
                                 </a-col>
                                 <a-col style="float:right;font-weight:700;">
+                                    {{'From '}}
                                     <template v-if="article.src">{{article.src}}</template>
                                     <template v-else>0</template>
-                                    {{' source'}}
                                 </a-col>
                             </a-row>
                             <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
@@ -421,9 +419,36 @@
         color: #1890ff;
     }
 
-    #components-layout-demo-custom-trigger .logo {
+#components-layout-demo-custom-trigger .logo {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px;
+}
+
+.ant-layout-sider {
+    position: relative;
+    min-width: 0;
+    background: #001529;
+    transition: all 0.2s;
+    margin: 48px 0px 48px 8%;
+    flex: 0 0 200px;
+    max-width: 200px;
+    min-width: 200px;
+    width: 200px;
+}
+
+.ant-layout-content {
+    flex: auto;
+    min-height: 0;
+    margin: 48px 8% 48px 0px;
+    /* padding: 24px; */
+    background: rgb(255, 255, 255);
+    min-height: 280px;
+    padding: 24px;
+}
+#components-layout-demo-custom-trigger .logo {
         height: 32px;
         background: rgba(255, 255, 255, 0.2);
         margin: 16px;
-    }
+}
 </style>

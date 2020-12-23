@@ -62,6 +62,12 @@ const routes = [
         component: () => import('../views/admin/User.vue')
     },
     {
+        path: '/changeMail',
+        name : 'changeMail',
+        meta: {title: '更改邮箱 -咕鸽学术'},
+        component: () => import('../views/ChangeMail.vue')
+    },
+    {
         path: '/admin/admin',
         name: 'adminAdmin',
         meta: {title: '管理员管理 - 咕鸽学术'},

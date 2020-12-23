@@ -98,7 +98,7 @@ export default {
 .in-box {
     height: 180px;
     width: 1231px;
-    opacity: 100%;
+    opacity: 1;
     padding-left: 5%;
     line-height: 100px;
     font-family: Roboto-Bold,Roboto;
