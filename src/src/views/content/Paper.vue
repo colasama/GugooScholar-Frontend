@@ -4,10 +4,10 @@
             <!--            <a-layout-content v-if="isEmpty">当前暂无数据！</a-layout-content>-->
             <a-layout-content style="margin:48px 16% 0 16%">
                 <div class="topic" v-if="searchResult.title!=null" style="max-width:calc(100% - 32%)">
-                    {{searchResult.title}}
+                    
                     <a-tooltip>
                         <template slot="title">点击收藏论文</template>
-                        <a-icon type="star" v-show="!subscribe" @click="subscribePaper(true)"/>
+                        <a-icon type="star" style="color:orange" v-show="!subscribe" @click="subscribePaper(true)"/>
                     </a-tooltip>
                     <a-tooltip>
                         <template slot="title">点击取消收藏</template>
@@ -20,6 +20,7 @@
                             <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"/>
                         </a-popconfirm>
                     </a-tooltip>
+                    {{searchResult.title}}
                 </div>
                 <div style="overflow:auto;max-width:calc(100% - 32%)" v-if="searchResult.authors!=null">
                     <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors"

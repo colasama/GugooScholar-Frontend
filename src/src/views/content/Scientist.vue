@@ -9,9 +9,9 @@
                         </div>
                         <div class="authorInfo">
                             <div class="authorName">
-                                {{authorName}}
+                                
                                 <a-tooltip>
-                                    <template slot="title">点击收藏专家</template>
+                                    <template slot="title">点击收藏科研人员</template>
                                     <a-icon type="star" v-show="!subscribe" @click="subscribeAuthor(true)"/>
                                 </a-tooltip>
                                 <a-tooltip>
@@ -25,6 +25,7 @@
                                         <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"/>
                                     </a-popconfirm>
                                 </a-tooltip>
+                                {{authorName}}
                             </div>
                             <div class="authorDes">
                                 所属机构：{{university}}
@@ -75,7 +76,7 @@
                         </div>
                     </div>
                     <div class="rightContent">
-                        <div style="font-size: 18px; color: #BDD9E1;">专家关系网络</div>
+                        <div style="font-size: 18px; color: #BDD9E1;">科研人员关系网络</div>
                         <a-spin v-if="isCompleted == false" size="large" style="margin-top:100px" tip="加载关系网络中"/>
                         <div class="expertWeb" >
                             <VueApexCharts  v-if="isCompleted" ref="chart" type="polarArea" :options="chartOptions" :series="series">
@@ -202,10 +203,10 @@
                             </a-card>
                         </div>
                         <div style="margin-bottom: 5px" v-show="this.pubList.length === 5 && isPaper">
-                            <a style="color: #74b1be" @click="toSearch">查看该专家更多论文</a>
+                            <a style="color: #74b1be" @click="toSearch">查看更多论文</a>
                         </div>
                         <div style="margin-bottom: 5px" v-show="this.fundList.length === 5 && !isPaper">
-                            <a style="color: #74b1be" @click="toSearch">查看该专家更多科研项目</a>
+                            <a style="color: #74b1be" @click="toSearch">查看更多科研项目</a>
                         </div>
                     </a-col>
                     <a-col :span="1"/>
@@ -347,7 +348,7 @@
                             });
                             window.open(routeUrl.href, '_blank');
                         } else {
-                            _this.$message.error('暂无该专家数据');
+                            _this.$message.error('暂无科研人员的数据');
                         }
 
                     },
@@ -358,7 +359,7 @@
                             });
                             window.open(routeUrl.href, '_blank');
                         } else {
-                            _this.$message.error('暂无该专家数据');
+                            _this.$message.error('暂无科研人员的数据');
                         }
 
                     }
