@@ -31,15 +31,15 @@
           <a-button type="primary" class="keyword" @click="searchKeyword(9)"><div class="test">{{keywords[9]}}</div></a-button>
         </div>
       </div>
-      <a-layout style="margin:0 320px 0 320px;min-width:calc(100% - 640px)">
+      
+      <div style="margin:0 320px 0 320px;min-width:calc(100% - 640px)">
         <a-row>
           <a-col :span="12" class="rank">
-            <div class="rankName" style="
+            <div class="rank-name" style="
             height: 80px;
             text-align: left;
             text-indent: 1.5em;
             line-height: 80px;
-            color: #9feaf9;
             font-size: 30px;
             font-weight: 600;
             ">
@@ -68,11 +68,10 @@
           </a-col>
           
           <a-col :span="12" class="rank">
-            <div class="rankName" style="
+            <div class="rank-name" style="
             height: 80px;
             text-align: left;
             line-height: 80px;
-            color: #9feaf9;
             font-size: 30px;
             font-weight: 600;
             text-indent: 1.5em;
@@ -102,7 +101,7 @@
             </div>
           </a-col>
         </a-row>
-      </a-layout>
+      </div>
     </a-layout-content>
   </a-layout>
 
@@ -422,7 +421,7 @@
     border-color: #3A585F;
   }
 
-  .a-layout>.a-layout>.rank {
+  .rank {
     width: 30%;
     height: 100px;
   }
@@ -431,8 +430,7 @@
     height: 80px;
     text-align: left;
     line-height: 80px;
-    color: #9feaf9;
-    background-color: black;
+    color: #4078c0;
     font-size: 24px !important;
     font-weight: 400;
   }
