@@ -512,7 +512,7 @@
             toSearch() {
                 let routeUrl = this.$router.resolve({
                     path: "/search",
-                    //query: {id:96}
+                    query: {id:this.$route.params.id}
                 });
                 window.open(routeUrl.href, '_blank');
             },
@@ -563,7 +563,6 @@
                         '\n认领人联系方式：' + this.bindUser.email +
                         '\n认领人简介：' + this.bindUser.introduction,
                     style: 'white-space: pre-wrap',
-                    icon: <a-icon type="smile" style="color: #108ee9" />,
                     duration: 0,
                     btn: h => {
                         return h( 'a-button', {
@@ -572,6 +571,7 @@
                         },
                         'ok', );
                     }, key,onClose: close,
+                    icon: <a-icon type="smile" style="color: #108ee9" />,
                 });
             }
         }
