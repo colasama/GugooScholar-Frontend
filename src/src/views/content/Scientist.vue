@@ -10,9 +10,11 @@
                         <div class="authorInfo">
                             <div class="authorName">
                                 {{authorName}}
+                                <a-icon type="star" v-show="!subscribe" @click="subscribeAuthor"/>
+                                <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe" @click="subscribe=false"/>
                             </div>
                             <div class="authorDes">
-                                {{career}}<br/>{{university}}<br/>{{universityChineseName}}
+                                所属机构：{{university}}
                             </div>
                         </div>
                         <div class="authorAchieve">
@@ -159,24 +161,12 @@
                             <a style="color: #74b1be" @click="toSearch">查看该专家更多科研项目</a>
                         </div>
                     </div>
-                    <!--<div class="leftDownContent">
-                        <a-card class="leftCard" :head-style="headStyle" :body-style="bodyStyle">
-                            <div style="text-align: left; margin: 0" slot="title"><a-icon type="audit"/> 工作经历</div>
-                            <div class="author-contents">{{experience}}</div>
-                        </a-card>
-                        <a-card class="leftCard" style="margin-top: 20px">
-                            <div style="text-align: left" slot="title"><a-icon type="trophy" theme="filled"/> 教育背景</div>
-                            <div class="author-contents">{{education}}</div>
-                        </a-card>
-                        <a-card class="leftCard" style="margin-top: 20px">
-                            <div style="text-align: left" slot="title"><a-icon type="edit" theme="filled"/> 个人简介</div>
-                            <div class="author-contents">{{selfIntro}}</div>
-                        </a-card>
-                    </div>-->
                     <div class="rightDownContent">
-                        <a-card title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
-                            <a-card-grid class="cardGrid" v-for="s in 12" :key="s">
-                                <div><a-avatar shape="square" :size="64" icon="user" /><br>{{s}}</div>
+                        <a-spin v-if="!isAvatarCompleted" size="large"
+                                style="margin-left: 50px" tip="加载相关作者中"/>
+                        <a-card v-if="isAvatarCompleted" title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
+                            <a-card-grid class="cardGrid" @click="toAuthor(author.id)" v-for="(author, index) in otherAuthors" :key="index">
+                                <div><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/><br>{{author.name}}</div>
                             </a-card-grid>
                         </a-card>
                     </div>
@@ -200,34 +190,26 @@
         },
         data() {
             return {
+                subscribe: false,
                 relations: [],
                 sites: [0,0,0,0,0,0,0,0,0,0,0,0],
                 isCompleted: false,
                 isPaperCompleted: false,
+                isAvatarCompleted: false,
                 headStyle: {},
                 bodyStyle: {"margin-left": "0"},
-                bodyAuthorStyle: {"padding": "0 5px 50px 5px"},
-                avatarSrc: "https://i.loli.net/2020/11/26/ANYtuRaPrLJTDwy.jpg",
+                bodyAuthorStyle: {"padding": "0 5px 20px 5px"},
+                avatarSrc: "",
                 authorChineseName: "原仓周",
                 authorName: "CangZhou Yuan",
-                career: "教授 北京航空航天大学通信与信息系统博士",
-                university: "School of Software,Beijing University of Aeronautics and Astronautics,Beijing ,China",
-                universityChineseName: "北京航空航天大学软件学院",
+                university: "暂无所属机构",
                 hIndex: 0,
                 nPubs: 0,
                 nCitation: 0,
                 isPaper: true,
-                experience: "主持参与航天预研、“核高基”重大专项、“863”高科技重大专项、航空基金等国家级课题近20项" +
-                    "，主持多项大型软件研发项目。近几年在国内外期刊会议上发表SCI/EI学术论文40余篇，" +
-                    "授权国家专利12项，2项已转让。",
-                education: "暂无",
-                selfIntro: "现任软件学院一级实践指导主任。 具有较丰富的教学经验和丰富的软件管理和开发经验。" +
-                    "在 MIS 、 GIS 、网络通信和信息安全方面有多年的开发实践经验，主持和参与过包括部级项目" +
-                    "在内的多项课题和工程的设计和开发。已发表科研论文十余篇，其中多篇被 EI 收录。是" +
-                    "软件学院“操作系统”、“ Linux 内核分析”、“软件工程专业实践一级”等课程的主讲教师。" +
-                    "主要研究领域为嵌入式系统开发、信息安全、软件开发技术等。著有多种专业论文。",
                 pubList: [],
                 fundList: [],
+                otherAuthors: [],
                 series: [0],
                 chartOptions: {
                     chart: {
@@ -253,13 +235,6 @@
                     fill: {
                         opacity: 0.9
                     },
-                    /*theme: {
-                        monochrome: {
-                            enabled: true,
-                            shadeTo: 'light',
-                            shadeIntensity: 0.6
-                        }
-                    },*/
                     yaxis: {
                         show: false
                     },
@@ -268,9 +243,8 @@
         },
         created() {
             let scientistId = this.$route.params.id;
-            console.log(scientistId);
+            //console.log(scientistId);
             //let scientistId = '53f4474cdabfaee43ec81506';
-            this.university = '暂无所属机构';
             this.getAuthor(scientistId);
             this.getRelations(scientistId);
             this.getPubs(scientistId);
@@ -310,7 +284,10 @@
                     legendClick: function(chartContext, seriesIndex, config) {
                         console.log(config);
                         if (_this.relations[seriesIndex].id) {
-                            _this.$router.push("/scientist/show/"+ _this.relations[seriesIndex].id);
+                            let routeUrl = _this.$router.resolve({
+                                path: "/scientist/show/" + _this.relations[seriesIndex].id,
+                            });
+                            window.open(routeUrl.href, '_blank');
                         } else {
                             _this.$message.error('暂无该专家数据');
                         }
@@ -318,7 +295,10 @@
                     },
                     dataPointSelection: function(event, chartContext, config) {
                         if (_this.relations[config.dataPointIndex].id) {
-                            _this.$router.push("/scientist/show/" + _this.relations[config.dataPointIndex].id);
+                            let routeUrl = _this.$router.resolve({
+                                path: "/scientist/show/" + _this.relations[config.dataPointIndex].id,
+                            });
+                            window.open(routeUrl.href, '_blank');
                         } else {
                             _this.$message.error('暂无该专家数据');
                         }
@@ -336,6 +316,7 @@
                     this.nPubs = data.n_pubs;
                     this.hIndex = data.h_index;
                     this.nCitation = data.n_citation;
+                    this.avatarSrc = data.avatar;
                 }).catch(()=>{
                     this.$message.error('invalid access');
                     this.$router.push('/');
@@ -350,9 +331,8 @@
                     this.initEvent();
                     this.isCompleted = true;
                     //this.$refs.chart.render();
-                    this.$refs.chart.updateSeries(this.series);
-                    this.$refs.chart.updateOptions(this.chartOptions);
-
+                    //this.$refs.chart.updateSeries(this.series);
+                    //this.$refs.chart.updateOptions(this.chartOptions);
                 }).catch((e)=>{
                     console.log(e);
                 });
@@ -365,6 +345,7 @@
                     this.isPaperCompleted = true;
                     if (pubs.length >= 5) this.pubList = pubs.slice(0, 5);
                     else this.pubList = pubs;
+                    this.getOtherAuthor();
                 }).catch((e)=>{
                     console.log(e);
                 });
@@ -376,10 +357,49 @@
                     let funds = res.data.data;
                     if (funds.length >= 5) this.fundList = funds.slice(0, 5);
                     else this.fundList = funds;
-                    console.log(this.fundList);
+                    //console.log(this.fundList);
                 }).catch((e)=>{
                     console.log(e);
                 });
+            },
+            getOtherAuthor() {
+                let map = new Map();
+                let cnt = 0;
+                this.pubList.forEach((pub) => {
+                    for (let author of pub.authors) {
+                        if (!(author instanceof Object)) break;
+                        if (author.id && author.id !== this.$route.params.id) {
+                            map.set(author.name, author);
+                        }
+                    }
+                });
+                console.log(map);
+                let max = 8;
+                console.log(map.size)
+                if (map.size < 9) max = map.size - 1;
+                for (let key of map.keys()) {
+                    if (cnt >= 9) break;
+                    this.otherAuthors[cnt] = map.get(key);
+                    console.log(max);
+                    this.getAvatar(map.get(key).id, cnt, cnt===max);
+                    cnt++;
+                }
+            },
+            getAvatar(scientistId, index, final) {
+                this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/avatar',
+                    {headers: {token: 'xx'}}
+                ).then((res)=>{
+                    this.otherAuthors[index].avatar = res.data.data.avatar;
+                    if (final) {
+                        setTimeout(()=>{this.isAvatarCompleted = true;}, 100);
+                    }
+                }).catch((e)=>{
+                    console.log(e);
+                });
+            },
+            subscribeAuthor() {
+                this.subscribe = true;
+                this.$message.success("收藏成功");
             },
             toPaper(paperid) {
                 let routeData = this.$router.resolve({
@@ -394,6 +414,12 @@
                 let routeUrl = this.$router.resolve({
                     path: "/search",
                     //query: {id:96}
+                });
+                window.open(routeUrl.href, '_blank');
+            },
+            toAuthor(authorId) {
+                let routeUrl = this.$router.resolve({
+                    path: "/scientist/show/" + authorId,
                 });
                 window.open(routeUrl.href, '_blank');
             }
@@ -477,7 +503,7 @@
     /*background-color: #F2F2F2;*/
 }
 .cardGrid {
-    width: 25%;
+    width: 33%;
     padding: 20px 5px 0 8px;
     box-shadow: 0 0 0 white;
 }

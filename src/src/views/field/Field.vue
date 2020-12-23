@@ -219,10 +219,8 @@
                     params: {
                     }
                 }).then((res)=>{
-                    that.Reasearcher = res.data.data;
+                    that.Researcher = res.data.data;
                     that.ResearcherLoading();
-                    console.log(that.Researcher.length);
-                    console.log(that.Researcher);
                 }).catch((e)=>{
                     console.log(e);
                 });
