@@ -14,7 +14,7 @@
             </a-layout-header>
 
             <a-layout-content class="ant-layout-content">
-                <a-list size="small" bordered :grid="{ gutter: 16, column: 1 }" :pagination="pagination" :data-source="listData">
+                <a-list size="small" style="margin: 0 96px 0 96px" :grid="{ gutter: 16, column: 1 }" :pagination="pagination" :data-source="listData">
                 <a-list-item slot="renderItem" slot-scope="item, index" :key="index">
                         <div @click="Field(item.content)" class="hippoCard-middle" style="font-size: 30px;">
                             {{item.content}}
@@ -227,7 +227,7 @@
         display:inline-block;
     }
     .hippoCard-middle {
-        margin: 20px 0;
+        margin: 16px 0 0 0;
         height: 180px;
         width: 1231px;
         display:inline-block;
