@@ -32,7 +32,7 @@ Vue.use(VueRouter)
   {
     path: '/subscribe',
     name: '404',
-    meta: {title:'消息 - 咕鸽学术'},
+    meta: {title:'收藏 - 咕鸽学术'},
     component:() => import('../views/Subscribe.vue')
   },
   {

@@ -2,90 +2,112 @@
     <div class="w">
         <a-layout id="components-layout-demo-basic" style="background:#2c2e3b">
             <!--            <a-layout-content v-if="isEmpty">当前暂无数据！</a-layout-content>-->
-            <a-layout-content style="margin-left:16%;margin-top:48px">
+            <a-layout-content style="margin:48px 16% 0 16%">
                 <div class="topic" v-if="searchResult.title!=null">
                     {{searchResult.title}}
-                    <a-icon type="star" v-show="!subscribe" @click="subscribePaper"/>
-                    <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"
-                            @click="subscribe=false"/>
+                    <a-tooltip>
+                        <template slot="title">点击收藏论文</template>
+                        <a-icon type="star" v-show="!subscribe" @click="subscribePaper(true)"/>
+                    </a-tooltip>
+                    <a-tooltip>
+                        <template slot="title">点击取消收藏</template>
+                        <a-popconfirm
+                                title="您确定要取消收藏吗?"
+                                ok-text="是的"
+                                cancel-text="我再想想"
+                                @confirm="subscribePaper(false)"
+                        >
+                            <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"/>
+                        </a-popconfirm>
+                    </a-tooltip>
                 </div>
-                <div>
+                <div style="overflow:auto" v-if="searchResult.authors!=null">
                     <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors"
                         :key="author.length">
-                        <author_avatar 
+                        <author_avatar
                                 :name=author.name :color="colorList[i%6]"></author_avatar>
                     </div>
                 </div>
-                <a-divider/>
 
-                <div style="text-align:left">
-                    <span style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1"
-                          v-if="searchResult.keywords!=null">关键词：</span>
-                    <a-list :grid="{ gutter: 16, column: 4 }" :data-source="searchResult.keywords">
-                        <a-list-item slot="renderItem" title="关键词" slot-scope="item">
-                        <a-button type="primary" class="keyword">
-                            <div class="test">{{item}}</div>
-                        </a-button>
-                        </a-list-item>
-                    </a-list>
-                    <template v-if="index3 < searchResult.keywords.length-1 && index3 < 2">{{'&nbsp;'}}</template>
+                <div style="overflow:auto;min-width:calc(100% - 32%);text-align:left">
+                    <span style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1;"
+                          v-if="searchResult.keywords!=null">关键词 </span>
+
+                    <template v-for="(keyword,index3) in searchResult.keywords">
+                        <span style="display: inline-block; height:25px;max-width:250px;padding-left:10px;padding-right:10px; margin:5px 5px; background-color: #74b1be;border-radius: 4px;
+                        " :key="index3">
+                            <div class="test" style="text-overflow:ellipsis;">
+                                {{keyword}}
+                            </div>
+                        </span>
+                        <template v-if="index3 < searchResult.keywords.length-1 && index3 < 2">{{'&nbsp;'}}</template>
+                    </template>
                 </div>
 
-                <div style="text-align:left;color:white;padding-top: 10px; max-width: 60%; margin:0 auto 20px;border-radius: 10px;">
+                <div style="overflow:auto;max-width:calc(100% - 32%);text-align:left;color:white;padding-top: 10px; border-radius: 10px;margin-bottom:48px">
                     <template>
-                        <a-descriptions title="详细信息" layout="vertical">
-                            <a-descriptions-item label="DOI" v-if="searchResult.doi!=null">
-                                <span class="abstract-text">{{searchResult.doi}}</span>
-                            </a-descriptions-item>
-                            <a-descriptions-item label="被引量" v-if="searchResult.n_citation!=null">
-                                <span class="abstract-text">{{searchResult.n_citation}}</span>
-                            </a-descriptions-item>
-                            <a-descriptions-item label="原文链接" v-if="searchResult.pdf!=null">
-                                <span :href="searchResult.pdf" class="paper_url"
-                                      @click=open(searchResult.pdf)>{{searchResult.pdf}}</span>
-                            </a-descriptions-item>
-                            <a-descriptions-item label="相关链接" v-if="searchResult.url!=null">
-                                <span :href="searchResult.url" class="paper_url" v-for="(url,i) in searchResult.url"
-                                      :key="url.length"
-                                      @click=open(searchResult.url[i])>
-                                    <span v-if="i===searchResult.url.length-1"
-                                          class="paper_url">{{searchResult.url[i]}}</span>
-                                    <span v-if="i!==searchResult.url.length-1" class="paper_url">{{searchResult.url[i]}}<br></span>
-                                </span>
-                            </a-descriptions-item>
-                            <a-descriptions-item class="details" label="所属期刊" v-if="searchResult.venue!=null">
-                                <span class="abstract-text">{{searchResult.venue.name}}</span>
-                            </a-descriptions-item>
-                            <a-descriptions-item label="出版年份" v-if="searchResult.year!=null">
-                                <span class="abstract-text">{{searchResult.year}}</span>
-                            </a-descriptions-item>
-                            <a-descriptions-item label="所属卷数" v-if="searchResult.volume!=null&&searchResult.volume!=''">
-                                <span class="abstract-text">{{searchResult.volume}}</span>
-                            </a-descriptions-item>
-                            <a-descriptions-item label="所属期数" v-if="searchResult.issue!=null&&searchResult.issue!=''">
-                                <span class="abstract-text">{{searchResult.issue}}</span>
-                            </a-descriptions-item>
-                            <a-descriptions-item class="details" label="页码"
-                                                 v-if='searchResult.page_end!=""&&searchResult.page_start!=""'>
-                                <span class="abstract-text">{{searchResult.page_start}}-{{searchResult.page_end}}</span>
-                            </a-descriptions-item>
-                            <a-descriptions-item class="details" label="ISSN" v-if="searchResult.issn!=null">
-                                <span class="abstract-text">{{searchResult.issn}}</span>
-                            </a-descriptions-item>
-                            <a-descriptions-item class="details" label="ISBN" v-if="searchResult.isbn!=null">
-                                <span class="abstract-text">{{searchResult.isbn}}</span>
-                            </a-descriptions-item>
-                            <a-descriptions-item class="details" label="语言" v-if="searchResult.lang!=null">
-                                <span class="abstract-text">{{searchResult.lang}}</span>
-                            </a-descriptions-item>
-                        </a-descriptions>
+                        <span style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1"
+                          v-if="searchResult.keywords!=null">详细信息</span>
+                          <a-row style="margin-top:12px">
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if="searchResult.venue.name!=null"><b>所属期刊 </b> {{searchResult.venue.name}}</div>
+                                </a-col>
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if="searchResult.issue!=null"><b>所属期数 </b> {{searchResult.issue}}</div>
+                                </a-col>
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if="searchResult.volume!=null"> <b>所属卷数 </b> {{searchResult.volume}}</div>
+                            </a-col>
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if="searchResult.n_citation!=null"><b>被引用量 </b> {{searchResult.n_citation}}</div>
+                                </a-col>
+                        </a-row>
+                        <a-row>
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if="searchResult.lang!=null"><b>语言 </b> {{searchResult.lang}}</div>
+                            </a-col>
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if="searchResult.year!=null"><b>出版年份 </b> {{searchResult.year}}</div>
+                            </a-col>
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if="searchResult.doi!=null"><b>DOI </b> {{searchResult.doi}}</div>
+                            </a-col>
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if='searchResult.page_end!=""&&searchResult.page_start!=""'>
+                                    <b>页码 </b>
+                                    {{searchResult.page_start}}-{{searchResult.page_end}}
+                                </div>
+                            </a-col>
+                        </a-row>
+                        <a-row>
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if="searchResult.pdf!=null" @click="open(searchResult.pdf)" ><b>原文链接 </b> {{searchResult.pdf}}</div>
+                            </a-col>
+                            <a-col :span="6">    
+                                <div style="font-size:16px" v-if="searchResult.url!=null"><div><b>相关链接 </b></div>
+                                    <span :href="searchResult.url" class="paper_url" v-for="(url,i) in searchResult.url"
+                                        :key="url.length"
+                                        @click=open(searchResult.url[i])>
+                                        <span v-if="i===searchResult.url.length-1"
+                                            class="paper_url">{{searchResult.url[i]}}</span>
+                                        <span v-if="i!==searchResult.url.length-1" class="paper_url">{{searchResult.url[i]}}<br></span>
+                                    </span>
+                                </div>
+                            </a-col>
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if="searchResult.issn!=null"><b>ISSN </b> {{searchResult.issn}}</div>
+                            </a-col>
+                            <a-col :span="6">
+                                <div style="font-size:16px" v-if="searchResult.isbn!=null"><b>ISBN </b> {{searchResult.isbn}}</div>
+                            </a-col>
+                          </a-row>
                     </template>
                 </div>
             </a-layout-content>
         </a-layout>
-        <div style="margin: 50px 0">
+        <div style="margin:48px 16% 0 16%">
             <div style="border-radius: 5px;text-align:left">
-                <a-card style="width: 80%;margin:auto;">
+                <a-card style="margin:auto;">
                 <h1>摘要</h1>
                     <p style="font-size: 16px;">{{searchResult.abstract}}</p>
                 </a-card>
@@ -175,53 +197,38 @@
                 colorList: ["background: #87d068", "background: #c9bcd6", "background:#edadad",
                     "background:#108ee9", "background: #ff5500", "background: #2db7f5"],
                 loading: true,
-                // {"title": "马保国现象：一个传统武术江湖人士的人设特征解读",
-                //     "abstract": "文章运用社会学理论对马保国现象进行分析。马保国是自媒体时代的新型江湖艺人,他将自我塑造成沉浮于市井的文、武兼备之人,并对自身武" +
-                // "学品格做出深度描述,打造出全知全能的武师形象。除了对自己的尚武业绩做出虚饰性宣" +
-                // "传,还试图占据道德制高点,对古典完人形象进行再度扮演。他塑造的海归武师角色,更像是走向社会表演的非尚武类武者," +
-                // "他并未真正走进中国传统武术,也并非武术高手,却竭力在各种场合扮演武林高人的角色," +
-                // "最终在实战中败下阵来。\"马保国事件\"可能促进中国传统武术的内部革新,成为重新审视中国传统武术的契机。",
-                //         "authors":["耗子尾汁","嘤国大理石","九十多公斤","八十多公斤","赖佐田","马老师","婷婷"],
-                //     "keywords": ["马保国现象","江湖艺人","社会角色","传统武术","现代体育"],
-                //     "doi": "10.15877/j.cnki.nsic.20201009.004",
-                //     "n_citation": "233",
-                //     "pdf": "https://kns.cnki.net/KXReader/Detail?PlatForm=kdoc&TIMESTAMP=637421042801093750&DBCODE=CJFD&TABLEName=CJFDAUTO&FileName=LJTB202005012&RESULT=1&SIGN=KImDfrMgmsANqw9qdedfVFPO2FM%3d",
-                //     "url": "",
-                //     "venue": "体育学研究",
-                //     "year": "2020",
-                //     "volume": "",
-                //     "issue": "05",
-                //     "page_start": "87",
-                //     "page_end": "94",
-                //     "issn": " ",
-                //     "isbn": " ",
-                //     "lang": "中文"},
-                //     content: '',
-                //     isEmpty: false,
             }
         },
         methods: {
-            subscribePaper() {
-                let id = this.searchResult.id;
-                this.axios({
-                    headers: {
-                        token:'xx',
-                    },
-                    method: 'post',
-                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/paper',
-                    data: {
-                        'paper_id': id
-                    }
-                }).then(
-                    (res) => {
-                        let result = res.data;
-                        console.log(result);
-                        this.subscribe = true;
+            subscribePaper(bool) {
+                let token = window.sessionStorage.getItem('token');
+                if (!token) {
+                    this.$message.info("请先登录再使用该功能");
+                    return;
+                }
+                if (bool) {
+                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/paper',
+                        {paper_id: this.$route.query.id},
+                        {headers: {token: token}}
+                    ).then((res) => {
+                        console.log(res);
                         this.$message.success("收藏成功");
-                    }
-                ).catch((e) => {
-                    console.log(e);
-                });
+                        this.subscribe = true;
+                    }).catch((e) => {
+                        console.log(e);
+                    });
+                } else {
+                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/cancel/paper',
+                        {paper_id: this.$route.query.id},
+                        {headers: {token: token}}
+                    ).then((res) => {
+                        console.log(res);
+                        this.$message.info("已取消收藏");
+                        this.subscribe = false;
+                    }).catch((e) => {
+                        console.log(e);
+                    });
+                }
             },
             handleClick() {
                 this.loading = !this.loading;
@@ -266,6 +273,7 @@
                     console.log(response.data["data"]);
                     let origin = this.searchResult;
                     this.searchResult = response.data["data"];
+                    console.log(response.data.length);
                     if (response.data.length === 0)
                         this.isEmpty = true;
                     else if (response.data["data"] !== origin)

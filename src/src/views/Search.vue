@@ -161,8 +161,8 @@
           </a-card>
         </div>
         <div v-if=" this.isSearched==true && this.isSearchCompleted==true ">
-          <a-result v-if="((searchClassify1[0]=='all' && isCurrentNone()) || (searchClassify1[0]=='author'&& this.authorResult.length==0) 
-        || (searchClassify1[0]=='paper' && this.paperResult.length==0) || (searchClassify1[0]=='fund' && this.fundResult.length==0))"  sub-title="Sorry, the result you searched is empty." status="404" >
+          <a-result v-if="((searchClassify1[0]=='all' && isCurrentNone()) || (current[0]=='user'&& this.authorResult.length==0) 
+        || (current[0]=='paper' && this.paperResult.length==0) || (current[0]=='fund' && this.fundResult.length==0))"  sub-title="Sorry, the result you searched is empty." status="404" >
             <template #icon>
               <a-icon type="smile" theme="twoTone" />
             </template>
@@ -176,8 +176,8 @@
         <template>
           <a-button  v-if="this.searchOffset>0 || (this.searchClassify1[0]=='all' && !isCurrentOffsetZero()) " @click="onChange(false)" size="large" type="primary" style="float:left;padding-left:20px;padding-right:20px;margin-right:30px"><a-icon type="left" /></a-button>
           <a-button disabled v-else size="large" type="primary" style="float:left;padding-left:20px;padding-right:20px;margin-right:30px"><a-icon type="left" /></a-button>
-          <a-button v-if="!isCurrentNone() || (searchClassify1[0]=='author'&& this.authorResult.length==20) 
-          || (searchClassify1[0]=='paper' && this.paperResult.length==20) || (searchClassify1[0]=='fund' && this.fundResult.length==20)" @click="onChange(true)" size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
+          <a-button v-if="!isCurrentNone() || (current[0]=='user'&& this.authorResult.length==20) 
+          || (current[0]=='paper' && this.paperResult.length==20) || (current[0]=='fund' && this.fundResult.length==20)" @click="onChange(true)" size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
           <a-button disabled v-else size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
         </template>
       </div>
@@ -271,10 +271,25 @@
       }
       if (this.$route.query.searchContent)
         this.searchContent = this.$route.query.searchContent;
+      if(this.$route.query.id)
+      {
+        this.searchContent="作者";
+        this.getPubs(this.$route.query.id);
+      }
       if(this.$route.query.searchClassify && this.$route.query.searchContent)
         this.search();
     },
     methods: {
+      getPubs(scientistId) {
+        this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/paper',
+            {headers: {token: 'xx'}}
+        ).then((res)=>{
+            this.paperResult = res.data.data;
+            this.isSearchCompleted= true;
+        }).catch((e)=>{
+            console.log(e);
+        });
+      },
       getCurrentOffset(){
         if(this.searchClassify1[0]=='all'){
           if(this.current[0]=='paper')
@@ -340,8 +355,10 @@
       },
       changeTag (tag) {
         if(this.searchClassify1[0]=='all')
+        {
           this.current=[tag];
-        console.log(this.current);
+          console.log(this.current);
+        }
       },
       ruleTitle(title_str) {
         let titleString = title_str;
@@ -363,9 +380,7 @@
         this.searchType = value;
       },
       test() {
-        
-        console.log(this.isCurrentNone());
-        console.log(this.authorResult);
+        console.log(this.current);
       },
       toPaper(paperid) {
         let routeData = this.$router.resolve({
