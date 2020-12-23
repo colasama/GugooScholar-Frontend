@@ -89,9 +89,10 @@
                         <a-menu-item key="2" @click="isPaper=false"><a-icon type="appstore" />科研项目</a-menu-item>
                     </a-menu>
 
-                    <div class="leftDownContent">
+                    <div class="sum"><a-row type="flex" justify="center">
+                    <a-col :span="12" style="text-align:center">
                         <a-spin v-if="isPaperCompleted===false" size="large"
-                                style="margin-top:100px;margin-left: 400px" tip="加载论文中"/>
+                                style="margin-top:200px;margin-left: 400px" tip="加载论文中"/>
                         <div  v-if="isPaperCompleted">
                             <div style="margin-left: 450px" v-show="this.pubList.length === 0 && isPaper">
                                 <a style="color: #74b1be">暂无相关论文</a>
@@ -205,16 +206,20 @@
                         <div style="margin-bottom: 5px" v-show="this.fundList.length === 5 && !isPaper">
                             <a style="color: #74b1be" @click="toSearch">查看该专家更多科研项目</a>
                         </div>
-                    </div>
-                    <div class="rightDownContent">
+                    </a-col>
+                    <a-col :span="1"/>
+                    <a-col :span="4">
+                    <div >
                         <a-spin v-if="!isAvatarCompleted" size="large"
                                 style="margin-left: 50px" tip="加载相关作者图片中"/>
                         <a-card v-if="isAvatarCompleted" title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
                             <a-card-grid class="cardGrid" @click="toAuthor(author.id)" v-for="(author, index) in otherAuthors" :key="index">
-                                <div><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/><br>{{author.name}}</div>
+                                <div style="cursor:pointer"><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/><br>{{author.name}}</div>
                             </a-card-grid>
                         </a-card>
                     </div>
+                    </a-col>
+                    </a-row></div> 
                     <div style="clear:both;height:0;font-size: 1px;line-height: 0px;"></div>
                 </div>
             </a-layout-content>
@@ -687,4 +692,11 @@
     -webkit-line-clamp: 4;
     overflow: hidden;
 }
+
+  .sum>>>.ant-row>div {
+    background: transparent;
+    margin: 0 16% 0 16%;
+    min-width: calc(100% - 32%);
+    border: 0;
+  }
 </style>

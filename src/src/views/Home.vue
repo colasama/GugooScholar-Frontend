@@ -73,7 +73,7 @@
         </div>
       </div>
 
-      <div style="margin:0 300px 0 250px;min-width:calc(100% - 640px)">
+      <div style="margin:0 300px 0 250px;min-width:calc(100% - 32%)">
         <a-row>
           <a-col :span="14" class="rank">
             <div class="rank-name">
@@ -546,7 +546,7 @@
   .sum>>>.ant-row>div {
     background: transparent;
     margin: 0 16% 0 16%;
-    min-width: calc(100% - 640px);
+    min-width: calc(100% - 32%);
     border: 0;
   }
 </style>
