@@ -154,9 +154,9 @@
                                             @click="cancelSubscribeFund(article.id,index)"/>
                                 </a-col>
                                 <a-col style="float:right;font-weight:700;">
+                                    {{'From '}}
                                     <template v-if="article.src">{{article.src}}</template>
                                     <template v-else>0</template>
-                                    {{' source'}}
                                 </a-col>
                             </a-row>
                             <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
