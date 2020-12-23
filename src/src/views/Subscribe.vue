@@ -19,6 +19,11 @@
                     </a-menu>
                 </a-layout-sider>
                 <a-layout-content>
+                    <nothing-found title="收藏空空如也..." 
+                        v-if="current === 'paper' && subscribePaper == false ||
+                              current === 'scientist' && subscribeScientist == false ||
+                              current === 'fund' && subscribeFund == false"/>
+
                     <div v-for="(article,index) in subscribePaper" :key="index">
                         <a-card class="result" v-if="current ==='paper'">
                             <div style="text-align:left">
@@ -195,8 +200,13 @@
     </a-layout>
 </template>
 <script>
+    import NothingFound from '../components/nothing_found'
+
     export default {
         inject: ['reload'],
+        components: {
+            'nothing-found': NothingFound
+        },
         data() {
             return {
                 collapsed: false,
