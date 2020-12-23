@@ -10,11 +10,53 @@
                         <div class="authorInfo">
                             <div class="authorName">
                                 {{authorName}}
-                                <a-icon type="star" v-show="!subscribe" @click="subscribeAuthor"/>
-                                <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe" @click="subscribe=false"/>
+                                <a-tooltip>
+                                    <template slot="title">收藏专家</template>
+                                <a-icon type="star" v-show="!subscribe" @click="subscribeAuthor(true)"/>
+                                <a-popconfirm
+                                        title="您确定要取消收藏吗?"
+                                        ok-text="是的"
+                                        cancel-text="我再想想"
+                                        @confirm="subscribeAuthor(false)"
+                                >
+                                <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"/>
+                                </a-popconfirm>
+                                </a-tooltip>
                             </div>
                             <div class="authorDes">
                                 所属机构：{{university}}
+                            </div>
+                            <div style="margin-top: 35px">
+                                <a-button v-show="!isClaim" type="primary" @click="claimPortal">
+                                    <a-icon type="user" />认领门户
+                                </a-button>
+                                <a-button style="border-color:#999999;background-color: #999999" v-show="isClaim"
+                                          type="primary" @click="claimPortal" disabled>
+                                    <a-icon type="user" />已认领
+                                </a-button>
+                                <span v-show="isClaim" style="margin-left: 8px">
+                                    <a-tooltip>
+                                        <template slot="title">
+                                          查看认领人信息
+                                        </template>
+                                        <a-button style="font-size: 20px" type="link" @click="openNotification">
+                                            <a-icon type="zoom-in" />
+                                        </a-button>
+                                    </a-tooltip>
+                                </span>
+
+                                <a-modal title="认领门户简单验证" :visible="modalVisible0"
+                                         @ok="handleOk(0)" @cancel="modalVisible0=false">
+                                    <p>您的名字是{{authorName}}吗？</p>
+                                </a-modal>
+                                <a-modal title="认领门户简单验证" :visible="modalVisible1"
+                                         @ok="handleOk(1)" @cancel="modalVisible1=false">
+                                    <p>{{ pubList[0].title }}, 该论文是您曾发表的论文吗？</p>
+                                </a-modal>
+                                <a-modal title="认领门户简单验证" :visible="modalVisible2" :confirm-loading="confirmLoading"
+                                         @ok="handleOk(2)" @cancel="modalVisible2=false">
+                                    <p>您曾和{{ otherAuthors[0].name }}合作过吗？</p>
+                                </a-modal>
                             </div>
                         </div>
                         <div class="authorAchieve">
@@ -163,7 +205,7 @@
                     </div>
                     <div class="rightDownContent">
                         <a-spin v-if="!isAvatarCompleted" size="large"
-                                style="margin-left: 50px" tip="加载相关作者中"/>
+                                style="margin-left: 50px" tip="加载相关作者图片中"/>
                         <a-card v-if="isAvatarCompleted" title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
                             <a-card-grid class="cardGrid" @click="toAuthor(author.id)" v-for="(author, index) in otherAuthors" :key="index">
                                 <div><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/><br>{{author.name}}</div>
@@ -190,6 +232,13 @@
         },
         data() {
             return {
+                confirmLoading: false,
+                modalVisible0: false,
+                modalVisible1: false,
+                modalVisible2: false,
+                ModalText: 'xxx',
+                isClaim: false,
+                bindUser: {},
                 subscribe: false,
                 relations: [],
                 sites: [0,0,0,0,0,0,0,0,0,0,0,0],
@@ -200,16 +249,15 @@
                 bodyStyle: {"margin-left": "0"},
                 bodyAuthorStyle: {"padding": "0 5px 20px 5px"},
                 avatarSrc: "",
-                authorChineseName: "原仓周",
-                authorName: "CangZhou Yuan",
+                authorName: "",
                 university: "暂无所属机构",
                 hIndex: 0,
                 nPubs: 0,
                 nCitation: 0,
                 isPaper: true,
-                pubList: [],
+                pubList: [{title: ''}],
                 fundList: [],
-                otherAuthors: [],
+                otherAuthors: [{avatar: ''}],
                 series: [0],
                 chartOptions: {
                     chart: {
@@ -308,15 +356,18 @@
             },
             getAuthor(scientistId) {
                 this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId,
-                    {headers: {token: 'xx'}}
                 ).then((res)=>{
-                    let data = res.data.data
+                    let data = res.data.data;
                     this.authorName = data.name;
                     if (data.orgs != null) this.university = data.orgs;
                     this.nPubs = data.n_pubs;
                     this.hIndex = data.h_index;
                     this.nCitation = data.n_citation;
                     this.avatarSrc = data.avatar;
+                    if (data.bind_user) {
+                        this.isClaim = true;
+                        this.getUserInfo(data.bind_user);
+                    }
                 }).catch(()=>{
                     this.$message.error('invalid access');
                     this.$router.push('/');
@@ -362,6 +413,15 @@
                     console.log(e);
                 });
             },
+            getUserInfo(username) {
+                this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+ username + '/info'
+                ).then((res)=>{
+                    this.bindUser = res.data.data;
+                    console.log(res.data.data)
+                }).catch((e)=>{
+                    console.log(e);
+                });
+            },
             getOtherAuthor() {
                 let map = new Map();
                 let cnt = 0;
@@ -373,33 +433,52 @@
                         }
                     }
                 });
-                console.log(map);
-                let max = 8;
-                console.log(map.size)
-                if (map.size < 9) max = map.size - 1;
                 for (let key of map.keys()) {
                     if (cnt >= 9) break;
                     this.otherAuthors[cnt] = map.get(key);
-                    console.log(max);
-                    this.getAvatar(map.get(key).id, cnt, cnt===max);
                     cnt++;
                 }
-            },
-            getAvatar(scientistId, index, final) {
-                this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/avatar',
-                    {headers: {token: 'xx'}}
-                ).then((res)=>{
-                    this.otherAuthors[index].avatar = res.data.data.avatar;
-                    if (final) {
-                        setTimeout(()=>{this.isAvatarCompleted = true;}, 100);
-                    }
-                }).catch((e)=>{
-                    console.log(e);
+                cnt = 0;
+                this.otherAuthors.forEach((author)=>{
+                    this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + author.id + '/avatar'
+                    ).then((res)=>{
+                        author.avatar = res.data.data.avatar;
+                        cnt++;
+                        if (cnt === this.otherAuthors.length) this.isAvatarCompleted=true;
+                    }).catch((e)=>{
+                        console.log(e);
+                    });
                 });
             },
-            subscribeAuthor() {
-                this.subscribe = true;
-                this.$message.success("收藏成功");
+            subscribeAuthor(bool) {
+                let token = window.sessionStorage.getItem('token');
+                if (!token) {
+                    this.$message.info("请先登录再使用该功能");
+                    return;
+                }
+                if (bool) {
+                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/author',
+                        {author_id: this.$route.params.id},
+                        {headers: {token: token}}
+                    ).then((res) => {
+                        console.log(res);
+                        this.$message.success("收藏成功");
+                        this.subscribe = true;
+                    }).catch((e) => {
+                        console.log(e);
+                    });
+                } else {
+                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/cancel/author',
+                        {author_id: this.$route.params.id},
+                        {headers: {token: token}}
+                    ).then((res) => {
+                        console.log(res);
+                        this.$message.info("已取消收藏");
+                        this.subscribe = false;
+                    }).catch((e) => {
+                        console.log(e);
+                    });
+                }
             },
             toPaper(paperid) {
                 let routeData = this.$router.resolve({
@@ -422,6 +501,57 @@
                     path: "/scientist/show/" + authorId,
                 });
                 window.open(routeUrl.href, '_blank');
+            },
+            handleOk(num){
+                if (num === 0) {
+                    this.modalVisible0 = false;
+                    this.modalVisible1 = true;
+                } else if (num === 1) {
+                    this.modalVisible1 = false;
+                    this.modalVisible2 = true;
+                } else {
+                    this.confirmLoading = true;
+                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/bindauthor',
+                        {author_id: this.$route.params.id},
+                        {headers: {token: window.sessionStorage.getItem('token')}}
+                    ).then(() => {
+                        this.confirmLoading = false;
+                        this.modalVisible2 = false;
+                        this.$message.success("认领成功");
+                    }).catch((e) => {
+                        console.log(e);
+                        this.$message.error("认领失败");
+                    });
+                }
+            },
+            claimPortal() {
+                let token = window.sessionStorage.getItem('token');
+                if (!token) {
+                    this.$message.info("请先登录再使用该功能");
+                    return;
+                }
+                this.modalVisible0 = true;
+            },
+            openNotification() {
+                const key = `open${Date.now()}`;
+                this.$notification.open({
+                    message: '认领人信息',
+                    description: '认领人：' + this.bindUser.username +
+                        '\n认领人真实姓名：' + this.bindUser.name +
+                        '\n认领人位置：'+ this.bindUser.location +
+                        '\n认领人联系方式：' + this.bindUser.email +
+                        '\n认领人简介：' + this.bindUser.introduction,
+                    style: 'white-space: pre-wrap',
+                    icon: <a-icon type="smile" style="color: #108ee9" />,
+                    duration: 0,
+                    btn: h => {
+                        return h( 'a-button', {
+                            props: {type: 'primary',size: 'small',},
+                            on: {click: () => this.$notification.close(key),},
+                        },
+                        'ok', );
+                    }, key,onClose: close,
+                });
             }
         }
     }
@@ -504,7 +634,7 @@
 }
 .cardGrid {
     width: 33%;
-    padding: 20px 5px 0 8px;
+    padding: 20px 5px 0 15px;
     box-shadow: 0 0 0 white;
 }
 .otherAuthor {
