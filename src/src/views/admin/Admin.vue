@@ -111,7 +111,7 @@
                                 </p>
                         </div>
                         <div slot="extra" style="width:200px;  margin-top:25px">
-                            <a-button type="danger" icon="delete" shape="circle" :size="size"></a-button>
+                            <a-button type="danger" icon="delete" shape="circle" ></a-button>
                         </div>
                     <!-- </a-card> -->
                     
@@ -264,13 +264,54 @@
                 </div>
                 </a-breadcrumb>
 
-                <div style="margin:30px">
+                <div style="margin:20px">
                     <a-tabs default-active-key="1" @change="callback">
                         <a-tab-pane key="1" tab="未处理申诉">
-                            
+                            <a-table :columns="report_columns" :data-source="report_list">
+                                <a class="usernameLink" slot="username" slot-scope="username">{{ username }}</a>
+                                <span slot="customTitle"><a-icon type="user" /> 用户名</span>
+                                <span slot="description" slot-scope="description">{{description}}</span>
+                                <span slot="status" slot-scope="status">{{status}}</span>
+                                <span slot="action" slot-scope="">
+                                    <a-popconfirm
+                                        title="通过此条申诉？"
+                                        ok-text="确认"
+                                        cancel-text="取消"
+                                        @confirm="confirm"
+                                        @cancel="passReport"
+                                    >
+                                        <a-button type="primary" shape="circle" icon="check"></a-button>
+                                    </a-popconfirm>
+                                    <a-divider type="vertical"/>
+                                    <a-popconfirm
+                                        title="拒绝此条申诉？"
+                                        ok-text="确认"
+                                        cancel-text="取消"
+                                        @confirm="confirm"
+                                        @cancel="passReport"
+                                    >
+                                        <a-button type="danger" shape="circle" icon="close"></a-button>
+                                    </a-popconfirm>
+                                </span>
+                            </a-table>
                         </a-tab-pane>
                         <a-tab-pane key="2" tab="所有申诉" force-render>
-                            
+                            <a-table :columns="report_columns" :data-source="report_all_list">
+                                <a class="usernameLink" slot="username" slot-scope="username">{{ username }}</a>
+                                <span slot="customTitle"><a-icon type="user" /> 用户名</span>
+                                <span slot="description" slot-scope="description">{{description}}</span>
+                                <span slot="status" slot-scope="status">{{status}}</span>
+                                <span slot="action" slot-scope="user, key, index,">
+                                    <a-popconfirm
+                                        title="是否确定删除此用户,身份信息或许会全部丢失"
+                                        ok-text="Yes"
+                                        cancel-text="No"
+                                        @confirm="deleteUser(user,index)"
+                                    >
+                                    <a-button type="danger" shape="circle" icon="delete"></a-button>
+                                    </a-popconfirm>
+                                </span>
+                            </a-table>
                         </a-tab-pane>
                     </a-tabs>
                 </div>
@@ -357,6 +398,23 @@
     text-align: left;
 }
 
+.ant-tabs-bar {
+    margin: 0 0 0px 0;
+    border-bottom: 1px solid #e8e8e8;
+    outline: none;
+    transition: padding 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.ant-divider-vertical {
+    position: relative;
+    top: -0.06em;
+    display: inline-block;
+    width: 1px;
+    height: 2em;
+    margin: 0 8px;
+    vertical-align: middle;
+}
+
 </style>
 
 <script>
@@ -379,6 +437,33 @@ const columns = [
     dataIndex: 'email',
     key: 'email',
     align:'center',
+  },
+  {
+    title: '操作',
+    key: 'action',
+    scopedSlots: { customRender: 'action' },
+    align:'center',
+  },
+];
+const report_columns = [
+  {
+    dataIndex: 'username',
+    key: 'username',
+    slots: { title: 'customTitle' },
+    scopedSlots: { customRender: 'username' },
+    align:'center',
+  },
+  {
+    title: '描述',
+    dataIndex: 'description',
+    key: 'description',
+    align:'center',
+  },
+  {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      align:'center',
   },
   {
     title: '操作',
@@ -415,6 +500,8 @@ export default {
             paper_author_list:[],
             paper_list:[],
             user_list:[],
+            report_list:[],
+            report_all_list:[],
             pagination: {
                 onChange: page => {
                     console.log(page);
@@ -423,6 +510,9 @@ export default {
             },
             loading: false,
             columns,
+            report_columns,
+            not_handled:'未处理',
+            handled:'已处理'
         }
     },
     methods:{
@@ -452,11 +542,36 @@ export default {
                         'token': window.sessionStorage.getItem('token')
                     },
                     method: 'post',
-                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/user/all'
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/report/unhandle'
                 }).then((res)=>{
                     this.loading == false;
+                    this.report_list = res.data.data;
+                    for(var i =0;i <this.report_list.length;i++) {
+                        this.report_list[i]['status']=this.report_list[i]['status']==0? "未处理":"已处理";
+                    }
                     console.log(res);
-                })
+                }).catch((error)=>{
+                    console.log(error);
+                    this.$message.erorr("加载失败");
+                });
+                console.log("wzkwzk");
+                this.$axios({
+                    headers: {
+                        'token': window.sessionStorage.getItem('token')
+                    },
+                    method: 'post',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/report/all'
+                }).then((res)=>{
+                    this.loading == false;
+                    this.report_all_list = res.data.data;
+                    for(var i =0;i <this.report_all_list.length;i++) {
+                        this.report_all_list[i]['status']=this.report_all_list[i]['status']==0? "未处理":"已处理";
+                    }
+                    console.log(res);
+                }).catch((error)=>{
+                    console.log(error);
+                    this.$message.erorr("加载失败");
+                });
             }
         },
         searchPaper() {

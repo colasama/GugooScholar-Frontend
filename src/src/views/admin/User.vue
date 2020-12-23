@@ -477,8 +477,8 @@ export default {
 				this.confirmLoading = false;
 				this.$message.success("更新成功",1);
 				return;
-			}).error((res) => {
-				console.log(res);
+			}).catch((error) => {
+				console.log(error);
 				this.modal_visible = 0;
 				this.confirmLoading = false;
 				this.$message.error("更新失败",1);
