@@ -11,16 +11,19 @@
                             <div class="authorName">
                                 {{authorName}}
                                 <a-tooltip>
-                                    <template slot="title">收藏专家</template>
-                                <a-icon type="star" v-show="!subscribe" @click="subscribeAuthor(true)"/>
-                                <a-popconfirm
-                                        title="您确定要取消收藏吗?"
-                                        ok-text="是的"
-                                        cancel-text="我再想想"
-                                        @confirm="subscribeAuthor(false)"
-                                >
-                                <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"/>
-                                </a-popconfirm>
+                                    <template slot="title">点击收藏专家</template>
+                                    <a-icon type="star" v-show="!subscribe" @click="subscribeAuthor(true)"/>
+                                </a-tooltip>
+                                <a-tooltip>
+                                    <template slot="title">点击取消收藏</template>
+                                    <a-popconfirm
+                                            title="您确定要取消收藏吗?"
+                                            ok-text="是的"
+                                            cancel-text="我再想想"
+                                            @confirm="subscribeAuthor(false)"
+                                    >
+                                        <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"/>
+                                    </a-popconfirm>
                                 </a-tooltip>
                             </div>
                             <div class="authorDes">
@@ -294,6 +297,7 @@
             //console.log(scientistId);
             //let scientistId = '53f4474cdabfaee43ec81506';
             this.getAuthor(scientistId);
+            this.getIsSubscribe(scientistId);
             this.getRelations(scientistId);
             this.getPubs(scientistId);
             this.getFunds(scientistId);
@@ -422,6 +426,16 @@
                     console.log(e);
                 });
             },
+            getIsSubscribe(scientistId) {
+                this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/author/subscribed',
+                    {author_id: scientistId},
+                    {headers: {token: window.sessionStorage.getItem('token')}}
+                ).then((res) => {
+                   this.subscribe = res.data.success;
+                }).catch((e) => {
+                    console.log(e);
+                });
+            },
             getOtherAuthor() {
                 let map = new Map();
                 let cnt = 0;
@@ -517,6 +531,7 @@
                     ).then(() => {
                         this.confirmLoading = false;
                         this.modalVisible2 = false;
+                        this.isClaim = true;
                         this.$message.success("认领成功");
                     }).catch((e) => {
                         console.log(e);
