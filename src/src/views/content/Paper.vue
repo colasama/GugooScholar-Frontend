@@ -21,17 +21,18 @@
                         </a-popconfirm>
                     </a-tooltip>
                 </div>
-                <div style="overflow:auto" v-if="searchResult.authors!=null">
+                <div style="overflow:auto;max-width:calc(100% - 32%)" v-if="searchResult.authors!=null">
                     <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors"
                         :key="author.length">
                         <author_avatar
                                 :name=author.name :color="colorList[i%6]"></author_avatar>
                     </div>
                 </div>
-
-                <div style="overflow:auto;min-width:calc(100% - 32%);text-align:left">
-                    <span style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1;"
-                          v-if="searchResult.keywords!=null">关键词 </span>
+                
+                <div style="overflow:auto;max-width:calc(100% - 32%);text-align:left">
+                    <div style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1;margin-bottom:12px;"
+                        v-if="searchResult.keywords!=null">关键词
+                    </div>
 
                     <template v-for="(keyword,index3) in searchResult.keywords">
                         <span style="display: inline-block; height:25px;max-width:250px;padding-left:10px;padding-right:10px; margin:5px 5px; background-color: #74b1be;border-radius: 4px;
@@ -379,7 +380,7 @@
 
     .paper_url {
         text-decoration: none;
-        color: #2440b3;
+        color: rgb(120,177,190);
         width: 1100px;
         overflow: hidden;
     }
