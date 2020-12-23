@@ -23,7 +23,7 @@
       <a-dropdown v-if="$store.state.token!=null">
       <a-menu style="margin-top:4px" slot="overlay">
           <a-menu-item key="1" @click="toUserIndex">账户信息</a-menu-item>
-          <a-menu-item key="2" @click="toAdmin">系统管理</a-menu-item>
+          <a-menu-item key="2" @click="toAdmin" v-if="showAdmin">系统管理</a-menu-item>
           <a-menu-item key="3" @click="exit">退出</a-menu-item>
         </a-menu>
       <a-button type="link" @click="toUserIndex" style="margin-right:16%;color:#9feaf9" v-if="$store.state.token!=null">
@@ -91,7 +91,7 @@
 
 
 <script>
-//import Vue from 'vue';
+import Vue from 'vue';
 
 const colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
 export default {
@@ -100,14 +100,42 @@ export default {
   data() {
     return {
       showLogin: true,
+      showAdmin: false,
       color: colorList[0],
       current: ['indexTab'],
     };
   },
   created: function () {
-
+    
   },
   computed: {},
+  mounted: function () {
+    var that = this;
+    if(window.sessionStorage.getItem('token') != null)
+      Vue.axios({
+              headers: {
+                  'token': window.sessionStorage.getItem('token')
+              },
+              method: 'post',
+              url:'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/test'
+          }).then((res)=>{
+              console.log(res);
+              if(res.data.success==false) {
+                  that.showAdmin = false;
+                  return;
+              }
+              else {
+                  that.showAdmin = true;
+              }
+          }).catch((res) =>{
+              console.log(res);
+              console.log("wzkwzk");
+              this.$message.error("验证失败",1);
+              this.$router.push({
+                  path: '../'
+              })
+          });
+  },
   watch: {},
   methods: {
     toRegister() {
