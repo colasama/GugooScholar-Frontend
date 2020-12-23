@@ -545,7 +545,7 @@
 
   .sum>>>.ant-row>div {
     background: transparent;
-    margin: 0 320px 0 320px;
+    margin: 0 16% 0 16%;
     min-width: calc(100% - 640px);
     border: 0;
   }

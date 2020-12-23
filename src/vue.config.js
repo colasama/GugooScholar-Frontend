@@ -19,7 +19,7 @@ module.exports = {
       msTileImage: 'favicon.ico'
     }
   },
-  configureWebpack: config => {
+  /*configureWebpack: config => {
     if (isProduction) {
       // 开启分离js
       config.optimization = {
@@ -43,7 +43,7 @@ module.exports = {
         }
       }
     }
-  },
+  },*/
   
   css: {
     loaderOptions: {
