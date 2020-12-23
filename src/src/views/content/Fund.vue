@@ -139,6 +139,16 @@
                     });
                 }
             },
+            getIsSubscribe(fundId) {
+                this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/fund/subscribed',
+                    {fund_id: fundId},
+                    {headers: {token: window.sessionStorage.getItem('token')}}
+                ).then((res) => {
+                    this.subscribe = res.data.success;
+                }).catch((e) => {
+                    console.log(e);
+                });
+            },
             handleClick() {
                 this.loading = !this.loading;
             },
@@ -169,6 +179,7 @@
         },
         created() {
             let fundId = this.$route.query.id;
+            this.getIsSubscribe(fundId);
             console.log(fundId);
             let search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/fund/" + fundId
             this.$axios.get(search_url, {

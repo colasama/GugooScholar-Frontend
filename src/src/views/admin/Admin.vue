@@ -554,12 +554,33 @@
                         for (var i = 0; i < this.report_list.length; i++) {
                             this.report_list[i]['status'] = this.report_list[i]['status'] == 0 ? "未处理" : "已处理";
                         }
-                        console.log(res);
+                        console.log("Wuhu，Qifei");
+                        console.log(this.report_list);
+                        for (var j = 0; i < this.report_list.length; i++) {
+                            // 这里
+                            console.log(j)
+                        }
+                        /*
+                        this.$axios({
+                            method: 'get',
+                            url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/'+,
+                        }).then((res) => {
+                            this.loading == false;
+                            this.report_list = res.data.data;
+                            for (var i = 0; i < this.report_list.length; i++) {
+                                this.report_list[i]['status'] = this.report_list[i]['status'] == 0 ? "未处理" : "已处理";
+                            }
+                            console.log(res);
+                            this.$axios
+                        }).catch((error) => {
+                            console.log(error);
+                            this.$message.erorr("加载失败");
+                        });*/
+
                     }).catch((error) => {
                         console.log(error);
                         this.$message.erorr("加载失败");
                     });
-                    console.log("wzkwzk");
                     this.$axios({
                         headers: {
                             'token': window.sessionStorage.getItem('token')

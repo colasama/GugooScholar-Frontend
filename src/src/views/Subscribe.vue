@@ -139,6 +139,57 @@
                         </div>
                     </a-card>
                 </div>
+
+                <div v-for="(article,index) in subscribeFund" :key="index">
+                    <a-card class="result" v-if="current ==='fund'">
+                        <div style="text-align:left">
+                            <a-row>
+                                <a-col :span="20" style="font-weight:700;">
+                                    <a-icon type="book"/>&#12288;
+                                    <span style="cursor:pointer" @click="toFund(article.id)">{{article.title}}</span>&#12288;
+                                    <a-icon type="star" v-show="!(article.isSub == null || article.isSub === true)"
+                                            @click="subscribeF(article.id,index)"/>
+                                    <a-icon type="star" theme="filled"
+                                            v-show="article.isSub == null || article.isSub === true"
+                                            @click="cancelSubscribeFund(article.id,index)"/>
+                                </a-col>
+                                <a-col style="float:right;font-weight:700;">
+                                    {{'From '}}
+                                    <template v-if="article.src">{{article.src}}</template>
+                                    <template v-else>0</template>
+                                </a-col>
+                            </a-row>
+                            <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">
+                                <template>
+                                </template>
+                            </p>
+                            <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
+                                <template v-if="article.author.length>0">{{"By"+" "}}</template>
+                                <template>
+                                    {{article.author.name}}
+                                </template>
+                            </p>
+                            <p v-html="article.abstract"
+                               style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
+                            </p>
+                        </div>
+                        <div slot="actions" v-if="index==currentHover && showText==true">
+                            <a-row>
+                                <a-col :span="18">
+                                </a-col>
+                                <a-col :span="2">
+                                    <a-icon key="setting" type="star"/>
+                                </a-col>
+                                <a-col :span="2">
+                                    <a-icon key="edit" type="read"/>
+                                </a-col>
+                                <a-col :span="2">
+                                    <a-icon key="ellipsis" type="share-alt"/>
+                                </a-col>
+                            </a-row>
+                        </div>
+                    </a-card>
+                </div>
             </a-layout-content>
         </a-layout>
     </a-layout>
