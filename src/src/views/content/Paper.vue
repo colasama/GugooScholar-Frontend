@@ -3,11 +3,11 @@
         <a-layout id="components-layout-demo-basic" style="background:#2c2e3b">
             <!--            <a-layout-content v-if="isEmpty">当前暂无数据！</a-layout-content>-->
             <a-layout-content style="margin:48px 16% 0 16%">
-                <div class="topic" v-if="searchResult.title!=null">
-                    {{searchResult.title}}
+                <div class="topic" v-if="searchResult.title!=null" style="max-width:calc(100% - 32%)">
+                    
                     <a-tooltip>
                         <template slot="title">点击收藏论文</template>
-                        <a-icon type="star" v-show="!subscribe" @click="subscribePaper(true)"/>
+                        <a-icon type="star" style="color:orange" v-show="!subscribe" @click="subscribePaper(true)"/>
                     </a-tooltip>
                     <a-tooltip>
                         <template slot="title">点击取消收藏</template>
@@ -20,12 +20,16 @@
                             <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"/>
                         </a-popconfirm>
                     </a-tooltip>
+                    {{searchResult.title}}
                 </div>
                 <div style="overflow:auto;max-width:calc(100% - 32%)" v-if="searchResult.authors!=null">
-                    <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors"
+                    <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors.slice(0,10)"
                         :key="author.length">
-                        <author_avatar
-                                :name=author.name :color="colorList[i%6]"></author_avatar>
+
+                        <div class="avatar">
+                            <a-avatar :size="48" class="profile" :style="colorList[i%6]">{{author.name[0].toUpperCase()}}</a-avatar>
+                            <span class="au_name">{{author.name}}</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -81,12 +85,14 @@
                             </a-col>
                         </a-row>
                         <a-row>
-                            <a-col :span="6">
-                                <div style="font-size:16px" v-if="searchResult.pdf!=null" @click="open(searchResult.pdf)" ><b>原文链接 </b> {{searchResult.pdf}}</div>
+                            <a-col :span="12">
+                                <div style="font-size:16px" v-if="searchResult.pdf!=null" @click="open(searchResult.pdf)" ><b>原文链接 </b>
+                                    <span class="paper_url">{{searchResult.pdf}}</span>
+                                </div>
                             </a-col>
-                            <a-col :span="6">    
+                            <a-col :span="6">
                                 <div style="font-size:16px" v-if="searchResult.url!=null"><div><b>相关链接 </b></div>
-                                    <span :href="searchResult.url" class="paper_url" v-for="(url,i) in searchResult.url"
+                                    <span :href="searchResult.url" class="paper_url" v-for="(url,i) in searchResult.url.slice(0,2)"
                                         :key="url.length"
                                         @click=open(searchResult.url[i])>
                                         <span v-if="i===searchResult.url.length-1"
@@ -184,12 +190,12 @@
 </template>
 
 <script>
-    import author_avatar from "../../components/author_avatar";
+    //import author_avatar from "../../components/author_avatar";
 
     export default {
         name: 'paper',
         components: {
-            author_avatar
+            //author_avatar
         },
         data() {
             return {
@@ -275,6 +281,9 @@
                     let origin = this.searchResult;
                     this.searchResult = response.data["data"];
                     console.log(response.data.length);
+                    console.log(this.searchResult.authors);
+                    console.log(this.searchResult.url.length);
+                    console.log(this.searchResult.url);
                     if (response.data.length === 0)
                         this.isEmpty = true;
                     else if (response.data["data"] !== origin)
@@ -402,11 +411,25 @@
 
     
   .keyword {
-    height: 24px;
-    max-width: 250px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-right: 5px;
-    margin-left: 5px;
+        height: 24px;
+        max-width: 250px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-right: 5px;
+        margin-left: 5px;
   }
+
+    .avatar {
+        display: block;
+        float: left;
+        margin: 10px 5px 24px 5px;
+    }
+
+    .avatar .au_name {
+        color:#f1f1f1;
+        margin: 0 5px 0 5px;
+    }
+    .avatar .profile {
+        font-size: 25px;
+    }
 </style>

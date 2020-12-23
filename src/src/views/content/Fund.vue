@@ -21,9 +21,13 @@
 <!--                        </a-popconfirm>-->
 <!--                    </a-tooltip>-->
                 </div>
-                <div style="overflow:auto" v-if="searchResult.author!=null">
+                <div style="overflow:auto;max-width:calc(100% - 32%)" v-if="searchResult.author!=null">
                     <div style="margin:24px 0 0 0">
-                        <author_avatar :name=searchResult.author.name :color="colorList[2]"></author_avatar>
+                        <div class="avatar">
+                            <a-avatar :size="48" class="profile" :style="colorList[2]">{{searchResult.author.name[0].toUpperCase()}}</a-avatar>
+                            <span class="au_name">{{searchResult.author.name}}</span>
+                        </div>
+<!--                        <author_avatar :name=searchResult.author.name :color="colorList[2]"></author_avatar>-->
                     </div>
                 </div>
 
@@ -88,12 +92,12 @@
 </template>
 
 <script>
-    import author_avatar from "../../components/author_avatar";
+    // import author_avatar from "../../components/author_avatar";
 
     export default {
         name: 'Fund',
         components: {
-            author_avatar
+            // author_avatar
         },
         data() {
             return {
@@ -167,7 +171,6 @@
             let fundId = this.$route.query.id;
             console.log(fundId);
             let search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/fund/" + fundId
-            // let search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/fund/" + "5e12da971cf48d5dd5f04953"
             this.$axios.get(search_url, {
                 data: {
                     key: this.search,
@@ -311,5 +314,18 @@
         padding-right: 10px;
         margin-right: 5px;
         margin-left: 5px;
+    }
+    .avatar {
+        display: block;
+        float: left;
+        margin: 10px 5px 24px 5px;
+    }
+
+    .avatar .au_name {
+        color:#f1f1f1;
+        margin: 0 5px 0 5px;
+    }
+    .avatar .profile {
+        font-size: 25px;
     }
 </style>
