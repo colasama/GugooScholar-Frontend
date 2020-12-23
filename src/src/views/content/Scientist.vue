@@ -93,9 +93,9 @@
                     <a-row type="flex" justify="center">
                     <a-col :span="12" style="text-align:center">
                         <a-spin v-if="isPaperCompleted===false" size="large"
-                                style="margin-top:200px;margin-left: 400px" tip="加载论文中"/>
+                                style="margin-top:10px;margin-left: 10px" tip="加载论文中"/>
                         <div  v-if="isPaperCompleted">
-                            <div style="margin-left: 450px" v-show="this.pubList.length === 0 && isPaper">
+                            <div style="margin-left: 10px" v-show="this.pubList.length === 0 && isPaper">
                                 <a style="color: #74b1be">暂无相关论文</a>
                             </div>
                             <a-card
@@ -151,7 +151,7 @@
                                         </template>
                                     </p>
                             </a-card>
-                            <div style="margin-left: 450px" v-show="this.fundList.length === 0 && !isPaper">
+                            <div style="margin-left: 10px" v-show="this.fundList.length === 0 && !isPaper">
                                 <a style="color: #74b1be">暂无相关科研项目</a>
                             </div>
                             <a-card class="leftCard" :hoverable="true"  v-show="!isPaper" @click="toPaper(article.id)" v-for="(fund,index) in fundList" :key="index">
