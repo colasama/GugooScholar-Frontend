@@ -6,7 +6,7 @@
                     科研领域
                 </div>
                 <a-input-group compact class="ant-layout-header-search">
-                    <a-input style="width: 30%;" placeholder="搜索目标科研领域" size="large" v-model="searchContent"/>
+                    <a-input style="width: 30%;" placeholder="搜索目标科研领域" size="large" v-model="searchContent" @keyup.enter="SearchField"/>
                     <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large"
                               @click="SearchField">搜索
                     </a-button>
