@@ -6,17 +6,17 @@
                     {{this.fieldName}}详细介绍
                 </div>
                 <a-input-group compact class="ant-layout-header-search">
-                    <a-select default-value="篇名" style="width: 120px;" size="large" @change="passSearchType">
-                        <a-select-option value="篇名">
-                            篇名
+                    <a-select default-value="全部" style="width: 120px;" size="large" @change="passSearchType">
+                        <a-select-option value="all">
+                            全部
                         </a-select-option>
-                        <a-select-option value="摘要">
-                            摘要
+                        <a-select-option value="paer">
+                            论文
                         </a-select-option>
-                        <a-select-option value="关键词">
-                            关键词
+                        <a-select-option value="fund">
+                            项目
                         </a-select-option>
-                        <a-select-option value="作者">
+                        <a-select-option value="author">
                             作者
                         </a-select-option>
                     </a-select>
@@ -155,7 +155,7 @@
         data() {
             return {
                 fieldName:"",
-                searchType: "篇名",
+                searchType: "all",
                 searchContent: "",
                 currentData:[],
                 essayData:[],
@@ -446,7 +446,7 @@
                     this.$router.push({
                         path:'/search',
                         query:{
-                            searchClassify: 'all',
+                            searchClassify: that.searchType,
                             searchContent: that.searchContent
                         }
                     })
