@@ -425,7 +425,7 @@
   margin: 16px;
 }
 
-.ant-layout-sider {
+#components-layout-demo-custom-trigger .ant-layout-sider {
     position: relative;
     min-width: 0;
     background: #001529;
@@ -437,7 +437,7 @@
     width: 200px;
 }
 
-.ant-layout-content {
+#components-layout-demo-custom-trigger .ant-layout-content {
     flex: auto;
     min-height: 0;
     margin: 48px 8% 48px 0px;
@@ -446,6 +446,7 @@
     min-height: 280px;
     padding: 24px;
 }
+
 #components-layout-demo-custom-trigger .logo {
         height: 32px;
         background: rgba(255, 255, 255, 0.2);
