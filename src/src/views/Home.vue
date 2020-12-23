@@ -7,8 +7,8 @@
         <div class="img"></div>
         <div class="search">
           <a-input-group compact>
-            <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify" change-on-select 
-              expand-trigger="hover"  style="width: 120px;" size="large" />
+            <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify" change-on-select
+              expand-trigger="hover" style="width: 120px;" size="large" />
             <a-input v-on:keyup.enter.native="onSearch()" placeholder="搜索你想要的" style="width: 40%;" size="large"
               v-model="searchContent" />
             <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
@@ -18,27 +18,47 @@
         </div>
         <div class="keywords" style="margin-bottom:48px">
           <a-icon type="fire"></a-icon>
-          <b> 热点：</b> 
-          <a-button type="primary" class="keyword" @click="searchKeyword(0)"><div class="test">{{keywords[0]}}</div></a-button>
-          <a-button type="primary" class="keyword" @click="searchKeyword(1)"><div class="test">{{keywords[1]}}</div></a-button>
-          <a-button type="primary" class="keyword" @click="searchKeyword(2)"><div class="test">{{keywords[2]}}</div></a-button>
-          <a-button type="primary" class="keyword" @click="searchKeyword(3)"><div class="test">{{keywords[3]}}</div></a-button>
-          <a-button type="primary" class="keyword" @click="searchKeyword(4)"><div class="test">{{keywords[4]}}</div></a-button>
-          <a-button type="primary" class="keyword" @click="searchKeyword(5)"><div class="test">{{keywords[5]}}</div></a-button>
-          <a-button type="primary" class="keyword" @click="searchKeyword(6)"><div class="test">{{keywords[6]}}</div></a-button>
-          <a-button type="primary" class="keyword" @click="searchKeyword(7)"><div class="test">{{keywords[7]}}</div></a-button>
-          <a-button type="primary" class="keyword" @click="searchKeyword(8)"><div class="test">{{keywords[8]}}</div></a-button>
-          <a-button type="primary" class="keyword" @click="searchKeyword(9)"><div class="test">{{keywords[9]}}</div></a-button>
+          <b> 热点：</b>
+          <a-button type="primary" class="keyword" @click="searchKeyword(0)">
+            <div class="test">{{keywords[0]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(1)">
+            <div class="test">{{keywords[1]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(2)">
+            <div class="test">{{keywords[2]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(3)">
+            <div class="test">{{keywords[3]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(4)">
+            <div class="test">{{keywords[4]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(5)">
+            <div class="test">{{keywords[5]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(6)">
+            <div class="test">{{keywords[6]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(7)">
+            <div class="test">{{keywords[7]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(8)">
+            <div class="test">{{keywords[8]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(9)">
+            <div class="test">{{keywords[9]}}</div>
+          </a-button>
         </div>
 
         <div class="sum">
-           <a-row type="flex" justify="center">
+          <a-row type="flex" justify="center">
             <a-col :span="4" class="suminfo">
-              <div style="font-size:24px;color:white;text-align:center">8,657,431</div>
+              <div style="font-size:24px;color:white;text-align:center">11,057,431</div>
               <div style="font-size:18px;color:white;text-align:center">论文数量</div>
             </a-col>
             <a-col :span="4" class="suminfo">
-              <div style="font-size:24px;color:white;text-align:center">3,141,874</div>
+              <div style="font-size:24px;color:white;text-align:center">3,541,874</div>
               <div style="font-size:18px;color:white;text-align:center">科研人员</div>
             </a-col>
             <a-col :span="4" class="suminfo">
@@ -52,10 +72,10 @@
           </a-row>
         </div>
       </div>
-      
-      <div style="margin:0 320px 0 320px;min-width:calc(100% - 640px)">
+
+      <div style="margin:0 300px 0 250px;min-width:calc(100% - 32%)">
         <a-row>
-          <a-col :span="12" class="rank">
+          <a-col :span="14" class="rank">
             <div class="rank-name">
               <a-icon style="margin-right: 12px;" type="file" />热门论文
             </div>
@@ -80,8 +100,8 @@
               </div>
             </div>
           </a-col>
-          
-          <a-col :span="12" class="rank">
+
+          <a-col :span="10" class="rank">
             <div class="rank-name">
               <a-icon style="margin-right: 12px;" type="team" />热门学者
             </div>
@@ -95,7 +115,7 @@
                   <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
                     v-else-if="author.key == 3">3</div>
                   <div class="seq" style="background-color: gray; color: white;" v-else> {{author.key}} </div>
-                  <div class="title rankLink" @click="toAuthor(author.id)"> {{author.name}} </div>
+                  <div class="title rankLink" style="width: 230px;" @click="toAuthor(author.id)"> {{author.name}} </div>
                 </div>
                 <div class="description">
                   <!-- <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
@@ -125,11 +145,10 @@
         searchType: "abstract",
         searchContent: "",
         searchClassify: ['all'],
-        options: [
-          {
+        options: [{
             value: 'all',
             label: '全部'
-          },{
+          }, {
             value: 'paper',
             label: '论文',
             children: [{
@@ -169,16 +188,18 @@
           },
         ],
         keywords: [
-          "新冠肺炎",
-          "机器学习",
-          "心理健康",
-          "大数据",
-          "人工智能",
-          "机械",
-          "电子信息",
-          "数据挖掘",
-          "AI赋能教育",
+          "artificial intelligence",
+          "CT",
+          "DBR",
+          "dietary",
           "FMRI",
+          "Internet",
+          "Mechanical Engineer",
+          "Medication",
+          "Rabies",
+          "Spiral CT scan",
+
+
           // "关键词11",
           // "关键词12",
           // "关键词13",
@@ -383,8 +404,7 @@
   }
 
   .homemain {
-    width: 100%;
-    text-align: center;
+    text-align:center;
     background-color: #2c2e3b;
     padding-bottom: 36px;
   }
@@ -404,15 +424,19 @@
 
   .keywords {
     color: #9feaf9;
+    margin: 0 16% 0 16%;
+    min-width:calc(100% - 32%);
+    text-align:center;
   }
 
   .keywords .keyword {
-    height:20px;
-    max-width:250px;
-    padding-left:10px;
-    padding-right:10px;
-    margin-right:5px;
-    margin-left:5px;
+
+    height: 20px;
+    max-width: 250px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
   }
 
   .searchbutton {
@@ -434,7 +458,8 @@
 
   .rank .rank-name {
     height: 80px;
-    text-align: center;
+    text-align: left;
+    text-indent: 1.5em;
     line-height: 80px;
     color: #4078c0;
     font-size: 28px !important;
@@ -450,6 +475,10 @@
     text-align: left;
   }
 
+  /* .rank .rank-content:hover {
+    box-shadow: darkgrey 1px 2px 5px 3px ;
+  } */
+
   .rank .rank-content .seq {
     display: inline-block;
     height: 40px;
@@ -464,10 +493,10 @@
 
   .rank .rank-content .title {
     display: inline-block;
-    width: 500px;
+    width: 330px;
     height: 40px;
     line-height: 40px;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 500;
     vertical-align: top;
     margin-left: 10px;
@@ -483,7 +512,7 @@
   }
 
   .rank .rank-content .description {
-    width: 500px;
+    width: 350px;
     height: 40px;
     line-height: 40px;
     margin-left: 60px;
@@ -495,31 +524,32 @@
 
   .rank .rank-content .citation {
     position: absolute;
-    right: 20px;
-    top: 20px;
+    right: 12px;
+    top: 12px;
+    font-size: 13px;
   }
 
-  .test{
-    white-space:nowrap; 
-    width:auto; 
+  .test {
+    white-space: nowrap;
+    width: auto;
     max-width: 12em;
-    overflow:hidden; 
-    text-overflow:ellipsis;
-    font-family:Book Antiqua;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: Book Antiqua;
   }
 
-  .suminfo{
-    width:150px;
-    height:64px;
-    background: rgb(73,96,106);
-    color:white;
-    margin:0 24px 0 24px;
+  .suminfo {
+    width: 150px;
+    height: 64px;
+    background: rgb(73, 96, 106);
+    color: white;
+    margin: 0 24px 0 24px;
   }
 
-  .sum >>> .ant-row > div {
+  .sum>>>.ant-row>div {
     background: transparent;
-    margin:0 320px 0 320px;
-    min-width:calc(100% - 640px);
+    margin: 0 16% 0 16%;
+    min-width: calc(100% - 32%);
     border: 0;
   }
 </style>

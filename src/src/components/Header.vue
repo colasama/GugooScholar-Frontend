@@ -1,12 +1,12 @@
 <template>
   <div class="re-header">
-    <div @click="toIndex" class="top-logo" style="margin-left:320px" />
+    <div @click="toIndex" class="top-logo" style="margin-left:16%" />
 
-    <a-menu style="background-color:rgb(43, 46, 59)" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
-      <a-menu-item key="1" @click="toSearch">搜索</a-menu-item>
-      <a-menu-item key="2" @click="toRankList">排行榜</a-menu-item>
-      <a-menu-item key="3" @click="toField">领域</a-menu-item>
-      <a-menu-item key="4" @click="toSubscribe">订阅</a-menu-item>
+    <a-menu style="background-color:rgb(43, 46, 59)" mode="horizontal" v-model="current" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
+      <a-menu-item key="index" @click="toIndex">主页</a-menu-item>
+      <a-menu-item key="rank" @click="toRankList">排行榜</a-menu-item>
+      <a-menu-item key="field" @click="toField">领域</a-menu-item>
+      <a-menu-item key="subscribe" @click="toSubscribe">订阅</a-menu-item>
       <a-button
         type="ghost"
         @click="toRegister"
@@ -16,7 +16,7 @@
       <a-button
         type="ghost"
         @click="toLogin"
-        style="margin-left:15px;margin-right:320px"
+        style="margin-left:15px;margin-right:16%"
         v-if="$store.state.token==null"
       >登录</a-button>
 
@@ -25,7 +25,7 @@
           <a-menu-item key="1" @click="toUserindex">账户信息</a-menu-item>
           <a-menu-item key="3" @click="exit">退出</a-menu-item>
         </a-menu>
-      <a-button type="link" @click="toUserindex" style="margin-right:320px;" v-if="$store.state.token!=null">
+      <a-button type="link" @click="toUserindex" style="margin-right:16%;" v-if="$store.state.token!=null">
           <a-avatar
             :size="32"
             inline
@@ -90,6 +90,8 @@
 
 
 <script>
+import Vue from 'vue';
+
 const colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
 export default {
   components: {
@@ -98,9 +100,15 @@ export default {
     return {
       showLogin: true,
       color: colorList[0],
+      current: ['index'],
     };
   },
-  created: function () {},
+  created: function () {
+    Vue.$on('current',target=>{
+      console.log(target);
+      this.current=target;
+    })
+  },
   computed: {},
   watch: {},
   methods: {
@@ -120,8 +128,11 @@ export default {
     toSubscribe() {
       this.$router.push({ path: "/subscribe" });
     },
+    toField(){
+      this.$router.push({ path: "/fieldlist"})
+    },
     toRankList() {
-      this.$router.push({ path: "/rankList"});
+      this.$router.push({ path: "/ranklist"});
     },
     exit() {
       this.$store.state.token = null;

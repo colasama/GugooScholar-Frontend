@@ -18,7 +18,7 @@
                 <a-list-item slot="renderItem" slot-scope="item, index" :key="index">
                     <a-list-item-meta :description="item.description">
                     </a-list-item-meta>
-                    <a-card @click="Field(item.content)" size="default" class="hippoCard-middle" >
+                    <a-card :hoverable="true" @click="Field(item.content)" size="default" class="hippoCard-middle" >
                         {{item.content}}
                     </a-card>
                 </a-list-item>

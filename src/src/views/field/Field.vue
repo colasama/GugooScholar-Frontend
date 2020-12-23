@@ -6,23 +6,23 @@
                     {{this.fieldName}}详细介绍
                 </div>
                 <a-input-group compact class="ant-layout-header-search">
-                    <a-select default-value="篇名" style="width: 120px;" size="large" @change="passSearchType">
-                        <a-select-option value="篇名">
-                            篇名
+                    <a-select default-value="全部" style="width: 120px;" size="large" @change="passSearchType">
+                        <a-select-option value="all">
+                            全部
                         </a-select-option>
-                        <a-select-option value="摘要">
-                            摘要
+                        <a-select-option value="paer">
+                            论文
                         </a-select-option>
-                        <a-select-option value="关键词">
-                            关键词
+                        <a-select-option value="fund">
+                            项目
                         </a-select-option>
-                        <a-select-option value="作者">
+                        <a-select-option value="author">
                             作者
                         </a-select-option>
                     </a-select>
                     <a-input style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent"/>
                     <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large"
-                              @click="onSearch(searchContent)">搜索
+                              @click="onSearch2(searchContent)">搜索
                     </a-button>
                 </a-input-group>
             </a-layout-header>
@@ -35,7 +35,7 @@
                     </a-menu-item>
                     <a-menu-item style="width:180px" value="专利" @click="findTriChoice('专利')">
                         <a-icon type="reconciliation"/>
-                        科研成果
+                        项目
                     </a-menu-item>
                     <a-menu-item style="width:180px" value="科研人员" @click="findTriChoice('科研人员')">
                         <a-icon type="user"/>
@@ -64,8 +64,10 @@
                                     </p>
                                     <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
                                         <template v-for="(field,fieldIndex) in essayData.Fields">
-                                            <a-button type="primary" style="height:25px;width:auto;padding-left:5px;padding-right:5px" :key="fieldIndex">
-                                                {{field}}
+                                            <a-button color="#BDD9E1" type="primary" style="height:25px;width:auto;padding-left:5px;padding-right:5px" :key="fieldIndex">
+                                                <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />
+                                                    {{field}}
+                                                </div>
                                             </a-button>
                                             <template v-if="fieldIndex < essayData.Fields.length-1">{{'，'}}</template>
                                         </template>
@@ -81,8 +83,8 @@
                                     <a-icon type="reconciliation" />&#12288;
                                     {{essayData.title}}
                                 </p>
-                                <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">{{essayData.start_year+'--'+essayData.end_year}}</p>
-                                <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">{{essayData.src}}</p>
+                                <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">{{'项目时间：'+essayData.start_year+'--'+essayData.end_year}}</p>
+                                <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">{{'资料来源：'+essayData.src}}</p>
                                 <p style="margin-top:3px;font-weight:100;font-family:Times New Roman;font-size:14px">
                                     <template v-for="(author,authorIndex) in essayData.author">
                                         {{author.name}}
@@ -91,21 +93,46 @@
                                 </p>
                                 <p style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
                                     <template>
+                                        {{'概述：'}}
                                         {{essayData.abstract}}
                                     </template>
                                 </p>
                             </div>
                             <div style="text-align:left" v-if="Tri_choi == '科研人员'">
                                     <p style="font-weight:700;">
-                                        <a-icon type="book" />&#12288;
+                                        <a-icon type="user" />&#12288;
                                         {{essayData.name}}
                                         <template>
                                             <div style="float:right">{{essayData.n_citation}}{{'  citations'}}<a-icon type="star" /></div>
                                         </template>
                                     </p>
-                                    <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">所属机构：{{essayData.orgs}}</p>
-                                    <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">H指数：{{essayData.h_index}}</p>
-                                    <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">论文数：{{essayData.n_pubs}}</p>
+<!--                                <p style="font-family:Times New Roman;font-weight:700;margin-top:8px">-->
+<!--                                    <template>-->
+<!--                                        <div  style="display:inline-block;text-align:center;border-style:none;border-width:1px;border-color:#66CCCC;border-radius:0px;width:70px;height:auto">-->
+<!--                                            <a-row >-->
+<!--                                                <a-col :span="8" style="background-color:#66CCCC;color:white">-->
+<!--                                                    {{"H"}}-->
+<!--                                                </a-col>-->
+<!--                                                <a-col :span="16" style="background-color:#B0B0B0;color:white">-->
+<!--                                                    {{essayData.h_index}}-->
+<!--                                                </a-col>-->
+<!--                                            </a-row>-->
+<!--                                        </div>-->
+<!--                                        <div  style="display:inline-block;margin-left:10px;text-align:center;border-style:none;border-width:1px;border-color:	#D8D8D8;border-radius:3px;width:70px">-->
+<!--                                            <a-row>-->
+<!--                                                <a-col :span="8" style="background-color:#B0B0B0;color:white">-->
+<!--                                                    {{"P"}}-->
+<!--                                                </a-col>-->
+<!--                                                <a-col :span="16" style="background-color:#66CCCC;color:white">-->
+<!--                                                    {{essayData.n_pubs}}-->
+<!--                                                </a-col>-->
+<!--                                            </a-row>-->
+<!--                                        </div>-->
+<!--                                    </template>-->
+<!--                                </p>-->
+                                <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">论文数：{{essayData.n_pubs}}</p>
+                                <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">H指数：{{essayData.h_index}}</p>
+                                <p style="font-family:Times New Roman;font-weight:100;margin-top:8px">所属机构：{{essayData.orgs}}</p>
                             </div>
                         </a-card>
                     </a-list-item>
@@ -128,7 +155,7 @@
         data() {
             return {
                 fieldName:"",
-                searchType: "篇名",
+                searchType: "all",
                 searchContent: "",
                 currentData:[],
                 essayData:[],
@@ -302,13 +329,14 @@
 
             ResearcherLoading(){
                 for (let i = 0; i < this.Researcher.length; i++) {
-                    const { name, orgs,h_index,n_pubs, n_citation } =this.Researcher[i];
+                    const { name, orgs,h_index,n_pubs, n_citation,id } =this.Researcher[i];
                     this.researcherData.push({
                         name,
                         n_citation,
                         orgs,
                         h_index,
                         n_pubs,
+                        id
                     });
                 }
             },
@@ -414,11 +442,12 @@
             onSearch2() {
                 console.log(this.searchContent);
                 if (this.searchContent != "") {
+                    var that=this;
                     this.$router.push({
                         path:'/search',
                         query:{
-                            searchType: this.searchType,
-                            searchContent: this.searchContent
+                            searchClassify: that.searchType,
+                            searchContent: that.searchContent
                         }
                     })
                 }
