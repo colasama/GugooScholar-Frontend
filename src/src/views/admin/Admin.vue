@@ -27,9 +27,9 @@
                 <a-menu-item key="3">
                     所有用户
                 </a-menu-item>
-                <a-menu-item key="4">
+                <!-- <a-menu-item key="4">
                     删除用户
-                </a-menu-item>
+                </a-menu-item> -->
                 </a-sub-menu>
                 <a-sub-menu key="sub3">
                 <span slot="title"><a-icon type="laptop" />专利管理</span>
@@ -172,8 +172,6 @@
             </a-list-item>
             </a-list>
 
-
-
             </a-layout-content>
 
 
@@ -201,7 +199,7 @@
             <a-divider style="width:80%; margin-bottom:0px" />
             <div style="text-align:center">
             <a-table :columns="columns" :data-source="user_list">
-                <a class="usernameLink" slot="username" slot-scope="username">{{ username }}</a>
+                <a class="usernameLink" slot="username" slot-scope="username" @click="goToUser">{{ username }}</a>
                 <span slot="customTitle"><a-icon type="user" /> 用户名</span>
                 <span slot="name" slot-scope="name">{{name}}</span>
                 <span slot="email" slot-scope="email">{{email}}</span>
@@ -222,7 +220,7 @@
             </a-layout-content>
 
 
-            <a-layout-content v-if="sider_status==4">
+            <!-- <a-layout-content v-if="sider_status==4">
 
             <a-breadcrumb style="margin:0px 0 0px 0px;">
                 <div style="text-align:left">
@@ -245,7 +243,7 @@
             </div>
             <a-divider style="width:80% " />
                 
-            </a-layout-content>
+            </a-layout-content> -->
 
             <a-layout-content v-if="sider_status==9">
                 <a-breadcrumb style="margin:0px 0 0px 0px;">
@@ -272,13 +270,13 @@
                                 <span slot="customTitle"><a-icon type="user" /> 用户名</span>
                                 <span slot="description" slot-scope="description">{{description}}</span>
                                 <span slot="status" slot-scope="status">{{status}}</span>
-                                <span slot="action" slot-scope="">
+                                <span slot="action" slot-scope="report">
                                     <a-popconfirm
-                                        title="通过此条申诉？"
+                                        title="通过此条申诉？通过后此用户将会与此作者绑定"
                                         ok-text="确认"
                                         cancel-text="取消"
-                                        @confirm="confirm"
-                                        @cancel="passReport"
+                                        @confirm="passReport(report)"
+                                        @cancel="cancel"
                                     >
                                         <a-button type="primary" shape="circle" icon="check"></a-button>
                                     </a-popconfirm>
@@ -287,8 +285,8 @@
                                         title="拒绝此条申诉？"
                                         ok-text="确认"
                                         cancel-text="取消"
-                                        @confirm="confirm"
-                                        @cancel="passReport"
+                                        @confirm="denyReport(report)"
+                                        @cancel="cancel"
                                     >
                                         <a-button type="danger" shape="circle" icon="close"></a-button>
                                     </a-popconfirm>
@@ -301,21 +299,15 @@
                                 <span slot="customTitle"><a-icon type="user" /> 用户名</span>
                                 <span slot="description" slot-scope="description">{{description}}</span>
                                 <span slot="status" slot-scope="status">{{status}}</span>
-                                <span slot="action" slot-scope="user, key, index,">
-                                    <a-popconfirm
-                                        title="是否确定删除此用户,身份信息或许会全部丢失"
-                                        ok-text="Yes"
-                                        cancel-text="No"
-                                        @confirm="deleteUser(user,index)"
-                                    >
-                                    <a-button type="danger" shape="circle" icon="delete"></a-button>
-                                    </a-popconfirm>
+                                <span slot="action">
+                                    <a-button type="dashed" shape="circle" icon="check" disabled></a-button>
+                                    <a-divider type="vertical"/>
+                                    <a-button type="dashed" shape="circle" icon="close" disabled></a-button>
                                 </span>
                             </a-table>
                         </a-tab-pane>
                     </a-tabs>
                 </div>
-
 
             </a-layout-content>
 
@@ -391,6 +383,9 @@
     cursor: pointer;
 }
 
+.usernameLink{
+    color:black;
+}
 
 .ant-tabs-nav-scroll {
     overflow: hidden;
@@ -519,6 +514,21 @@ export default {
         handleClick(e) {
             console.log("click", e);
             this.sider_status = e.key;
+            this.$axios({
+                headers: {
+                    'token': window.sessionStorage.getItem('token')
+                },
+                method: 'post',
+                url:'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/test'
+            }).then((res)=>{
+                console.log(res);
+            }).catch((res) =>{
+                console.log(res);
+                this.$message.error("不是管理员，请使用管理员账号",1);
+                this.$router.push({
+                    path: 'Home'
+                })
+            });
 
             if(this.sider_status == 3) {    //如果是所有用户，则要将所有查询出所有用户
                 this.loading == true;
@@ -635,8 +645,46 @@ export default {
                 this.$message.success({ content: '删除用户成功', key, duration: 2 });
                 this.user_list.splice(index, 1); 
                 return;
+            }).catch(()=> {
+                this.$message.error({ content: '删除用户失败', key, duration: 2 })
             })
-            this.$message.error({ content: '删除用户失败', key, duration: 2 })
+        },
+        goToUser() {
+            console.log(1);
+        },
+        passReport(report){
+            console.log(report);
+            this.$axios({
+                headers: {
+                    'token': window.sessionStorage.getItem('token')
+                },
+                method: 'post',
+                url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/report/pass',
+                params: {
+                    report_id : report.report_id,
+                }
+            }).then(() => {
+                this.$message.success("已成功通过此申诉");
+            }).catch(()=> {
+                this.$message.error("操作失败，请重新登录");
+            }) 
+        },
+        denyReport(report){
+            console.log(report);
+            this.$axios({
+                headers: {
+                    'token': window.sessionStorage.getItem('token')
+                },
+                method: 'post',
+                url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/report/deny',
+                params: {
+                    report_id : report.report_id,
+                }
+            }).then(() => {
+                this.$message.success("已成功拒绝此申诉");
+            }).catch(()=> {
+                this.$message.error("操作失败，请重新登录");
+            }) 
         },
         searchUser() {
             
@@ -649,23 +697,45 @@ export default {
             console.log(key);
         },
     },
-    mounted() {
-        this.loading = true;
+    beforeCreate() {
         this.$axios({
-            method: 'get',
-            url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
-            params: {
-                words: "a",
-                type: "title"
+            headers: {
+                'token': window.sessionStorage.getItem('token')
+            },
+            method: 'post',
+            url:'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/test'
+        }).then((res)=>{
+            console.log(res);
+            if(res.data.success==false) {
+                this.$message.error("请以管理员身份操作",1);
+                this.$router.push({
+                    path: '../'
+                });
+                return;
             }
-        }).then((res) => {
-            console.log(res.data);
-            this.loading = false;
-            this.paper_list = res.data.data;
-            console.log(this.paper_list);
-            console.log(this.loading); 
-        })
+            else {
+                this.loading = true;
+                this.$axios({
+                    method: 'get',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
+                    params: {
+                        words: "a",
+                        type: "title"
+                    }
+                }).then((res) => {
+                    console.log(res.data);
+                    this.loading = false;
+                    this.paper_list = res.data.data;
+                })
+            }
+        }).catch((res) =>{
+            console.log(res);
+            console.log("wzkwzk");
+            this.$message.error("验证失败",1);
+            this.$router.push({
+                path: '../'
+            })
+        });
     }
-
 }
 </script>
