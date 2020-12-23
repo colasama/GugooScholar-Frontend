@@ -30,7 +30,8 @@
                             <div class="authorDes">
                                 所属机构：{{university}}
                             </div>
-                            <div style="margin-top: 35px">
+                            <div style="margin-top: 20px" v-show="isClaim">个人简介：{{bindUser.introduction}}</div>
+                            <div style="margin-top: 30px">
                                 <a-button v-show="!isClaim" type="primary" @click="claimPortal">
                                     <a-icon type="user" />认领门户
                                 </a-button>
