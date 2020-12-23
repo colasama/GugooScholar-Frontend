@@ -237,6 +237,16 @@
                     });
                 }
             },
+            getIsSubscribe(paperId) {
+                this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/paper/subscribed',
+                    {paper_id: paperId},
+                    {headers: {token: window.sessionStorage.getItem('token')}}
+                ).then((res) => {
+                    this.subscribe = res.data.success;
+                }).catch((e) => {
+                    console.log(e);
+                });
+            },
             handleClick() {
                 this.loading = !this.loading;
             },
@@ -267,6 +277,7 @@
         },
         created() {
             let paperId = this.$route.query.id;
+            this.getIsSubscribe(paperId);
             console.log(paperId);
             // let id = "1e60ZHlVd6xQjz9FX7j2"
             let search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/" + paperId
