@@ -313,7 +313,7 @@
         this.$router.push({
           name: "search",
           query: {
-            searchClassify: ['paper', 'keywords'],
+            searchClassify: ['all'],
             searchContent: this.keywords[num],
           }
         });
