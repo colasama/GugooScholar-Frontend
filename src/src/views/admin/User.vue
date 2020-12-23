@@ -192,14 +192,28 @@
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="changemail"
+              @ok="changeMail"
               @cancel="handleCancel"
             >
-            <a-form-model >
-              <a-form-item>
-                <a-icon type="mail" /> 邮箱:<a-input v-model="userInfo.userEmail" />
-              </a-form-item>
-            </a-form-model>
+              <a-form-model v-if="mailsended==false">
+                <a-form-item>
+                  <a-icon type="mail" /> 邮箱:<a-input v-model="userInfo.userEmail" />
+                </a-form-item>
+                
+              </a-form-model>
+              <div v-if="mailsended==true">
+                  <a-result
+                    status="success"
+                    title="一封激活邮件已发送!"
+                    sub-title="请您查看邮箱，根据邮件中的步骤完成邮箱修改最后一步操作。"
+                  >
+                    <template #extra>
+                      <a-button key="buy" @click="handleCancel">
+                        完成
+                      </a-button>
+                    </template>
+                  </a-result>
+              </div>
             </a-modal>
           </a-row>
           <a-divider class="divider"/>
@@ -393,7 +407,8 @@ export default {
 		layoutHeight: {"min-height":"1120px"},
 		modal_visible: 0,
 		loading_visible: 0,
-		confirmLoading: false,
+    confirmLoading: false,
+    mailsended: false,
 		userInfo:{
 			userId:"",
 			userName:"",
@@ -435,7 +450,8 @@ export default {
 			this.userInfo.userSex = "";
 			this.userInfo.userEmail = "";
 			this.userInfo.description = "";
-			this.modal_visible = 0;
+      this.modal_visible = 0;
+      this.mailsended = false;
 		},
 		modifyPwd() {
 			console.log("Modify pwd");
@@ -484,11 +500,21 @@ export default {
 				this.$message.error("更新失败",1);
 			})
 		},
-		changemail() {
-			this.$axiot({
+		changeMail() {
+      console.log(this.userInfo_orig.userId);
+      console.log(this.userInfo.userEmail);
+			this.$axios({
 				method:'post',
-				url:'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/changemail',
-			})
+        url:'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/sendmail',
+        params: {
+          username: this.userInfo_orig.userId,
+          email: this.userInfo.userEmail,
+          url: "https://gugoo.fewings.xyz/#/auth",
+        }
+			}).then((res)=> {
+        this.mailsended = true;
+        console.log(res);
+      })
 		}
 	},
 	mounted() {
