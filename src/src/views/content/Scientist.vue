@@ -513,7 +513,10 @@
             toSearch() {
                 let routeUrl = this.$router.resolve({
                     path: "/search",
-                    query: {id:this.$route.params.id}
+                    query: {
+                        id:this.$route.params.id,
+                        name:this.authorName
+                        }
                 });
                 window.open(routeUrl.href, '_blank');
             },

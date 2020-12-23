@@ -273,7 +273,9 @@
         this.searchContent = this.$route.query.searchContent;
       if(this.$route.query.id)
       {
-        this.searchContent="作者";
+        this.searchContent=this.$route.query.name;
+        this.searchClassify[0]='all';
+        this.current=['paper'];
         this.getPubs(this.$route.query.id);
       }
       if(this.$route.query.searchClassify && this.$route.query.searchContent)
@@ -285,6 +287,7 @@
             {headers: {token: 'xx'}}
         ).then((res)=>{
             this.paperResult = res.data.data;
+            this.isSearched=true;
             this.isSearchCompleted= true;
         }).catch((e)=>{
             console.log(e);
