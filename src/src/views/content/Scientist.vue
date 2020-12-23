@@ -579,9 +579,9 @@
                             props: {type: 'primary',size: 'small',},
                             on: {click: () => this.$notification.close(key),},
                         },
-                        'ok', );
+                        '知道啦', );
                     }, key,onClose: close,
-                    icon: <a-icon type="smile" style="color: #108ee9" />,
+                    icon: <a-icon type="smile" theme="twoTone" two-tone-color="#FACC2E" />,
                 });
             }
         }
