@@ -190,6 +190,7 @@ export default {
       else if (this.password != this.repassword)
         errorTip = "两次输入的密码不同";
       if (errorTip != "") {
+        this.regLoading = false;
         this.$message.error(errorTip);
         return;
       }

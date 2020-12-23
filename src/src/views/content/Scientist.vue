@@ -54,12 +54,12 @@
                                          @ok="handleOk(0)" @cancel="modalVisible0=false">
                                     <p>您的名字是{{authorName}}吗？</p>
                                 </a-modal>
-                                <a-modal title="认领门户简单验证" :visible="modalVisible1"
+                                <a-modal title="认领门户简单验证" :visible="modalVisible1" v-if="pubList.length > 0"
                                          @ok="handleOk(1)" @cancel="modalVisible1=false">
                                     <p>{{ pubList[0].title }}, 该论文是您曾发表的论文吗？</p>
                                 </a-modal>
                                 <a-modal title="认领门户简单验证" :visible="modalVisible2" :confirm-loading="confirmLoading"
-                                         @ok="handleOk(2)" @cancel="modalVisible2=false">
+                                         v-if="otherAuthors.length > 0" @ok="handleOk(2)" @cancel="modalVisible2=false">
                                     <p>您曾和{{ otherAuthors[0].name }}合作过吗？</p>
                                 </a-modal>
                                 <a-modal
@@ -88,7 +88,8 @@
                     </div>
                     <div class="rightContent">
                         <div style="font-size: 18px; color: #BDD9E1;">科研人员关系网络</div>
-                        <a-spin v-if="isCompleted == false" size="large" style="margin-top:100px" tip="加载关系网络中"/>
+                        <div style="color: #74b1be;margin-top: 100px" v-if="isCompleted && series.length === 0">暂无相关专家</div>
+                        <a-spin v-if="!isCompleted" size="large" style="margin-top:100px" tip="加载关系网络中"/>
                         <div class="expertWeb" >
                             <VueApexCharts  v-if="isCompleted" ref="chart" type="polarArea" :options="chartOptions" :series="series">
                             </VueApexCharts>
@@ -225,7 +226,9 @@
                     <div >
                         <a-spin v-if="!isAvatarCompleted" size="large"
                                 style="margin-left: 50px" tip="加载相关作者图片中"/>
-                        <a-card v-if="isAvatarCompleted" title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
+                        <div style="color: #74b1be" v-if="isAvatarCompleted && otherAuthors.length === 0">暂无相关作者</div>
+                        <a-card v-if="isAvatarCompleted && otherAuthors.length > 0"
+                                title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
                             <a-card-grid class="cardGrid" @click="toAuthor(author.id)" v-for="(author, index) in otherAuthors" :key="index">
                                 <div style="cursor:pointer"><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/>
                                     <br>{{author.name.length > 9 ? author.name.substr(0,9)+'...': author.name}}
@@ -281,10 +284,10 @@
                 nPubs: 0,
                 nCitation: 0,
                 isPaper: true,
-                pubList: [{title: ''}],
+                pubList: [],
                 fundList: [],
-                otherAuthors: [{avatar: ''}],
-                series: [0],
+                otherAuthors: [],
+                series: [],
                 chartOptions: {
                     chart: {
                         type: 'polarArea',
@@ -385,6 +388,7 @@
             getAuthor(scientistId) {
                 this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId,
                 ).then((res)=>{
+                    console.log(res.data.data)
                     let data = res.data.data;
                     this.authorName = data.name;
                     if (data.orgs != null) this.university = data.orgs;
@@ -420,11 +424,16 @@
                 this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/paper',
                     {headers: {token: 'xx'}}
                 ).then((res)=>{
+                    if (res.data.data.length === 0) {
+                        this.isPaperCompleted = true;
+                        this.isAvatarCompleted = true;
+                        return;
+                    }
                     let pubs = res.data.data;
                     this.isPaperCompleted = true;
                     if (pubs.length >= 5) this.pubList = pubs.slice(0, 5);
                     else this.pubList = pubs;
-                    this.getOtherAuthor();
+                    if (this.pubList.length > 0) this.getOtherAuthor();
                 }).catch((e)=>{
                     console.log(e);
                 });

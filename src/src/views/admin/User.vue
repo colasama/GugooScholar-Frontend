@@ -185,33 +185,22 @@
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userEmail}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(5)"/></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="changeMail(5)"/></a-col>
             <a-modal
               title="修改邮箱"
-              :visible="modal_visible==5"
+              :visible="modal_visible==5&&mailsended==true"
               :confirm-loading="confirmLoading"
-              okText="提交"
-              cancelText="取消"
-              @ok="changeMail"
+              okText="确定"
+              cancelText="关闭"
+              @ok="handleCancel"
               @cancel="handleCancel"
             >
-              <a-form-model v-if="mailsended==false">
-                <a-form-item>
-                  <a-icon type="mail" /> 邮箱:<a-input v-model="userInfo.userEmail" />
-                </a-form-item>
-                
-              </a-form-model>
               <div v-if="mailsended==true">
                   <a-result
                     status="success"
                     title="一封激活邮件已发送!"
-                    sub-title="请您查看邮箱，根据邮件中的步骤完成邮箱修改最后一步操作。"
+                    sub-title="请您查看您原来邮箱，根据邮件中的步骤完成邮箱修改最后一步操作。"
                   >
-                    <template #extra>
-                      <a-button key="buy" @click="handleCancel">
-                        完成
-                      </a-button>
-                    </template>
                   </a-result>
               </div>
             </a-modal>
@@ -508,12 +497,15 @@ export default {
         url:'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/sendmail',
         params: {
           username: this.userInfo_orig.userId,
-          email: this.userInfo.userEmail,
-          url: "https://gugoo.fewings.xyz/#/auth",
+          email: this.userInfo_orig.userEmail,
+          url: "https://gugoo.fewings.xyz/#/changeMail",
         }
 			}).then((res)=> {
+        this.modal_visible = 5;
         this.mailsended = true;
         console.log(res);
+      }).catch(()=>{
+        this.$message.error("发送验证邮件失败")
       })
 		}
 	},
