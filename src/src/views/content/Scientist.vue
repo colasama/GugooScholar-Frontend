@@ -30,7 +30,8 @@
                             <div class="authorDes">
                                 所属机构：{{university}}
                             </div>
-                            <div style="margin-top: 35px">
+                            <div style="margin-top: 20px" v-show="isClaim">个人简介：{{bindUser.introduction}}</div>
+                            <div style="margin-top: 30px">
                                 <a-button v-show="!isClaim" type="primary" @click="claimPortal">
                                     <a-icon type="user" />认领门户
                                 </a-button>
@@ -216,7 +217,9 @@
                                 style="margin-left: 50px" tip="加载相关作者图片中"/>
                         <a-card v-if="isAvatarCompleted" title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
                             <a-card-grid class="cardGrid" @click="toAuthor(author.id)" v-for="(author, index) in otherAuthors" :key="index">
-                                <div style="cursor:pointer"><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/><br>{{author.name}}</div>
+                                <div style="cursor:pointer"><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/>
+                                    <br>{{author.name.length > 9 ? author.name.substr(0,9)+'...': author.name}}
+                                </div>
                             </a-card-grid>
                         </a-card>
                     </div>
@@ -236,7 +239,7 @@
 <script>
     import VueApexCharts from 'vue-apexcharts'
     export default {
-
+        inject: ['reload'],
         components: {
             VueApexCharts
         },
@@ -543,6 +546,7 @@
                         this.confirmLoading = false;
                         this.modalVisible2 = false;
                         this.isClaim = true;
+                        this.reload();
                         this.$message.success("认领成功");
                     }).catch((e) => {
                         this.confirmLoading = false;
@@ -575,9 +579,9 @@
                             props: {type: 'primary',size: 'small',},
                             on: {click: () => this.$notification.close(key),},
                         },
-                        'ok', );
+                        '知道啦', );
                     }, key,onClose: close,
-                    icon: <a-icon type="smile" style="color: #108ee9" />,
+                    icon: <a-icon type="smile" theme="twoTone" two-tone-color="#FACC2E" />,
                 });
             }
         }
@@ -661,7 +665,7 @@
 }
 .cardGrid {
     width: 33%;
-    padding: 20px 5px 0 15px;
+    padding: 20px 10px 0 15px;
     box-shadow: 0 0 0 white;
 }
 .otherAuthor {
