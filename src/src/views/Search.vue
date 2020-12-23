@@ -92,7 +92,7 @@
           </a-card>
         </div>
         <div v-for="(fund,index7) in fundResult" :key="index7+'fund'">
-          <a-card class="result" :hoverable="true" v-if="current!=null && current[0]=='fund'&&index7<20&&isSearchCompleted==true" @click="toPaper(fund.id)">
+          <a-card class="result" :hoverable="true" v-if="current!=null && current[0]=='fund'&&index7<20&&isSearchCompleted==true" @click="toFund(fund.id)">
             <div style="text-align:left">
               <a-row>
                 <a-col :span='1'>
@@ -273,7 +273,9 @@
         this.searchContent = this.$route.query.searchContent;
       if(this.$route.query.id)
       {
-        this.searchContent="作者";
+        this.searchContent=this.$route.query.name;
+        this.searchClassify[0]='all';
+        this.current=['paper'];
         this.getPubs(this.$route.query.id);
       }
       if(this.$route.query.searchClassify && this.$route.query.searchContent)
@@ -285,6 +287,7 @@
             {headers: {token: 'xx'}}
         ).then((res)=>{
             this.paperResult = res.data.data;
+            this.isSearched=true;
             this.isSearchCompleted= true;
         }).catch((e)=>{
             console.log(e);
@@ -388,6 +391,15 @@
           query: {
               id: paperid,
             }
+        })
+        window.open(routeData.href, '_blank')
+      },
+      toFund(fundId) {
+        let routeData = this.$router.resolve({
+          path: '/fund',
+          query: {
+            id: fundId,
+          }
         })
         window.open(routeData.href, '_blank')
       },
