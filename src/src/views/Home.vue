@@ -18,90 +18,93 @@
           </a-input-group>
         </div>
         <div class="keywords">
+          <a-icon type="fire"></a-icon>
+          <b> 热点：</b> 
           <a-button type="link" class="keyword" @click="searchKeyword(0)">{{keywords[0]}}</a-button>
           <a-button type="link" class="keyword" @click="searchKeyword(1)">{{keywords[1]}}</a-button>
           <a-button type="link" class="keyword" @click="searchKeyword(2)">{{keywords[2]}}</a-button>
           <a-button type="link" class="keyword" @click="searchKeyword(3)">{{keywords[3]}}</a-button>
           <a-button type="link" class="keyword" @click="searchKeyword(4)">{{keywords[4]}}</a-button>
           <a-button type="link" class="keyword" @click="searchKeyword(5)">{{keywords[5]}}</a-button>
-        </div>
-        <div class="keywords">
           <a-button type="link" class="keyword" @click="searchKeyword(6)">{{keywords[6]}}</a-button>
           <a-button type="link" class="keyword" @click="searchKeyword(7)">{{keywords[7]}}</a-button>
           <a-button type="link" class="keyword" @click="searchKeyword(8)">{{keywords[8]}}</a-button>
           <a-button type="link" class="keyword" @click="searchKeyword(9)">{{keywords[9]}}</a-button>
         </div>
       </div>
-      <a-layout>
-        <a-layout-sider width="50%" class="rank" style="background-color: #2f3141;">
-          <div class="rankName" style="
-          height: 80px;
-          text-align: left;
-          text-indent: 1.5em;
-          line-height: 80px;
-          color: #9feaf9;
-          font-size: 30px;
-          font-weight: 600;
-          background-color: #2f3141;
-          ">
-            <a-icon style="margin-right: 12px;" type="file" />热门论文
-          </div>
-          <div v-for="paper in rankData[0]" :key="paper.key">
-            <div class="rank-content" v-if="paper.key < 11">
-              <div style="height: 40px;">
-                <div class="seq" style="background-color: gold;font-size: 20px; color: red;" v-if="paper.key == 1">1
-                </div>
-                <div class="seq" style="background-color: #c8d2e2;font-size: 20px; color: blue;"
-                  v-else-if="paper.key == 2">2</div>
-                <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
-                  v-else-if="paper.key == 3">3</div>
-                <div class="seq" style="background-color: gray; color: white;" v-else> {{paper.key}} </div>
-                <div class="title rankLink" @click="toPaper(paper.id)"> {{paper.title}} </div>
-              </div>
-              <div class="description">
-                <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
-                  {{author.name}};&nbsp; </span>
-                <span> {{paper.year}} </span>
-              </div>
-              <div class="citation"> 被引量：{{paper.n_citation}} </div>
+      <a-layout style="margin:0 320px 0 320px">
+        <a-row>
+          <a-col :span="12" class="rank">
+            <div class="rankName" style="
+            height: 80px;
+            text-align: left;
+            text-indent: 1.5em;
+            line-height: 80px;
+            color: #9feaf9;
+            font-size: 30px;
+            font-weight: 600;
+            background-color: #2c2e3b;
+            ">
+              <a-icon style="margin-right: 12px;" type="file" />热门论文
             </div>
-          </div>
-        </a-layout-sider>
-        <a-layout-content style="background-color: #2f3141;" class="rank">
-          <div class="rankName" style="
-          height: 80px;
-          text-align: left;
-          line-height: 80px;
-          color: #9feaf9;
-          font-size: 30px;
-          font-weight: 600;
-          text-indent: 1.5em;
-          background-color: #2f3141;
-          ">
-            <a-icon style="margin-right: 12px;" type="team" />热门学者
-          </div>
-          <div v-for="author in rankData[1]" :key="author.key">
-            <div class="rank-content" v-if="author.key < 11">
-              <div style="height: 40px;">
-                <div class="seq" style="background-color: gold;font-size: 20px; color: red;" v-if="author.key == 1">1
+            <div v-for="paper in rankData[0]" :key="paper.key">
+              <div class="rank-content" v-if="paper.key < 11">
+                <div style="height: 40px;">
+                  <div class="seq" style="background-color: gold;font-size: 20px; color: red;" v-if="paper.key == 1">1
+                  </div>
+                  <div class="seq" style="background-color: #c8d2e2;font-size: 20px; color: blue;"
+                    v-else-if="paper.key == 2">2</div>
+                  <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
+                    v-else-if="paper.key == 3">3</div>
+                  <div class="seq" style="background-color: gray; color: white;" v-else> {{paper.key}} </div>
+                  <div class="title rankLink" @click="toPaper(paper.id)"> {{paper.title}} </div>
                 </div>
-                <div class="seq" style="background-color: #c8d2e2;font-size: 20px; color: blue;"
-                  v-else-if="author.key == 2">2</div>
-                <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
-                  v-else-if="author.key == 3">3</div>
-                <div class="seq" style="background-color: gray; color: white;" v-else> {{author.key}} </div>
-                <div class="title rankLink" @click="toAuthor(author.id)"> {{author.name}} </div>
+                <div class="description">
+                  <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
+                    {{author.name}};&nbsp; </span>
+                  <span> {{paper.year}} </span>
+                </div>
+                <div class="citation"> 被引量：{{paper.n_citation}} </div>
               </div>
-              <div class="description">
-                <!-- <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
-                  {{author.name}};&nbsp; </span>
-                <span> {{paper.year}} </span> -->
-                <span>发表了{{author.n_pubs}}篇论文，被引用了{{author.n_citation}}次</span>
-              </div>
-              <div class="citation"> H指数：{{author.h_index}} </div>
             </div>
-          </div>
-        </a-layout-content>
+          </a-col>
+          
+          <a-col :span="12" class="rank">
+            <div class="rankName" style="
+            height: 80px;
+            text-align: left;
+            line-height: 80px;
+            color: #9feaf9;
+            font-size: 30px;
+            font-weight: 600;
+            text-indent: 1.5em;
+            background-color: #2c2e3b;
+            ">
+              <a-icon style="margin-right: 12px;" type="team" />热门学者
+            </div>
+            <div v-for="author in rankData[1]" :key="author.key">
+              <div class="rank-content" v-if="author.key < 11">
+                <div style="height: 40px;">
+                  <div class="seq" style="background-color: gold;font-size: 20px; color: red;" v-if="author.key == 1">1
+                  </div>
+                  <div class="seq" style="background-color: #c8d2e2;font-size: 20px; color: blue;"
+                    v-else-if="author.key == 2">2</div>
+                  <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
+                    v-else-if="author.key == 3">3</div>
+                  <div class="seq" style="background-color: gray; color: white;" v-else> {{author.key}} </div>
+                  <div class="title rankLink" @click="toAuthor(author.id)"> {{author.name}} </div>
+                </div>
+                <div class="description">
+                  <!-- <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
+                    {{author.name}};&nbsp; </span>
+                  <span> {{paper.year}} </span> -->
+                  <span>发表了{{author.n_pubs}}篇论文，被引用了{{author.n_citation}}次</span>
+                </div>
+                <div class="citation"> H指数：{{author.h_index}} </div>
+              </div>
+            </div>
+          </a-col>
+        </a-row>
       </a-layout>
     </a-layout-content>
   </a-layout>
@@ -365,6 +368,9 @@
     list-style: none;
   }
 
+.a-layout .a-layout-content{
+  background:red;
+}
   .headtext {
     width: 100%;
     height: 80px;
@@ -379,7 +385,7 @@
   .homemain {
     width: 100%;
     text-align: center;
-    background-color: #2f3141;
+    background-color: #2c2e3b;
     padding-bottom: 50px;
   }
 

@@ -3,9 +3,10 @@
     <div @click="toIndex" class="top-logo" style="margin-left:320px" />
 
     <a-menu style="background-color:rgb(43, 46, 59)" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
-      <a-menu-item key="1" @click="toRankList">排行榜</a-menu-item>
-      <a-menu-item key="2" @click="toSubscribe">订阅</a-menu-item>
-
+      <a-menu-item key="1" @click="toSearch">搜索</a-menu-item>
+      <a-menu-item key="2" @click="toRankList">排行榜</a-menu-item>
+      <a-menu-item key="3" @click="toField">领域</a-menu-item>
+      <a-menu-item key="4" @click="toSubscribe">订阅</a-menu-item>
       <a-button
         type="ghost"
         @click="toRegister"
@@ -64,7 +65,7 @@
 }
 
 .re-header {
-  background: rgb(43, 46, 59);
+  background: #2c2e3b;
   height: 80px;
   text-align: center;
 }
