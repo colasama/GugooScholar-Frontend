@@ -21,8 +21,7 @@
     .avatar {
         display: block;
         float: left;
-        height: 100px;
-        margin: 10px 5px 5px;
+        margin: 10px 5px 24px 5px;
     }
 
     .avatar .au_name {
