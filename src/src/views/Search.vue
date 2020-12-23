@@ -162,7 +162,7 @@
         </div>
         <div v-if=" this.isSearched==true && this.isSearchCompleted==true ">
           <a-result v-if="((searchClassify1[0]=='all' && isCurrentNone()) || (current[0]=='user'&& this.authorResult.length==0) 
-        || (current[0]=='paper' && this.paperResult.length==0) || (current[0]=='fund' && this.fundResult.length==0))"  sub-title="Sorry, the result you searched is empty." status="404" >
+        || (current[0]=='paper' && this.paperResult.length==0) || (current[0]=='fund' && this.fundResult.length==0))"  sub-title="抱歉，没有找到你要搜索的内容..." status="404" >
             <template #icon>
               <a-icon type="smile" theme="twoTone" />
             </template>
