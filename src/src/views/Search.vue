@@ -270,7 +270,7 @@
       if (this.$route.query.searchClassify)
       {
         this.searchClassify = this.$route.query.searchClassify;
-        this.searchClassify1[1] = this.$route.query.searchClassify;
+        this.searchClassify1 = this.$route.query.searchClassify;
       }
       if (this.$route.query.searchContent)
         this.searchContent = this.$route.query.searchContent;
