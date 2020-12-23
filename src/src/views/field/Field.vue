@@ -6,21 +6,24 @@
                     {{this.fieldName}}详细介绍
                 </div>
                 <a-input-group compact class="ant-layout-header-search">
-                    <a-select default-value="全部" style="width: 120px;" size="large" @change="passSearchType">
-                        <a-select-option value="all">
-                            全部
-                        </a-select-option>
-                        <a-select-option value="paer">
-                            论文
-                        </a-select-option>
-                        <a-select-option value="fund">
-                            项目
-                        </a-select-option>
-                        <a-select-option value="author">
-                            作者
-                        </a-select-option>
-                    </a-select>
-                    <a-input style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent"/>
+                    <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify" change-on-select
+                                expand-trigger="hover" style="width: 120px;" size="large" @change="passSearchType" />
+<!--                    <a-select default-value="全部" style="width: 120px;" size="lar ge" @change="passSearchType">-->
+<!--                        <a-select-option value="all">-->
+<!--                            全部-->
+<!--                        </a-select-option>-->
+<!--                        <a-select-option value="paer">-->
+<!--                            论文-->
+<!--                        </a-select-option>-->
+<!--                        <a-select-option value="fund">-->
+<!--                            项目-->
+<!--                        </a-select-option>-->
+<!--                        <a-select-option value="author">-->
+<!--                            作者-->
+<!--                        </a-select-option>-->
+<!--                    </a-select>-->
+                    <a-input v-on:keyup.enter.native="onSearch2()" placeholder="搜索你想要的" style="width: 40%;" size="large"
+                             v-model="searchContent" />
                     <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large"
                               @click="onSearch2(searchContent)">搜索
                     </a-button>
@@ -154,6 +157,7 @@
     export default {
         data() {
             return {
+                searchClassify: ['all'],
                 fieldName:"",
                 searchType: "all",
                 searchContent: "",
@@ -171,6 +175,48 @@
                     },
                     pageSize: 6,
                 },
+                options: [{
+                    value: 'all',
+                    label: '全部'
+                }, {
+                    value: 'paper',
+                    label: '论文',
+                    children: [{
+                        value: 'title',
+                        label: '标题',
+                    },
+                        {
+                            value: 'keywords',
+                            label: '关键词',
+                        },
+                        {
+                            value: 'abstract',
+                            label: '摘要',
+                        },
+                    ],
+                },
+                    {
+                        value: 'fund',
+                        label: '项目',
+                        children: [{
+                            value: 'title',
+                            label: '标题',
+                        },
+                            {
+                                value: 'desc',
+                                label: '描述',
+                            },
+                            {
+                                value: 'abstract',
+                                label: '摘要',
+                            },
+                        ],
+                    },
+                    {
+                        value: 'author',
+                        label: '作者',
+                    },
+                ],
             }
         },
         mounted() {
@@ -454,15 +500,15 @@
             onSearch2() {
                 console.log(this.searchContent);
                 if (this.searchContent != "") {
-                    var that=this;
                     this.$router.push({
-                        path:'/search',
-                        query:{
-                            searchClassify: that.searchType,
-                            searchContent: that.searchContent
+                        name: "search",
+                        query: {
+                            searchClassify: this.searchClassify,
+                            searchContent: this.searchContent
                         }
-                    })
-                }
+                    });
+                } else
+                    this.$router.push('/search');
             },
         },
     }
