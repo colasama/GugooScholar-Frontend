@@ -40,14 +40,14 @@
                                     <a-icon type="user" />已认领
                                 </a-button>
                                 <span v-show="isClaim" style="margin-left: 8px">
-                                    <a-tooltip>
-                                        <template slot="title">
-                                          查看认领人信息
-                                        </template>
-                                        <a-button style="font-size: 20px" type="link" @click="openNotification">
-                                            <a-icon type="zoom-in" />
+                                        <a-button type="primary" @click="openNotification">
+                                            <a-icon type="zoom-in" />查看认领人信息
                                         </a-button>
-                                    </a-tooltip>
+                                </span>
+                                <span v-show="isClaim" style="margin-left: 8px">
+                                        <a-button type="link" @click="makeAppeal">
+                                            <a-icon type="notification" theme="filled"/>申诉
+                                        </a-button>
                                 </span>
 
                                 <a-modal title="认领门户简单验证" :visible="modalVisible0"
@@ -61,6 +61,16 @@
                                 <a-modal title="认领门户简单验证" :visible="modalVisible2" :confirm-loading="confirmLoading"
                                          @ok="handleOk(2)" @cancel="modalVisible2=false">
                                     <p>您曾和{{ otherAuthors[0].name }}合作过吗？</p>
+                                </a-modal>
+                                <a-modal
+                                        title="作者冒领申诉"
+                                        :visible="showAppeal"
+                                        :confirm-loading="confirmAppeal"
+                                        @ok="handleAppeal"
+                                        @cancel="showAppeal=false"
+                                >
+                                    <a-textarea v-model="appealReason" placeholder="请填写申诉理由"
+                                                :auto-size="{ minRows: 4, maxRows: 6 }" />
                                 </a-modal>
                             </div>
                         </div>
@@ -246,9 +256,12 @@
         data() {
             return {
                 confirmLoading: false,
+                confirmAppeal: false,
                 modalVisible0: false,
                 modalVisible1: false,
                 modalVisible2: false,
+                appealReason: '',
+                showAppeal: false,
                 ModalText: 'xxx',
                 isClaim: false,
                 bindUser: {},
@@ -582,6 +595,30 @@
                         '知道啦', );
                     }, key,onClose: close,
                     icon: <a-icon type="smile" theme="twoTone" two-tone-color="#FACC2E" />,
+                });
+            },
+            makeAppeal() {
+                let token = window.sessionStorage.getItem('token');
+                if (!token) {
+                    this.$message.info("请先登录再使用该功能");
+                    return;
+                }
+                this.showAppeal = true;
+            },
+            handleAppeal() {
+                this.confirmAppeal = true;
+                this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/reportbind',
+                    {author_id: this.$route.params.id, description: this.appealReason},
+                    {headers: {token: window.sessionStorage.getItem('token')}}
+                ).then(() => {
+                    this.confirmAppeal = false;
+                    this.showAppeal = false;
+                    this.appealReason = '';
+                    this.$message.success("申诉成功，请等待管理员受理");
+                }).catch((e) => {
+                    this.confirmAppeal = false;
+                    this.showAppeal = false;
+                    this.$message.error(e.response.data.message);
                 });
             }
         }
