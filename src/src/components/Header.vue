@@ -2,22 +2,23 @@
   <div class="re-header">
     <div @click="toIndex" class="top-logo" style="margin-left:16%" />
 
-    <a-menu style="background-color:rgb(43, 46, 59)" mode="horizontal" v-model="current" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
-      <a-menu-item key="index" @click="toIndex">主页</a-menu-item>
-      <a-menu-item key="rank" @click="toRankList">排行榜</a-menu-item>
-      <a-menu-item key="field" @click="toField">领域</a-menu-item>
-      <a-menu-item key="subscribe" @click="toSubscribe">订阅</a-menu-item>
+    <a-menu class="header-menu" style="background-color:rgb(43, 46, 59)" mode="horizontal" v-model="current" :style="{ lineHeight: '80px' }" :default-selected-keys="['1']" :open-keys.sync="openKeys">
+      <a-menu-item  class="site-header-nav-item" @mouseover="overChangeStyle(item)" @mouseout="outChangeStyle(item)" 
+        v-for="item in items" :key="item.key" @click="item.onClick" v-bind:style="item.style">{{ item.message }}</a-menu-item>
+
       <a-button
         type="ghost"
         @click="toRegister"
-        style="margin-left:10px"
         v-if="$store.state.token==null"
+        v-bind:style="registerItem.style"
+        @mouseover="overChangeStyle(registerItem)" @mouseout="outChangeStyle(registerItem)"
       >注册</a-button>
       <a-button
         type="ghost"
         @click="toLogin"
-        style="margin-left:15px;margin-right:16%"
         v-if="$store.state.token==null"
+        v-bind:style="loginItem.style"
+        @mouseover="overChangeStyle(loginItem)" @mouseout="outChangeStyle(loginItem)"
       >登录</a-button>
 
       <a-dropdown v-if="$store.state.token!=null">
@@ -93,6 +94,8 @@
 import Vue from 'vue';
 
 const colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
+const moveOutColor = 'rgb(116,177,190)';
+const moveOverColor = 'rgb(159,234,249)';
 export default {
   components: {
   },
@@ -101,6 +104,50 @@ export default {
       showLogin: true,
       color: colorList[0],
       current: ['index'],
+      items: [{
+        key: 'index',
+        onClick: this.toIndex,
+        style: {
+          'color': moveOutColor,
+        },
+        message: '主页'
+      }, {
+        key: 'rank',
+        onClick: this.toRankList,
+        style: {
+          'color': moveOutColor
+        },
+        message: '排行榜'
+      }, {
+        key: 'field',
+        onClick: this.toField,
+        style: {
+          'color': moveOutColor
+        },
+        message: '领域'
+      }, {
+        key: 'subscibe',
+        onClick: this.toSubscribe,
+        style: {
+          'color': moveOutColor
+        },
+        message: '订阅'
+      }],
+      registerItem: {
+        style: {
+          'margin-left': '10px',
+          'color': moveOutColor,
+          'border-color': moveOutColor,
+        },
+      },
+      loginItem: {
+        style: {
+          'margin-left': '15px',
+          'margin-right': '16%',
+          'color': moveOutColor,
+          'border-color': moveOutColor,
+        },
+      },
     };
   },
   created: function () {
@@ -144,6 +191,18 @@ export default {
       this.$store.state.name = "";
       window.sessionStorage.clear();
       this.$router.push({ path: "/" });
+    },
+    overChangeStyle(item) {
+      item.style.color = moveOverColor
+      if (item.style['border-color']) {
+        item.style['border-color'] = moveOverColor
+      }
+    },
+    outChangeStyle(item) {
+      item.style.color = moveOutColor
+      if (item.style['border-color']) {
+        item.style['border-color'] = moveOutColor
+      }
     },
   },
 };
