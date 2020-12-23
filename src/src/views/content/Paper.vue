@@ -23,7 +23,7 @@
                     {{searchResult.title}}
                 </div>
                 <div style="overflow:auto;max-width:calc(100% - 32%)" v-if="searchResult.authors!=null">
-                    <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors"
+                    <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors.slice(0,10)"
                         :key="author.length">
 
                         <div class="avatar">
@@ -90,7 +90,7 @@
                             </a-col>
                             <a-col :span="6">    
                                 <div style="font-size:16px" v-if="searchResult.url!=null"><div><b>相关链接 </b></div>
-                                    <span :href="searchResult.url" class="paper_url" v-for="(url,i) in searchResult.url"
+                                    <span :href="searchResult.url" class="paper_url" v-for="(url,i) in searchResult.url.slice(0,2)"
                                         :key="url.length"
                                         @click=open(searchResult.url[i])>
                                         <span v-if="i===searchResult.url.length-1"
@@ -280,6 +280,8 @@
                     this.searchResult = response.data["data"];
                     console.log(response.data.length);
                     console.log(this.searchResult.authors);
+                    console.log(this.searchResult.url.length);
+                    console.log(this.searchResult.url);
                     if (response.data.length === 0)
                         this.isEmpty = true;
                     else if (response.data["data"] !== origin)
