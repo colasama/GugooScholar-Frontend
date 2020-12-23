@@ -12,7 +12,7 @@
             mode="inline"
             :default-selected-keys="['1']"
             :default-open-keys="['1']"
-            style="height: 80%"
+            style="height: 90%"
             @click="handleClick"
           >
             <a-menu-item key="1">
@@ -50,21 +50,19 @@
         <br>
         <br>
         <br>
-        <a-card class="infoCard">
+        <!-- <a-card class="infoCard">
           <div class="cardTitle">
             <span >头像</span>
             <div>
               <span style="font-size: 15px">上传头像来个性化您的信息</span>
             </div>
           </div>
-          <!-- <a-avatar :size="128" icon="user" :src="userInfo.avatarSrc"></a-avatar> -->
+          <a-avatar :size="128" icon="user" :src="userInfo.avatarSrc"></a-avatar>
           <a-upload
             style="margin:0 auto"
             name="image"
             :show-upload-list="false"
             action="http://182.92.57.178:5000/pictures/add"
-            :before-upload="beforeUpload"
-            @change="handleChange"
           >
           <a-avatar :size="128" class="avatarStyle" v-if="userInfo.avatarSrc!=null" :src="userInfo_orig.avatarSrc" />
 
@@ -76,7 +74,7 @@
           ></avatar>
         </a-upload>
         </a-card>
-        <br>
+        <br> -->
         <a-card class="infoCard">
           <div class="cardTitle">
             <span >基本资料</span>
@@ -106,7 +104,7 @@
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="submit"
+              @ok="modifyUserInfo('name')"
               @cancel="handleCancel"
             >
             <a-form-model >
@@ -116,8 +114,8 @@
             </a-form-model>
             </a-modal>
           </a-row>
-          <a-divider class="divider"/>
-          <a-row style="margin-top:0px;" >
+          <!-- <a-divider class="divider"/> -->
+          <!-- <a-row style="margin-top:0px;" >
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="man"/> 性别
@@ -131,7 +129,7 @@
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="submit"
+              @ok="modifyUserInfo"
               @cancel="handleCancel"
             >
                   <a-form-item>
@@ -169,7 +167,7 @@
               <a-calendar :fullscreen="false" style="margin:auto;"/>
             </div>
             </a-modal>
-          </a-row>
+          </a-row> -->
         </a-card>
 
         <br>
@@ -194,12 +192,37 @@
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="submit"
+              @ok="changemail"
               @cancel="handleCancel"
             >
             <a-form-model >
               <a-form-item>
                 <a-icon type="mail" /> 邮箱:<a-input v-model="userInfo.userEmail" />
+              </a-form-item>
+            </a-form-model>
+            </a-modal>
+          </a-row>
+          <a-divider class="divider"/>
+          <a-row style="margin-top:0px">
+            <a-col :span="8" class="profile_col_title">
+              <b>
+                <a-icon type="environment"/> 住址
+              </b>
+            </a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.location}}</span></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(7)"/></a-col>
+            <a-modal
+              title="修改住址"
+              :visible="modal_visible==7"
+              :confirm-loading="confirmLoading"
+              okText="提交"
+              cancelText="取消"
+              @ok="modifyUserInfo('location')"
+              @cancel="handleCancel"
+            >
+            <a-form-model >
+              <a-form-item>
+                <a-icon type="environment" /> 住址:<a-input v-model="userInfo.location" />
               </a-form-item>
             </a-form-model>
             </a-modal>
@@ -226,7 +249,7 @@
               :confirm-loading="confirmLoading"
               okText="提交"
               cancelText="取消"
-              @ok="submit"
+              @ok="modifyUserInfo('description')"
               @cancel="handleCancel"
             >
             <a-input v-model="userInfo.description" type="textarea" :rows="5"/>
@@ -366,91 +389,130 @@ export default {
   name: 'Home',
   data(){
     return{
-      sider_status: 1,
-      layoutHeight: {"min-height":"1120px"},
-      modal_visible: 0,
-      loading_visible: 0,
-      userInfo:{
-        userId:0,
-        userName:"",
-        password:"",
-        avatarSrc:"",
-        userBirth:"",
-        userSex:"",
-        userEmail:"",
-        description:"",
-        location:"",
-      },
-      userInfo_orig:{
-        userId:0,
-        userName:"wzk",
-        password:"asdfasdfasfd",
-        avatarSrc:"https://i.loli.net/2020/11/26/ANYtuRaPrLJTDwy.jpg",
-        userBirth:"",
-        userSex:"男",
-        userEmail:"869693441@qq.com",
-        description:"阿斯顿发水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费asdfasfasdfasdf水电费水电费水电费",
-        location:"",
-      }
-    }
+		sider_status: 1,
+		layoutHeight: {"min-height":"1120px"},
+		modal_visible: 0,
+		loading_visible: 0,
+		confirmLoading: false,
+		userInfo:{
+			userId:"",
+			userName:"",
+			password:"",
+			avatarSrc:"",
+			userBirth:"",
+			userSex:"",
+			userEmail:"",
+			description:"",
+			location:"",
+		},
+		userInfo_orig:{
+			userId:"",
+			userName:"",
+			password:"",
+			avatarSrc:"",
+			userBirth:"",
+			userSex:"",
+			userEmail:"",
+			description:"",
+			location:"",
+		}
+		}
   },
-  methods:{
-    handleClick(e) {
-      console.log("click", e);
-      this.sider_status = e.key;
-    
-    },
-    set_modal_visible(e){
-      this.modal_visible=e;
-    },
-    submit(e) {
-      console.log(e);
-      this.$message.success('提交成功',1);
-      this.confirmLoading = true;
-      this.loading_visible = 1;
-      setTimeout(() => {
-        this.modal_visible = 0;
-        this.confirmLoading = false;
-        this.loading_visible = 0;
-      }, 1000);
-    },
-    handleCancel() {
-      console.log('Clicked cancel button');
-      this.userInfo.userName = "";
-      this.userInfo.password = "";
-      this.userInfo.avatarSrc = "";
-      this.userInfo.userBirth = "";
-      this.userInfo.userSex = "";
-      this.userInfo.userEmail = "";
-      this.userInfo.description = "";
-      this.modal_visible = 0;
-    },
-    modifyPwd() {
-      console.log("Modify pwd");
-    }
-  },
-  mounted() {
-    this.sider_status = 0;
-    let username=window.sessionStorage.getItem("username");
-    console.log('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+username+'info');
-    if(username==null) {
-      this.$message.error("用户名不存在,获取信息失败");
-    }
-    this.$axios({
-      method: 'get',
-      url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+username+'/info',
-    }).then((res) => {
-      console.log(res.data);
-      this.sider_status = 1;
-      this.loading = false;
-      let user = res.data.data;
-      this.userInfo_orig.userId = user.username;
-      this.userInfo_orig.userName = user.name==null? "": user.name;
-      this.userInfo_orig.userEmail = user.email==null? "": user.email;
-      this.userInfo_orig.description = user.introduction==null? "":user.introduction;
-      this.userInfo_orig.location = user.location==null? "":user.location;
-    })
-  }
+	methods:{
+		handleClick(e) {
+			console.log("click", e);
+			this.sider_status = e.key;
+		},
+		set_modal_visible(e){
+			this.modal_visible=e;
+		},
+		handleCancel() {
+			console.log('Clicked cancel button');
+			this.userInfo.userName = "";
+			this.userInfo.password = "";
+			this.userInfo.avatarSrc = "";
+			this.userInfo.userBirth = "";
+			this.userInfo.userSex = "";
+			this.userInfo.userEmail = "";
+			this.userInfo.description = "";
+			this.modal_visible = 0;
+		},
+		modifyPwd() {
+			console.log("Modify pwd");
+		},
+		modifyUserInfo(type) {
+			console.log(type);
+			console.log(window.sessionStorage.getItem('token'));
+			this.confirmLoading = true;
+			var paramsTemp = {};
+			if(type=='name'){
+				paramsTemp = {name: this.userInfo.userName}
+				console.log(this.userInfo.userName);
+			}
+			if(type=='location') {
+				paramsTemp = {location: this.userInfo.location}
+				console.log(this.userInfo.location);
+			}
+			if(type=='description') {
+				paramsTemp = {introduction: this.userInfo.description}
+				console.log(this.userInfo.description);
+			}
+			this.$axios({
+				headers: {
+                    'token': window.sessionStorage.getItem('token')
+                },
+				method: 'post',
+				url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/modifyinfo',
+				params: paramsTemp
+			}).then((res) => {
+				console.log(res);
+				this.userTemp = res.data.data
+				let user = res.data.data;
+				this.userInfo_orig.userId = user.username;
+				this.userInfo_orig.userName = user.name==null? "": user.name;
+				this.userInfo_orig.userEmail = user.email==null? "": user.email;
+				this.userInfo_orig.description = user.introduction==null? "":user.introduction;
+				this.userInfo_orig.location = user.location==null? "":user.location;
+				this.modal_visible = 0;
+				this.confirmLoading = false;
+				this.$message.success("更新成功",1);
+				return;
+			}).error((res) => {
+				console.log(res);
+				this.modal_visible = 0;
+				this.confirmLoading = false;
+				this.$message.error("更新失败",1);
+			})
+		},
+		changemail() {
+			this.$axiot({
+				method:'post',
+				url:'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/changemail',
+			})
+		}
+	},
+	mounted() {
+		this.sider_status = 0;
+		let username=window.sessionStorage.getItem("username");
+		console.log('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+username+'info');
+		if(username==null) {
+			this.$message.error("用户名不存在,获取信息失败");
+		}
+		this.$axios({
+			method: 'get',
+			url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/'+username+'/info',
+		}).then((res) => {
+			console.log(res.data);
+			this.sider_status = 1;
+			this.loading = false;
+			let user = res.data.data;
+			this.userInfo_orig.userId = user.username;
+			this.userInfo_orig.userName = user.name==null? "": user.name;
+			this.userInfo_orig.userEmail = user.email==null? "": user.email;
+			this.userInfo_orig.description = user.introduction==null? "":user.introduction;
+			this.userInfo_orig.location = user.location==null? "":user.location;
+		})
+	}
 }
 
 

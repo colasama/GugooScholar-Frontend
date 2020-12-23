@@ -10,7 +10,7 @@
                     mode="inline"
                     :default-selected-keys="['1']"
                     :default-open-keys="['sub1']"
-                    style="height: 100%"
+                    style="height: 90%"
                     @click="handleClick"
                 >
                 <a-sub-menu key="sub1">
@@ -93,10 +93,10 @@
 
             <a-divider style="margin-bottom:0px"/>
             <a-spin tip="加载中..." style = "margin:auto" v-if="loading==true"></a-spin>
-            <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_list">
+            <a-list style="margin:0px 30px 0 30px" item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_list">
                 <a-list-item slot="renderItem" slot-scope="paper_list, index" :key="index">
                     <!-- <a-card class="hippoCard-middle"> -->
-                        <div name="aaa" style="text-align:left; width:80%; padding:0px 0px 0px 60px;" >
+                        <div name="aaa" style="text-align:left; width:80%; padding:0px 0px 0px 20px;" >
                                 <p style="font-weight:700;">
                                     <a-icon type="book" />&#12288;
                                     <span class="paperLink" v-if="paper_list.hasOwnProperty('url')" @click="paperLink(paper_list.url[0])">{{paper_list.title}}</span>
@@ -150,9 +150,9 @@
 
             <a-divider style="margin-bottom:0px"/>
             <a-spin tip="加载中..." style = "margin:auto" v-if="loading==true"></a-spin>
-            <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_author_list">
+            <a-list style="margin:0px 30px 0 30px" item-layout="vertical" size="large" :pagination="pagination" :data-source="paper_author_list">
                 <a-list-item slot="renderItem" slot-scope="paper_author_list, index" :key="index">
-                        <div name="aaa" style="text-align:left; width:80%; padding:0px 0px 0px 60px;" >
+                        <div name="aaa" style="text-align:left; width:80%; padding:0px 0px 0px 20px;" >
                                 <p style="font-weight:700;">
                                     <a-icon type="book" />&#12288;
                                     <span class="paperLink" v-if="paper_author_list.hasOwnProperty('url')" @click="paperLink(paper_author_list.url[0])">{{paper_author_list.title}}</span>
@@ -201,12 +201,19 @@
             <a-divider style="width:80%; margin-bottom:0px" />
             <div style="text-align:center">
             <a-table :columns="columns" :data-source="user_list">
-                <a slot="user_list.username" slot-scope="text">{{ text }}</a>
+                <a class="usernameLink" slot="username" slot-scope="username">{{ username }}</a>
                 <span slot="customTitle"><a-icon type="user" /> 用户名</span>
                 <span slot="name" slot-scope="name">{{name}}</span>
                 <span slot="email" slot-scope="email">{{email}}</span>
-                <span slot="action" slot-scope="user">
-                    <a-button type="danger" shape="circle" icon="delete,index" @click="deleteUser(user,index)"></a-button>
+                <span slot="action" slot-scope="user, key, index,">
+                    <a-popconfirm
+                        title="是否确定删除此用户,身份信息或许会全部丢失"
+                        ok-text="Yes"
+                        cancel-text="No"
+                        @confirm="deleteUser(user,index)"
+                    >
+                    <a-button type="danger" shape="circle" icon="delete"></a-button>
+                    </a-popconfirm>
                 </span>
             </a-table>
             </div>
@@ -239,6 +246,57 @@
             <a-divider style="width:80% " />
                 
             </a-layout-content>
+
+            <a-layout-content v-if="sider_status==9">
+                <a-breadcrumb style="margin:0px 0 0px 0px;">
+                <div style="text-align:left">
+                <a-breadcrumb-item href="" style="margin-left:30px">
+                    <a-icon type="home" />
+                    <span>主页</span>
+                </a-breadcrumb-item>
+                <a-breadcrumb-item >
+                    <a-icon type="audit" />
+                    <span>门户审核</span>
+                </a-breadcrumb-item>
+                <a-breadcrumb-item>
+                    申诉
+                </a-breadcrumb-item>
+                </div>
+                </a-breadcrumb>
+
+                <div style="margin:30px">
+                    <a-tabs default-active-key="1" @change="callback">
+                        <a-tab-pane key="1" tab="未处理申诉">
+                            
+                        </a-tab-pane>
+                        <a-tab-pane key="2" tab="所有申诉" force-render>
+                            
+                        </a-tab-pane>
+                    </a-tabs>
+                </div>
+
+
+            </a-layout-content>
+
+            <a-layout-content v-if="sider_status==10">
+                <a-breadcrumb style="margin:0px 0 0px 0px;">
+                <div style="text-align:left">
+                <a-breadcrumb-item href="" style="margin-left:30px">
+                    <a-icon type="home" />
+                    <span>主页</span>
+                </a-breadcrumb-item>
+                <a-breadcrumb-item >
+                    <a-icon type="audit" />
+                    <span>门户审核</span>
+                </a-breadcrumb-item>
+                <a-breadcrumb-item>
+                    取消认证
+                </a-breadcrumb-item>
+                </div>
+                </a-breadcrumb>
+            </a-layout-content>
+
+
             
         </a-layout>
     </a-layout-content>
@@ -282,8 +340,21 @@
 }
 
 .paperLink:hover {
-    color: blue;
+    color: #20bcdb;
     cursor: pointer;
+}
+
+
+.usernameLink:hover {
+    color: #20bcdb;
+    cursor: pointer;
+}
+
+
+.ant-tabs-nav-scroll {
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
 }
 
 </style>
@@ -295,23 +366,28 @@ const columns = [
     key: 'username',
     slots: { title: 'customTitle' },
     scopedSlots: { customRender: 'username' },
+    align:'center',
   },
   {
     title: '昵称',
     dataIndex: 'name',
     key: 'name',
+    align:'center',
   },
   {
     title: '邮箱',
     dataIndex: 'email',
     key: 'email',
+    align:'center',
   },
   {
     title: '操作',
     key: 'action',
     scopedSlots: { customRender: 'action' },
+    align:'center',
   },
 ];
+const key = 'updatable';
 export default {
     name: 'Admin',
     data(){
@@ -369,6 +445,19 @@ export default {
                     this.user_list = res.data.data; 
                 })
             }
+            else if(this.sider_status==9) {
+                this.loading == true;
+                this.$axios({
+                    headers: {
+                        'token': window.sessionStorage.getItem('token')
+                    },
+                    method: 'post',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/user/all'
+                }).then((res)=>{
+                    this.loading == false;
+                    console.log(res);
+                })
+            }
         },
         searchPaper() {
             console.log(this.searchPaperValue);
@@ -414,6 +503,8 @@ export default {
         },
         deleteUser(user,index) {
             console.log(user.username);
+            console.log(index);
+            this.$message.loading({ content: '删除中', key });
             this.$axios({
                 headers: {
                     'token': window.sessionStorage.getItem('token')
@@ -424,10 +515,13 @@ export default {
                     username: user.username
                 }
             }).then((res)=>{
-                this.loading == false;
+                this.loading = false;
                 console.log(res);
+                this.$message.success({ content: '删除用户成功', key, duration: 2 });
                 this.user_list.splice(index, 1); 
+                return;
             })
+            this.$message.error({ content: '删除用户失败', key, duration: 2 })
         },
         searchUser() {
             
@@ -436,9 +530,26 @@ export default {
             console.log(url);
             window.location.href=url;
         },
+        callback(key) {
+            console.log(key);
+        },
     },
     mounted() {
-
+        this.loading = true;
+        this.$axios({
+            method: 'get',
+            url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
+            params: {
+                words: "a",
+                type: "title"
+            }
+        }).then((res) => {
+            console.log(res.data);
+            this.loading = false;
+            this.paper_list = res.data.data;
+            console.log(this.paper_list);
+            console.log(this.loading); 
+        })
     }
 
 }
