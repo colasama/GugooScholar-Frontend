@@ -216,7 +216,9 @@
                                 style="margin-left: 50px" tip="加载相关作者图片中"/>
                         <a-card v-if="isAvatarCompleted" title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
                             <a-card-grid class="cardGrid" @click="toAuthor(author.id)" v-for="(author, index) in otherAuthors" :key="index">
-                                <div style="cursor:pointer"><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/><br>{{author.name}}</div>
+                                <div style="cursor:pointer"><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/>
+                                    <br>{{author.name.length > 9 ? author.name.substr(0,9)+'...': author.name}}
+                                </div>
                             </a-card-grid>
                         </a-card>
                     </div>
@@ -661,7 +663,7 @@
 }
 .cardGrid {
     width: 33%;
-    padding: 20px 5px 0 15px;
+    padding: 20px 10px 0 15px;
     box-shadow: 0 0 0 white;
 }
 .otherAuthor {

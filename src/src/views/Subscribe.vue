@@ -125,6 +125,7 @@
 </template>
 <script>
 export default {
+  inject: ['reload'],
   data() {
     return {
       collapsed: false,
