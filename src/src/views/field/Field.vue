@@ -285,6 +285,8 @@
                   this.toPaper(id);
               }else if(type=='科研人员'){
                   this.toScientist(id);
+              }else if(type=='专利'){
+                  this.toFund(id);
               }
             },
 
@@ -307,6 +309,16 @@
             toScientist(scientistId) {
                 let routeData = this.$router.resolve({
                     path: '/scientist/show/'+scientistId,
+                })
+                window.open(routeData.href, '_blank')
+            },
+
+            toFund(fundId) {
+                let routeData = this.$router.resolve({
+                    path: '/fund',
+                    query: {
+                        id: fundId,
+                    }
                 })
                 window.open(routeData.href, '_blank')
             },
