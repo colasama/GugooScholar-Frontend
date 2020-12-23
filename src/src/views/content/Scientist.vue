@@ -9,7 +9,7 @@
                         </div>
                         <div class="authorInfo">
                             <div class="authorName">
-                                
+
                                 <a-tooltip>
                                     <template slot="title">点击收藏科研人员</template>
                                     <a-icon type="star" v-show="!subscribe" @click="subscribeAuthor(true)"/>
@@ -516,7 +516,7 @@
                     query: {
                         id:this.$route.params.id,
                         name:this.authorName
-                        }
+                    }
                 });
                 window.open(routeUrl.href, '_blank');
             },
@@ -539,13 +539,15 @@
                         {author_id: this.$route.params.id},
                         {headers: {token: window.sessionStorage.getItem('token')}}
                     ).then(() => {
+                        console.log("really");
                         this.confirmLoading = false;
                         this.modalVisible2 = false;
                         this.isClaim = true;
                         this.$message.success("认领成功");
                     }).catch((e) => {
-                        console.log(e);
-                        this.$message.error("认领失败");
+                        this.confirmLoading = false;
+                        this.modalVisible2 = false;
+                        this.$message.error(e.response.data.message);
                     });
                 }
             },
