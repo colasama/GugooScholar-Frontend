@@ -89,7 +89,8 @@
                         <a-menu-item key="2" @click="isPaper=false"><a-icon type="appstore" />科研项目</a-menu-item>
                     </a-menu>
 
-                    <div class="sum"><a-row type="flex" justify="center">
+                    <div class="sum">
+                    <a-row type="flex" justify="center">
                     <a-col :span="12" style="text-align:center">
                         <a-spin v-if="isPaperCompleted===false" size="large"
                                 style="margin-top:200px;margin-left: 400px" tip="加载论文中"/>
@@ -219,7 +220,7 @@
                         </a-card>
                     </div>
                     </a-col>
-                    </a-row></div> 
+                    </a-row></div>
                     <div style="clear:both;height:0;font-size: 1px;line-height: 0px;"></div>
                 </div>
             </a-layout-content>
@@ -693,10 +694,13 @@
     overflow: hidden;
 }
 
-  .sum>>>.ant-row>div {
+.sum>>>.ant-row>div {
     background: transparent;
     margin: 0 16% 0 16%;
     min-width: calc(100% - 32%);
     border: 0;
-  }
+}
+.sum {
+    margin-top: 50px;
+}
 </style>
