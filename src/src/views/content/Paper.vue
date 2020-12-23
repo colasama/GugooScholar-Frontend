@@ -5,9 +5,21 @@
             <a-layout-content style="margin-left:16%;margin-top:48px">
                 <div class="topic" v-if="searchResult.title!=null">
                     {{searchResult.title}}
-                    <a-icon type="star" v-show="!subscribe" @click="subscribePaper"/>
-                    <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"
-                            @click="subscribe=false"/>
+                    <a-tooltip>
+                        <template slot="title">点击收藏论文</template>
+                        <a-icon type="star" v-show="!subscribe" @click="subscribePaper(true)"/>
+                    </a-tooltip>
+                    <a-tooltip>
+                        <template slot="title">点击取消收藏</template>
+                        <a-popconfirm
+                                title="您确定要取消收藏吗?"
+                                ok-text="是的"
+                                cancel-text="我再想想"
+                                @confirm="subscribePaper(false)"
+                        >
+                            <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"/>
+                        </a-popconfirm>
+                    </a-tooltip>
                 </div>
                 <div>
                     <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors"
@@ -175,53 +187,38 @@
                 colorList: ["background: #87d068", "background: #c9bcd6", "background:#edadad",
                     "background:#108ee9", "background: #ff5500", "background: #2db7f5"],
                 loading: true,
-                // {"title": "马保国现象：一个传统武术江湖人士的人设特征解读",
-                //     "abstract": "文章运用社会学理论对马保国现象进行分析。马保国是自媒体时代的新型江湖艺人,他将自我塑造成沉浮于市井的文、武兼备之人,并对自身武" +
-                // "学品格做出深度描述,打造出全知全能的武师形象。除了对自己的尚武业绩做出虚饰性宣" +
-                // "传,还试图占据道德制高点,对古典完人形象进行再度扮演。他塑造的海归武师角色,更像是走向社会表演的非尚武类武者," +
-                // "他并未真正走进中国传统武术,也并非武术高手,却竭力在各种场合扮演武林高人的角色," +
-                // "最终在实战中败下阵来。\"马保国事件\"可能促进中国传统武术的内部革新,成为重新审视中国传统武术的契机。",
-                //         "authors":["耗子尾汁","嘤国大理石","九十多公斤","八十多公斤","赖佐田","马老师","婷婷"],
-                //     "keywords": ["马保国现象","江湖艺人","社会角色","传统武术","现代体育"],
-                //     "doi": "10.15877/j.cnki.nsic.20201009.004",
-                //     "n_citation": "233",
-                //     "pdf": "https://kns.cnki.net/KXReader/Detail?PlatForm=kdoc&TIMESTAMP=637421042801093750&DBCODE=CJFD&TABLEName=CJFDAUTO&FileName=LJTB202005012&RESULT=1&SIGN=KImDfrMgmsANqw9qdedfVFPO2FM%3d",
-                //     "url": "",
-                //     "venue": "体育学研究",
-                //     "year": "2020",
-                //     "volume": "",
-                //     "issue": "05",
-                //     "page_start": "87",
-                //     "page_end": "94",
-                //     "issn": " ",
-                //     "isbn": " ",
-                //     "lang": "中文"},
-                //     content: '',
-                //     isEmpty: false,
             }
         },
         methods: {
-            subscribePaper() {
-                let id = this.searchResult.id;
-                this.axios({
-                    headers: {
-                        token:'xx',
-                    },
-                    method: 'post',
-                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/paper',
-                    data: {
-                        'paper_id': id
-                    }
-                }).then(
-                    (res) => {
-                        let result = res.data;
-                        console.log(result);
-                        this.subscribe = true;
+            subscribePaper(bool) {
+                let token = window.sessionStorage.getItem('token');
+                if (!token) {
+                    this.$message.info("请先登录再使用该功能");
+                    return;
+                }
+                if (bool) {
+                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/paper',
+                        {paper_id: this.$route.query.id},
+                        {headers: {token: token}}
+                    ).then((res) => {
+                        console.log(res);
                         this.$message.success("收藏成功");
-                    }
-                ).catch((e) => {
-                    console.log(e);
-                });
+                        this.subscribe = true;
+                    }).catch((e) => {
+                        console.log(e);
+                    });
+                } else {
+                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/cancel/paper',
+                        {paper_id: this.$route.query.id},
+                        {headers: {token: token}}
+                    ).then((res) => {
+                        console.log(res);
+                        this.$message.info("已取消收藏");
+                        this.subscribe = false;
+                    }).catch((e) => {
+                        console.log(e);
+                    });
+                }
             },
             handleClick() {
                 this.loading = !this.loading;
