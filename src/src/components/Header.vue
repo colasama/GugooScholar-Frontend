@@ -6,7 +6,7 @@
       <a-menu-item key="indexTab" @click="toIndex">主页</a-menu-item>
       <a-menu-item key="rankTab" @click="toRankList">排行榜</a-menu-item>
       <a-menu-item key="fieldTab" @click="toField">领域</a-menu-item>
-      <a-menu-item key="subscribeTab" @click="toSubscribe">订阅</a-menu-item>
+      <a-menu-item key="subscribeTab" @click="toSubscribe">收藏</a-menu-item>
       <a-button
         type="ghost"
         @click="toRegister"
