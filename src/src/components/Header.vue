@@ -22,17 +22,18 @@
 
       <a-dropdown v-if="$store.state.token!=null">
       <a-menu style="margin-top:4px" slot="overlay">
-          <a-menu-item key="1" @click="toUserindex">账户信息</a-menu-item>
+          <a-menu-item key="1" @click="toUserIndex">账户信息</a-menu-item>
+          <a-menu-item key="2" @click="toAdmin">系统管理</a-menu-item>
           <a-menu-item key="3" @click="exit">退出</a-menu-item>
         </a-menu>
-      <a-button type="link" @click="toUserindex" style="margin-right:16%;" v-if="$store.state.token!=null">
+      <a-button type="link" @click="toUserIndex" style="margin-right:16%;color:#9feaf9" v-if="$store.state.token!=null">
           <a-avatar
             :size="32"
             inline
             style="margin-right:6px"
             :style="{ backgroundColor: '#9feaf9', verticalAlign: 'middle' }"
             v-if="$store.state.useravatar==null||$store.state.useravatar=='null'"
-          >{{$store.state.username[0]}}</a-avatar>
+          >{{$store.state.username[0].toUpperCase()}}</a-avatar>
           <a-avatar
             v-else
             :src="$store.state.useravatar"
@@ -114,6 +115,9 @@ export default {
     },
     toUserIndex() {
       this.$router.push({ path: "/admin/user"});
+    },
+    toAdmin() {
+      this.$router.push({ path: "/admin/admin"});
     },
     toLogin() {
       this.$router.push({ path: "/login"});
