@@ -133,7 +133,7 @@ export default {
         style: {
           'color': moveOutColor
         },
-        message: '订阅'
+        message: '收藏'
       }],
       registerItem: {
         style: {
