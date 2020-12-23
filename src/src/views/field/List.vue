@@ -35,12 +35,6 @@
 
 
 <script>
-    import Vue from "vue";
-    import { List } from "ant-design-vue";
-    import "ant-design-vue/dist/antd.css";
-
-    Vue.use(List);
-
     const listData = [];
     for (let i = 0; i < 24; i++) {
         listData.push({
