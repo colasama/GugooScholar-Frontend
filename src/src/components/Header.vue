@@ -3,10 +3,10 @@
     <div @click="toIndex" class="top-logo" style="margin-left:16%" />
 
     <a-menu style="background-color:rgb(43, 46, 59)" mode="horizontal" v-model="current" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
-      <a-menu-item key="index" @click="toIndex">主页</a-menu-item>
-      <a-menu-item key="rank" @click="toRankList">排行榜</a-menu-item>
-      <a-menu-item key="field" @click="toField">领域</a-menu-item>
-      <a-menu-item key="subscribe" @click="toSubscribe">订阅</a-menu-item>
+      <a-menu-item key="indexTab" @click="toIndex">主页</a-menu-item>
+      <a-menu-item key="rankTab" @click="toRankList">排行榜</a-menu-item>
+      <a-menu-item key="fieldTab" @click="toField">领域</a-menu-item>
+      <a-menu-item key="subscribeTab" @click="toSubscribe">订阅</a-menu-item>
       <a-button
         type="ghost"
         @click="toRegister"
@@ -90,7 +90,7 @@
 
 
 <script>
-import Vue from 'vue';
+//import Vue from 'vue';
 
 const colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
 export default {
@@ -100,14 +100,11 @@ export default {
     return {
       showLogin: true,
       color: colorList[0],
-      current: ['index'],
+      current: ['indexTab'],
     };
   },
   created: function () {
-    Vue.$on('current',target=>{
-      console.log(target);
-      this.current=target;
-    })
+
   },
   computed: {},
   watch: {},
