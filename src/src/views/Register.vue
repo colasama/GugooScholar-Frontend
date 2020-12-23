@@ -130,7 +130,7 @@
     </a-row>
   </div>
 </template>
-<style>
+<style scoped>
 .logo {
   width: 40px;
   height: 40px;

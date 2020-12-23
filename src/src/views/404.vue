@@ -28,7 +28,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 #particles-js{
   width: 100%;
   height: calc(100% - 100px);

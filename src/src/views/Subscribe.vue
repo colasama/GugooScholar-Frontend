@@ -390,7 +390,7 @@
         }
     };
 </script>
-<style>
+<style scoped>
 .subscribeBox{
   padding: 24px 0; 
   background: #fff;

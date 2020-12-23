@@ -636,7 +636,7 @@
     }
 </script>
 
-<style>
+<style scoped>
 /* 上右下左 */
 .scientist-show {
     background: #2F3241;

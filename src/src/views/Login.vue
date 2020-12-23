@@ -62,7 +62,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
 .welcome_archived {
   background: url("../assets/cover.png");
 }
