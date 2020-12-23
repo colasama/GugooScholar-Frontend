@@ -54,11 +54,11 @@
         <div class="sum">
           <a-row type="flex" justify="center">
             <a-col :span="4" class="suminfo">
-              <div style="font-size:24px;color:white;text-align:center">8,657,431</div>
+              <div style="font-size:24px;color:white;text-align:center">11,057,431</div>
               <div style="font-size:18px;color:white;text-align:center">论文数量</div>
             </a-col>
             <a-col :span="4" class="suminfo">
-              <div style="font-size:24px;color:white;text-align:center">3,141,874</div>
+              <div style="font-size:24px;color:white;text-align:center">3,541,874</div>
               <div style="font-size:18px;color:white;text-align:center">科研人员</div>
             </a-col>
             <a-col :span="4" class="suminfo">
@@ -404,8 +404,7 @@
   }
 
   .homemain {
-    width: 100%;
-    text-align: center;
+    text-align:center;
     background-color: #2c2e3b;
     padding-bottom: 36px;
   }
@@ -425,9 +424,13 @@
 
   .keywords {
     color: #9feaf9;
+    margin: 0 16% 0 16%;
+    min-width:calc(100% - 32%);
+    text-align:center;
   }
 
   .keywords .keyword {
+
     height: 20px;
     max-width: 250px;
     padding-left: 10px;
