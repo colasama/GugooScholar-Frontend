@@ -180,7 +180,7 @@
           <a-button disabled v-else size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
         </template>
       </div>
-      <a-button @click="test"> test</a-button>
+      <!--<a-button @click="test"> test</a-button>-->
     </a-layout-content>
   </a-layout>
 
