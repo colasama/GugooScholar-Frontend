@@ -200,7 +200,7 @@ export default {
         data: {
           paper_id: id,
         },
-      }).then((res)=>{
+      }).then(()=>{
         this.subscribePaper[index].isSub = true;
         this.$forceUpdate()
         this.$message.success("已收藏");
@@ -218,7 +218,7 @@ export default {
         data: {
           author_id: id,
         },
-      }).then((res)=>{
+      }).then(()=>{
         this.subscribeScientist[index].isSub = true;
         this.$forceUpdate()
         this.$message.success("已收藏");
@@ -236,7 +236,7 @@ export default {
         data: {
           paper_id: id,
         },
-      }).then((res)=>{
+      }).then(()=>{
         this.subscribePaper[index].isSub = false;
         this.$forceUpdate()
         this.$message.info("已取消收藏");
@@ -254,7 +254,7 @@ export default {
         data: {
           author_id: id,
         },
-      }).then((res)=>{
+      }).then(()=>{
         this.subscribeScientist[index].isSub = false;
         this.$forceUpdate()
         this.$message.info("已取消收藏");
