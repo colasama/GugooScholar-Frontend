@@ -135,35 +135,55 @@ export default {
   },
   created() {
     //test
+    // this.$axios({
+    //   method: 'get',
+    //   url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/search',
+    //   params: {
+    //     words: 'a',
+    //     offset: 0
+    //   }
+    // }).then((res)=>{
+    //   this.subscribeScientist = res.data.data;
+    // }).catch((e)=>{
+    //   console.log(e);
+    // });
+    // this.$axios({
+    //   method: 'get',
+    //   url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
+    //   params: {
+    //     words: 'a',
+    //     type:'title',
+    //     offset: 0
+    //   }
+    // }).then((res)=>{
+    //   this.subscribePaper = res.data.data;
+    // }).catch((e)=>{
+    //   console.log(e);
+    // });
+
+    //inference
     this.$axios({
-      method: 'get',
-      url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/search',
-      params: {
-        words: 'a',
-        offset: 0
-      }
-    }).then((res)=>{
-      this.subscribeScientist = res.data.data;
-    }).catch((e)=>{
-      console.log(e);
-    });
-    this.$axios({
-      method: 'get',
-      url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
-      params: {
-        words: 'a',
-        type:'title',
-        offset: 0
-      }
+      method: 'post',
+      url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/show/paper',
+      headers: {
+        token: this.$store.state.token,
+      },
     }).then((res)=>{
       this.subscribePaper = res.data.data;
     }).catch((e)=>{
       console.log(e);
     });
-
-
-
-    //
+    this.$axios({
+      method: 'post',
+      url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/show/author',
+      headers: {
+        token: this.$store.state.token,
+      },
+    }).then((res)=>{
+      this.subscribeScientist = res.data.data;
+    }).catch((e)=>{
+      console.log(e);
+    });
 
   },
   methods: {
@@ -171,24 +191,76 @@ export default {
       this.current = tag
     },
     subscribeP(id,index) {
-      this.subscribePaper[index].isSub = true;
-      this.$forceUpdate()
-      this.$message.success("已收藏");
+      this.$axios({
+        method: 'post',
+        url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/paper',
+        headers: {
+          token: this.$store.state.token,
+        },
+        data: {
+          paper_id: id,
+        },
+      }).then((res)=>{
+        this.subscribePaper[index].isSub = true;
+        this.$forceUpdate()
+        this.$message.success("已收藏");
+      }).catch((e)=>{
+        console.log(e);
+      });
     },
     subscribeS(id,index) {
-      this.subscribeScientist[index].isSub = true;
-      this.$forceUpdate()
-      this.$message.success("已收藏");
+      this.$axios({
+        method: 'post',
+        url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/author',
+        headers: {
+          token: this.$store.state.token,
+        },
+        data: {
+          author_id: id,
+        },
+      }).then((res)=>{
+        this.subscribeScientist[index].isSub = true;
+        this.$forceUpdate()
+        this.$message.success("已收藏");
+      }).catch((e)=>{
+        console.log(e);
+      });
     },
     cancelSubscribePaper(id,index) {
-      this.subscribePaper[index].isSub = false;
-      this.$forceUpdate()
-      this.$message.info("已取消收藏");
+      this.$axios({
+        method: 'post',
+        url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/cancel/paper',
+        headers: {
+          token: this.$store.state.token,
+        },
+        data: {
+          paper_id: id,
+        },
+      }).then((res)=>{
+        this.subscribePaper[index].isSub = false;
+        this.$forceUpdate()
+        this.$message.info("已取消收藏");
+      }).catch((e)=>{
+        console.log(e);
+      });
     },
     cancelSubscribeScientist(id,index) {
-      this.subscribeScientist[index].isSub = false;
-      this.$forceUpdate()
-      this.$message.info("已取消收藏");
+      this.$axios({
+        method: 'post',
+        url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/cancel/author',
+        headers: {
+          token: this.$store.state.token,
+        },
+        data: {
+          author_id: id,
+        },
+      }).then((res)=>{
+        this.subscribeScientist[index].isSub = false;
+        this.$forceUpdate()
+        this.$message.info("已取消收藏");
+      }).catch((e)=>{
+        console.log(e);
+      });
     },
     toPaper(paperid) {
       let routeData = this.$router.resolve({
