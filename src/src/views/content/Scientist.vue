@@ -317,6 +317,7 @@
         },
         created() {
             let scientistId = this.$route.params.id;
+
             //console.log(scientistId);
             //let scientistId = '53f4474cdabfaee43ec81506';
             this.getAuthor(scientistId);
@@ -326,7 +327,7 @@
             this.getFunds(scientistId);
         },
         mounted() {
-
+            window.scroll(0, 0);
         },
         methods:{
             toHome() {
@@ -618,6 +619,7 @@
                 }).catch((e) => {
                     this.confirmAppeal = false;
                     this.showAppeal = false;
+                    this.appealReason = '';
                     this.$message.error(e.response.data.message);
                 });
             }

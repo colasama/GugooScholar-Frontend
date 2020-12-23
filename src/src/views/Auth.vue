@@ -1,4 +1,3 @@
-
 <template>
   <div class="welcome">
     <vue-particles
