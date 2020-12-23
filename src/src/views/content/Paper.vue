@@ -21,18 +21,18 @@
                         </a-popconfirm>
                     </a-tooltip>
                 </div>
-                <div>
+                <div v-if="searchResult.authors!=null">
                     <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors"
                         :key="author.length">
-                        <author_avatar 
+                        <author_avatar
                                 :name=author.name :color="colorList[i%6]"></author_avatar>
                     </div>
                 </div>
                 <a-divider/>
 
-                <div style="text-align:left">
+                <div style="text-align:left" v-if="searchResult.keywords!=null">
                     <span style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1"
-                          v-if="searchResult.keywords!=null">关键词：</span>
+                          >关键词：</span>
                     <a-list :grid="{ gutter: 16, column: 4 }" :data-source="searchResult.keywords">
                         <a-list-item slot="renderItem" title="关键词" slot-scope="item">
                         <a-button type="primary" class="keyword">
@@ -96,7 +96,7 @@
             </a-layout-content>
         </a-layout>
         <div style="margin: 50px 0">
-            <div style="border-radius: 5px;text-align:left">
+            <div style="border-radius: 5px;text-align:left" v-if="searchResult.abstract!=null">
                 <a-card style="width: 80%;margin:auto;">
                 <h1>摘要</h1>
                     <p style="font-size: 16px;">{{searchResult.abstract}}</p>
@@ -263,6 +263,7 @@
                     console.log(response.data["data"]);
                     let origin = this.searchResult;
                     this.searchResult = response.data["data"];
+                    console.log(response.data.length);
                     if (response.data.length === 0)
                         this.isEmpty = true;
                     else if (response.data["data"] !== origin)
