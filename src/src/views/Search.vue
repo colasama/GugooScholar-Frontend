@@ -176,8 +176,7 @@
         <template>
           <a-button  v-if="this.searchOffset>0 || (this.searchClassify1[0]=='all' && !isCurrentOffsetZero()) " @click="onChange(false)" size="large" type="primary" style="float:left;padding-left:20px;padding-right:20px;margin-right:30px"><a-icon type="left" /></a-button>
           <a-button disabled v-else size="large" type="primary" style="float:left;padding-left:20px;padding-right:20px;margin-right:30px"><a-icon type="left" /></a-button>
-          <a-button v-if="!isCurrentNone() || (current[0]=='user'&& this.authorResult.length==20) 
-          || (current[0]=='paper' && this.paperResult.length==20) || (current[0]=='fund' && this.fundResult.length==20)" @click="onChange(true)" size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
+          <a-button v-if="judge1()" @click="onChange(true)" size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
           <a-button disabled v-else size="large" type="primary" style="padding-left:20px;padding-right:20px;"><a-icon type="right" /></a-button>
         </template>
       </div>
@@ -229,6 +228,10 @@
               label: '标题',
             },
             {
+              value: 'author',
+              label: '作者',
+            },
+            {
               value: 'keywords',
               label: '关键词',
             },
@@ -267,21 +270,26 @@
       if (this.$route.query.searchClassify)
       {
         this.searchClassify = this.$route.query.searchClassify;
-        this.searchClassify1[1] = this.$route.query.searchClassify;
+        this.searchClassify1 = this.$route.query.searchClassify;
       }
       if (this.$route.query.searchContent)
         this.searchContent = this.$route.query.searchContent;
       if(this.$route.query.id)
       {
         this.searchContent=this.$route.query.name;
-        this.searchClassify[0]='all';
+        this.searchClassify[0]='paper';
+        this.searchClassify[1]='author';
         this.current=['paper'];
-        this.getPubs(this.$route.query.id);
+        this.search();
       }
       if(this.$route.query.searchClassify && this.$route.query.searchContent)
         this.search();
     },
     methods: {
+      judge1(){
+        return  (this.current[0]=='user'&& this.authorResult.length==20) 
+          || (this.current[0]=='paper' && this.paperResult.length==20) || (this.current[0]=='fund' && this.fundResult.length==20)
+      },
       getPubs(scientistId) {
         this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/paper',
             {headers: {token: 'xx'}}
@@ -383,7 +391,9 @@
         this.searchType = value;
       },
       test() {
+        console.log(this.judge1());
         console.log(this.current);
+        console.log(this.paperResult.length);
       },
       toPaper(paperid) {
         let routeData = this.$router.resolve({
@@ -411,6 +421,9 @@
       },
       onSearch(){
         this.searchOffset=0;
+        this.searchOffset_paper=0;
+        this.searchOffset_author=0;
+        this.searchOffset_fund=0;
         this.search();
       },
 
@@ -442,8 +455,10 @@
           {
             this.searchPaper('title',false);
           }
-          else
+          else if(this.searchClassify1[1]!='author')
             this.searchPaper(this.searchClassify1[1],false);
+          else
+            this.getPubs(this.$route.query.id);
         }else{
           this.current=['fund'];
           if(!this.searchClassify1[1])
@@ -503,7 +518,7 @@
         let offset=this.searchOffset;
         if(this.searchClassify1[0]=='all')
         {
-          offset=this.searchOffset_author;
+          offset=this.searchOffset_fund;
         }
         this.$axios({
           method: 'get',

@@ -6,7 +6,7 @@
                     科研领域
                 </div>
                 <a-input-group compact class="ant-layout-header-search">
-                    <a-input style="width: 30%;" placeholder="搜索目标科研领域" size="large" v-model="searchContent"/>
+                    <a-input style="width: 30%;" placeholder="搜索目标科研领域" size="large" v-model="searchContent" @keyup.enter="SearchField"/>
                     <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large"
                               @click="SearchField">搜索
                     </a-button>
@@ -14,7 +14,7 @@
             </a-layout-header>
 
             <a-layout-content class="ant-layout-content">
-                <a-list size="small" bordered :grid="{ gutter: 16, column: 1 }" :pagination="pagination" :data-source="listData">
+                <a-list size="small" style="margin: 0 96px 0 96px" :grid="{ gutter: 16, column: 1 }" :pagination="pagination" :data-source="listData">
                 <a-list-item slot="renderItem" slot-scope="item, index" :key="index">
                         <div @click="Field(item.content)" class="hippoCard-middle" style="font-size: 30px;">
                             {{item.content}}
@@ -227,7 +227,7 @@
         display:inline-block;
     }
     .hippoCard-middle {
-        margin: 20px 0;
+        margin: 16px 0 0 0;
         height: 180px;
         width: 1231px;
         display:inline-block;

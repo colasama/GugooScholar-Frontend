@@ -30,7 +30,8 @@
                             <div class="authorDes">
                                 所属机构：{{university}}
                             </div>
-                            <div style="margin-top: 35px">
+                            <div style="margin-top: 20px" v-show="isClaim">个人简介：{{bindUser.introduction}}</div>
+                            <div style="margin-top: 30px">
                                 <a-button v-show="!isClaim" type="primary" @click="claimPortal">
                                     <a-icon type="user" />认领门户
                                 </a-button>
@@ -39,27 +40,37 @@
                                     <a-icon type="user" />已认领
                                 </a-button>
                                 <span v-show="isClaim" style="margin-left: 8px">
-                                    <a-tooltip>
-                                        <template slot="title">
-                                          查看认领人信息
-                                        </template>
-                                        <a-button style="font-size: 20px" type="link" @click="openNotification">
-                                            <a-icon type="zoom-in" />
+                                        <a-button type="primary" @click="openNotification">
+                                            <a-icon type="zoom-in" />查看认领人信息
                                         </a-button>
-                                    </a-tooltip>
+                                </span>
+                                <span v-show="isClaim" style="margin-left: 8px">
+                                        <a-button type="link" @click="makeAppeal">
+                                            <a-icon type="notification" theme="filled"/>申诉
+                                        </a-button>
                                 </span>
 
                                 <a-modal title="认领门户简单验证" :visible="modalVisible0"
                                          @ok="handleOk(0)" @cancel="modalVisible0=false">
                                     <p>您的名字是{{authorName}}吗？</p>
                                 </a-modal>
-                                <a-modal title="认领门户简单验证" :visible="modalVisible1"
+                                <a-modal title="认领门户简单验证" :visible="modalVisible1" v-if="pubList.length > 0"
                                          @ok="handleOk(1)" @cancel="modalVisible1=false">
                                     <p>{{ pubList[0].title }}, 该论文是您曾发表的论文吗？</p>
                                 </a-modal>
                                 <a-modal title="认领门户简单验证" :visible="modalVisible2" :confirm-loading="confirmLoading"
-                                         @ok="handleOk(2)" @cancel="modalVisible2=false">
+                                         v-if="otherAuthors.length > 0" @ok="handleOk(2)" @cancel="modalVisible2=false">
                                     <p>您曾和{{ otherAuthors[0].name }}合作过吗？</p>
+                                </a-modal>
+                                <a-modal
+                                        title="作者冒领申诉"
+                                        :visible="showAppeal"
+                                        :confirm-loading="confirmAppeal"
+                                        @ok="handleAppeal"
+                                        @cancel="showAppeal=false"
+                                >
+                                    <a-textarea v-model="appealReason" placeholder="请填写申诉理由"
+                                                :auto-size="{ minRows: 4, maxRows: 6 }" />
                                 </a-modal>
                             </div>
                         </div>
@@ -77,7 +88,8 @@
                     </div>
                     <div class="rightContent">
                         <div style="font-size: 18px; color: #BDD9E1;">科研人员关系网络</div>
-                        <a-spin v-if="isCompleted == false" size="large" style="margin-top:100px" tip="加载关系网络中"/>
+                        <div style="color: #74b1be;margin-top: 100px" v-if="isCompleted && series.length === 0">暂无相关专家</div>
+                        <a-spin v-if="!isCompleted" size="large" style="margin-top:100px" tip="加载关系网络中"/>
                         <div class="expertWeb" >
                             <VueApexCharts  v-if="isCompleted" ref="chart" type="polarArea" :options="chartOptions" :series="series">
                             </VueApexCharts>
@@ -214,9 +226,13 @@
                     <div >
                         <a-spin v-if="!isAvatarCompleted" size="large"
                                 style="margin-left: 50px" tip="加载相关作者图片中"/>
-                        <a-card v-if="isAvatarCompleted" title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
+                        <div style="color: #74b1be" v-if="isAvatarCompleted && otherAuthors.length === 0">暂无相关作者</div>
+                        <a-card v-if="isAvatarCompleted && otherAuthors.length > 0"
+                                title="相似作者" class="otherAuthor" :body-style="bodyAuthorStyle">
                             <a-card-grid class="cardGrid" @click="toAuthor(author.id)" v-for="(author, index) in otherAuthors" :key="index">
-                                <div style="cursor:pointer"><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/><br>{{author.name}}</div>
+                                <div style="cursor:pointer"><a-avatar shape="square" :size="64" icon="user" :src="author.avatar"/>
+                                    <br>{{author.name.length > 9 ? author.name.substr(0,9)+'...': author.name}}
+                                </div>
                             </a-card-grid>
                         </a-card>
                     </div>
@@ -236,16 +252,19 @@
 <script>
     import VueApexCharts from 'vue-apexcharts'
     export default {
-
+        inject: ['reload'],
         components: {
             VueApexCharts
         },
         data() {
             return {
                 confirmLoading: false,
+                confirmAppeal: false,
                 modalVisible0: false,
                 modalVisible1: false,
                 modalVisible2: false,
+                appealReason: '',
+                showAppeal: false,
                 ModalText: 'xxx',
                 isClaim: false,
                 bindUser: {},
@@ -265,10 +284,10 @@
                 nPubs: 0,
                 nCitation: 0,
                 isPaper: true,
-                pubList: [{title: ''}],
+                pubList: [],
                 fundList: [],
-                otherAuthors: [{avatar: ''}],
-                series: [0],
+                otherAuthors: [],
+                series: [],
                 chartOptions: {
                     chart: {
                         type: 'polarArea',
@@ -301,6 +320,7 @@
         },
         created() {
             let scientistId = this.$route.params.id;
+
             //console.log(scientistId);
             //let scientistId = '53f4474cdabfaee43ec81506';
             this.getAuthor(scientistId);
@@ -310,7 +330,7 @@
             this.getFunds(scientistId);
         },
         mounted() {
-
+            window.scroll(0, 0);
         },
         methods:{
             toHome() {
@@ -368,6 +388,7 @@
             getAuthor(scientistId) {
                 this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId,
                 ).then((res)=>{
+                    console.log(res.data.data)
                     let data = res.data.data;
                     this.authorName = data.name;
                     if (data.orgs != null) this.university = data.orgs;
@@ -403,11 +424,16 @@
                 this.$http.get('https://gugooscholar-k5yn3ahzxq-df.a.run.app/author/' + scientistId + '/paper',
                     {headers: {token: 'xx'}}
                 ).then((res)=>{
+                    if (res.data.data.length === 0) {
+                        this.isPaperCompleted = true;
+                        this.isAvatarCompleted = true;
+                        return;
+                    }
                     let pubs = res.data.data;
                     this.isPaperCompleted = true;
                     if (pubs.length >= 5) this.pubList = pubs.slice(0, 5);
                     else this.pubList = pubs;
-                    this.getOtherAuthor();
+                    if (this.pubList.length > 0) this.getOtherAuthor();
                 }).catch((e)=>{
                     console.log(e);
                 });
@@ -543,6 +569,7 @@
                         this.confirmLoading = false;
                         this.modalVisible2 = false;
                         this.isClaim = true;
+                        this.reload();
                         this.$message.success("认领成功");
                     }).catch((e) => {
                         this.confirmLoading = false;
@@ -575,9 +602,34 @@
                             props: {type: 'primary',size: 'small',},
                             on: {click: () => this.$notification.close(key),},
                         },
-                        'ok', );
+                        '知道啦', );
                     }, key,onClose: close,
-                    icon: <a-icon type="smile" style="color: #108ee9" />,
+                    icon: <a-icon type="smile" theme="twoTone" two-tone-color="#FACC2E" />,
+                });
+            },
+            makeAppeal() {
+                let token = window.sessionStorage.getItem('token');
+                if (!token) {
+                    this.$message.info("请先登录再使用该功能");
+                    return;
+                }
+                this.showAppeal = true;
+            },
+            handleAppeal() {
+                this.confirmAppeal = true;
+                this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/reportbind',
+                    {author_id: this.$route.params.id, description: this.appealReason},
+                    {headers: {token: window.sessionStorage.getItem('token')}}
+                ).then(() => {
+                    this.confirmAppeal = false;
+                    this.showAppeal = false;
+                    this.appealReason = '';
+                    this.$message.success("申诉成功，请等待管理员受理");
+                }).catch((e) => {
+                    this.confirmAppeal = false;
+                    this.showAppeal = false;
+                    this.appealReason = '';
+                    this.$message.error(e.response.data.message);
                 });
             }
         }
@@ -661,7 +713,7 @@
 }
 .cardGrid {
     width: 33%;
-    padding: 20px 5px 0 15px;
+    padding: 20px 10px 0 15px;
     box-shadow: 0 0 0 white;
 }
 .otherAuthor {

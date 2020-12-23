@@ -2,8 +2,8 @@
     <div class="w">
         <a-layout id="components-layout-demo-basic" style="background:#2c2e3b">
             <!--            <a-layout-content v-if="isEmpty">当前暂无数据！</a-layout-content>-->
-            <a-layout-content style="margin:48px 16% 0 16%">
-                <div class="topic" v-if="searchResult.title!=null" style="max-width:calc(100% - 32%)">
+            <a-layout-content style="margin:48px 0 0 16%;max-width:calc(100% - 32%)">
+                <div class="topic" v-if="searchResult.title!=null">
                     
                     <a-tooltip>
                         <template slot="title">点击收藏论文</template>
@@ -22,7 +22,7 @@
                     </a-tooltip>
                     {{searchResult.title}}
                 </div>
-                <div style="overflow:auto;max-width:calc(100% - 32%)" v-if="searchResult.authors!=null">
+                <div style="overflow:auto;" v-if="searchResult.authors!=null">
                     <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors.slice(0,10)"
                         :key="author.length">
 
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 
-                <div style="overflow:auto;max-width:calc(100% - 32%);text-align:left">
+                <div style="overflow:auto;text-align:left">
                     <div style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1;margin-bottom:12px;"
                         v-if="searchResult.keywords!=null">关键词
                     </div>
@@ -49,7 +49,7 @@
                     </template>
                 </div>
 
-                <div style="overflow:auto;max-width:calc(100% - 32%);text-align:left;color:white;padding-top: 10px; border-radius: 10px;margin-bottom:48px">
+                <div style="overflow:auto;text-align:left;color:white;padding-top: 10px; border-radius: 10px;margin-bottom:48px">
                     <template>
                         <span style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1"
                           v-if="searchResult.keywords!=null">详细信息</span>
@@ -237,6 +237,16 @@
                     });
                 }
             },
+            getIsSubscribe(paperId) {
+                this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/paper/subscribed',
+                    {paper_id: paperId},
+                    {headers: {token: window.sessionStorage.getItem('token')}}
+                ).then((res) => {
+                    this.subscribe = res.data.success;
+                }).catch((e) => {
+                    console.log(e);
+                });
+            },
             handleClick() {
                 this.loading = !this.loading;
             },
@@ -267,6 +277,7 @@
         },
         created() {
             let paperId = this.$route.query.id;
+            this.getIsSubscribe(paperId);
             console.log(paperId);
             // let id = "1e60ZHlVd6xQjz9FX7j2"
             let search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/" + paperId
@@ -306,7 +317,6 @@
     #components-layout-demo-basic .ant-layout-content {
         background: #2c2e3b;
         color: #fff;
-        min-width:100%;
         height: fit-content;
         font-size: 20px;
     }
@@ -321,8 +331,6 @@
         /*margin-top: 15px;*/
         /*margin-left: 50px;*/
         /*padding-left:50px;*/
-        max-width: 80%;
-        /*width: 600px;*/
         height: fit-content;
         word-wrap: break-word;
         word-break: break-all;
@@ -331,8 +339,6 @@
     #components-layout-demo-basic .author {
         display: block;
         position: relative;
-        /*min-width: 150px;*/
-        max-width: 85%;
         height: fit-content;
         font-size: 20px;
         background-size: cover;
@@ -346,15 +352,6 @@
         font-weight: 200;
         padding: 5px 0;
         text-align: left;
-        max-width: 85%;
-    }
-
-    #components-layout-demo-basic .test {
-        white-space: nowrap;
-        width: auto;
-        max-width: 12em;
-        overflow: hidden;
-        font-size: 16px;
     }
 
     .details {
@@ -390,7 +387,6 @@
     .paper_url {
         text-decoration: none;
         color: rgb(120,177,190);
-        width: 1100px;
         overflow: hidden;
     }
 

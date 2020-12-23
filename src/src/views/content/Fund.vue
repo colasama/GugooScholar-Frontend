@@ -4,22 +4,22 @@
             <!--            <a-layout-content v-if="isEmpty">当前暂无数据！</a-layout-content>-->
             <a-layout-content style="margin:48px 16% 0 16%">
                 <div class="topic" v-if="searchResult.title!=null">
+                    <a-tooltip>
+                        <template slot="title">点击收藏论文</template>
+                        <a-icon type="star" v-show="!subscribe" @click="subscribeFund(true)"/>
+                    </a-tooltip>
+                    <a-tooltip>
+                        <template slot="title">点击取消收藏</template>
+                        <a-popconfirm
+                                title="您确定要取消收藏吗?"
+                                ok-text="是的"
+                                cancel-text="我再想想"
+                                @confirm="subscribeFund(false)"
+                        >
+                            <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"/>
+                        </a-popconfirm>
+                    </a-tooltip>
                     {{searchResult.title}}
-<!--                    <a-tooltip>-->
-<!--                        <template slot="title">点击收藏论文</template>-->
-<!--                        <a-icon type="star" v-show="!subscribe" @click="subscribePaper(true)"/>-->
-<!--                    </a-tooltip>-->
-<!--                    <a-tooltip>-->
-<!--                        <template slot="title">点击取消收藏</template>-->
-<!--                        <a-popconfirm-->
-<!--                                title="您确定要取消收藏吗?"-->
-<!--                                ok-text="是的"-->
-<!--                                cancel-text="我再想想"-->
-<!--                                @confirm="subscribePaper(false)"-->
-<!--                        >-->
-<!--                            <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"/>-->
-<!--                        </a-popconfirm>-->
-<!--                    </a-tooltip>-->
                 </div>
                 <div style="overflow:auto;max-width:calc(100% - 32%)" v-if="searchResult.author!=null">
                     <div style="margin:24px 0 0 0">
@@ -109,15 +109,15 @@
             }
         },
         methods: {
-            subscribePaper(bool) {
+            subscribeFund(bool) {
                 let token = window.sessionStorage.getItem('token');
                 if (!token) {
                     this.$message.info("请先登录再使用该功能");
                     return;
                 }
                 if (bool) {
-                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/paper',
-                        {paper_id: this.$route.query.id},
+                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/fund',
+                        {fund_id: this.$route.query.id},
                         {headers: {token: token}}
                     ).then((res) => {
                         console.log(res);
@@ -127,8 +127,8 @@
                         console.log(e);
                     });
                 } else {
-                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/cancel/paper',
-                        {paper_id: this.$route.query.id},
+                    this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/cancel/fund',
+                        {fund_id: this.$route.query.id},
                         {headers: {token: token}}
                     ).then((res) => {
                         console.log(res);
@@ -138,6 +138,16 @@
                         console.log(e);
                     });
                 }
+            },
+            getIsSubscribe(fundId) {
+                this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/fund/subscribed',
+                    {fund_id: fundId},
+                    {headers: {token: window.sessionStorage.getItem('token')}}
+                ).then((res) => {
+                    this.subscribe = res.data.success;
+                }).catch((e) => {
+                    console.log(e);
+                });
             },
             handleClick() {
                 this.loading = !this.loading;
@@ -169,6 +179,7 @@
         },
         created() {
             let fundId = this.$route.query.id;
+            this.getIsSubscribe(fundId);
             console.log(fundId);
             let search_url = "https://gugooscholar-k5yn3ahzxq-df.a.run.app/fund/" + fundId
             this.$axios.get(search_url, {
