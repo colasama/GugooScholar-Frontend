@@ -1,11 +1,12 @@
 <template>
   <div class="re-header">
-    <div @click="toIndex" class="top-logo" style="margin-left:320px" />
+    <div @click="toIndex" class="top-logo" style="margin-left:16%" />
 
     <a-menu style="background-color:rgb(43, 46, 59)" mode="horizontal" :style="{ lineHeight: '80px' }" class="header-menu" :default-selected-keys="['1']" :open-keys.sync="openKeys">
-      <a-menu-item key="1" @click="toRankList">排行榜</a-menu-item>
-      <a-menu-item key="2" @click="toSubscribe">收藏</a-menu-item>
-
+      <a-menu-item key="1" @click="toSearch">搜索</a-menu-item>
+      <a-menu-item key="2" @click="toRankList">排行榜</a-menu-item>
+      <a-menu-item key="3" @click="toField">领域</a-menu-item>
+      <a-menu-item key="4" @click="toSubscribe">订阅</a-menu-item>
       <a-button
         type="ghost"
         @click="toRegister"
@@ -15,7 +16,7 @@
       <a-button
         type="ghost"
         @click="toLogin"
-        style="margin-left:15px;margin-right:320px"
+        style="margin-left:15px;margin-right:16%"
         v-if="$store.state.token==null"
       >登录</a-button>
 
@@ -24,7 +25,7 @@
           <a-menu-item key="1" @click="toUserindex">账户信息</a-menu-item>
           <a-menu-item key="3" @click="exit">退出</a-menu-item>
         </a-menu>
-      <a-button type="link" @click="toUserindex" style="margin-right:320px;" v-if="$store.state.token!=null">
+      <a-button type="link" @click="toUserindex" style="margin-right:16%;" v-if="$store.state.token!=null">
           <a-avatar
             :size="32"
             inline
@@ -64,7 +65,7 @@
 }
 
 .re-header {
-  background: rgb(43, 46, 59);
+  background: #2c2e3b;
   height: 80px;
   text-align: center;
 }

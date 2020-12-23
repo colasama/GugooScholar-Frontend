@@ -1,34 +1,39 @@
 <template>
     <div class="w">
-        <a-layout id="components-layout-demo-basic">
+        <a-layout id="components-layout-demo-basic" style="background:#2c2e3b">
             <!--            <a-layout-content v-if="isEmpty">当前暂无数据！</a-layout-content>-->
-            <a-layout-content>
-                <div class="topic">{{searchResult.title}}</div>
-            </a-layout-content>
-            <a-layout-content>
-                <div class="author" v-for="(author,i) in searchResult.authors"
-                     :key="author.length">
-                    <author_avatar
-                            :name=author.name :color="colorList[i%6]"></author_avatar>
+            <a-layout-content style="margin-left:16%;margin-top:48px">
+                <div class="topic" v-if="searchResult.title!=null">
+                    {{searchResult.title}}
+                    <a-icon type="star" v-show="!subscribe" @click="subscribePaper"/>
+                    <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"
+                            @click="subscribe=false"/>
                 </div>
-            </a-layout-content>
-            <a-layout-content>
-                <div class="keywords">
-                    <span style="display: inline-block; margin-top: -3px; font-family: 'SimSun';font-size:19px;color: #b3cbd0;font-weight:700;height:25px;" v-if="searchResult.keywords!=null">关键词：</span>
-                    <template v-for="(keyword,index3) in searchResult.keywords">
-                    <span style="display: inline-block; height:25px;max-width:250px;padding-left:5px;padding-right:5px; margin:5px 5px; background-color: #74b1be;border-radius: 4px;
-                    " :key="index3">
-                        <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px"
-                                                                                  type="experiment"/>{{keyword}}</div>
-                    </span>
-                        <template v-if="index3 < searchResult.keywords.length-1 && index3 < 2">{{'&nbsp;'}}</template>
-                    </template>
+                <div>
+                    <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors"
+                        :key="author.length">
+                        <author_avatar 
+                                :name=author.name :color="colorList[i%6]"></author_avatar>
+                    </div>
                 </div>
-            </a-layout-content>
-            <a-layout-content>
-                <div style="background-color:#ffffff;padding-top: 10px; max-width: 60%; margin:0 auto 20px;border-radius: 10px;">
+                <a-divider/>
+
+                <div style="text-align:left">
+                    <span style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1"
+                          v-if="searchResult.keywords!=null">关键词：</span>
+                    <a-list :grid="{ gutter: 16, column: 4 }" :data-source="searchResult.keywords">
+                        <a-list-item slot="renderItem" title="关键词" slot-scope="item">
+                        <a-button type="primary" class="keyword">
+                            <div class="test">{{item}}</div>
+                        </a-button>
+                        </a-list-item>
+                    </a-list>
+                    <template v-if="index3 < searchResult.keywords.length-1 && index3 < 2">{{'&nbsp;'}}</template>
+                </div>
+
+                <div style="text-align:left;color:white;padding-top: 10px; max-width: 60%; margin:0 auto 20px;border-radius: 10px;">
                     <template>
-                        <a-descriptions title="详细信息" layout="vertical" bordered size="middle">
+                        <a-descriptions title="详细信息" layout="vertical">
                             <a-descriptions-item label="DOI" v-if="searchResult.doi!=null">
                                 <span class="abstract-text">{{searchResult.doi}}</span>
                             </a-descriptions-item>
@@ -60,7 +65,8 @@
                             <a-descriptions-item label="所属期数" v-if="searchResult.issue!=null&&searchResult.issue!=''">
                                 <span class="abstract-text">{{searchResult.issue}}</span>
                             </a-descriptions-item>
-                            <a-descriptions-item class="details" label="页码" v-if='searchResult.page_end!=""&&searchResult.page_start!=""'>
+                            <a-descriptions-item class="details" label="页码"
+                                                 v-if='searchResult.page_end!=""&&searchResult.page_start!=""'>
                                 <span class="abstract-text">{{searchResult.page_start}}-{{searchResult.page_end}}</span>
                             </a-descriptions-item>
                             <a-descriptions-item class="details" label="ISSN" v-if="searchResult.issn!=null">
@@ -78,16 +84,17 @@
             </a-layout-content>
         </a-layout>
         <div style="margin: 50px 0">
-                <div style="border-radius: 5px;">
-                    <a-card title="摘要" style="width: 80%;margin:auto;">
-                        <p style="font-size: 16px;">{{searchResult.abstract}}</p>
-                    </a-card>
-                </div>
+            <div style="border-radius: 5px;text-align:left">
+                <a-card style="width: 80%;margin:auto;">
+                <h1>摘要</h1>
+                    <p style="font-size: 16px;">{{searchResult.abstract}}</p>
+                </a-card>
+            </div>
 
             <!--            <div class="details" v-if="searchResult.abstract!=null">-->
-<!--                <span class="rowtit">摘要：</span>-->
-<!--                <span class="abstract-text">{{searchResult.abstract}}</span>-->
-<!--            </div>-->
+            <!--                <span class="rowtit">摘要：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.abstract}}</span>-->
+            <!--            </div>-->
             <!--            <div class="details" v-if="searchResult.keywords!=null">-->
             <!--                <span class="rowtit">关键词：</span>-->
             <!--                <span class="abstract-text" v-for="(keyword,i) in searchResult.keywords" :key="keyword.length">-->
@@ -95,59 +102,59 @@
             <!--                    <span v-else-if="i!==keyword.length-1">{{keyword}}, </span>-->
             <!--                </span>-->
             <!--            </div>-->
-<!--            <div class="details" v-if="searchResult.doi!=null">-->
-<!--                <span class="rowtit">DOI：</span>-->
-<!--                <span class="abstract-text">{{searchResult.doi}}</span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if="searchResult.n_citation!=null">-->
-<!--                <span class="rowtit">被引量：</span>-->
-<!--                <span class="abstract-text">{{searchResult.n_citation}}</span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if="searchResult.pdf!=null">-->
-<!--                <span class="rowtit">原文链接：</span>-->
-<!--                <span :href="searchResult.pdf" class="paper_url"-->
-<!--                      @click=open(searchResult.pdf)>{{searchResult.pdf}}</span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if="searchResult.url!=null">-->
-<!--                <span class="rowtit">相关链接：</span>-->
-<!--                <span :href="searchResult.url" class="paper_url" v-for="(url,i) in searchResult.url" :key="url.length"-->
-<!--                      @click=open(searchResult.url[i])>-->
-<!--                    <span v-if="i===searchResult.url.length-1" class="paper_url">{{searchResult.url[i]}}</span>-->
-<!--                    <span v-if="i!==searchResult.url.length-1" class="paper_url">{{searchResult.url[i]}}<br></span>-->
-<!--                </span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if="searchResult.venue!=null">-->
-<!--                <span class="rowtit">所属期刊：</span>-->
-<!--                <span class="abstract-text">{{searchResult.venue.name}}</span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if="searchResult.year!=null">-->
-<!--                <span class="rowtit">出版年份：</span>-->
-<!--                <span class="abstract-text">{{searchResult.year}}</span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if="searchResult.volume!=null">-->
-<!--                <span class="rowtit">所属卷数：</span>-->
-<!--                <span class="abstract-text">{{searchResult.volume}}</span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if="searchResult.issue!=null">-->
-<!--                <span class="rowtit">所属期数：</span>-->
-<!--                <span class="abstract-text">{{searchResult.issue}}</span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if='searchResult.page_end!=""&&searchResult.page_start!=""'>-->
-<!--                <span class="rowtit">页码：</span>-->
-<!--                <span class="abstract-text">{{searchResult.page_start}}-{{searchResult.page_end}}</span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if="searchResult.issn!=null">-->
-<!--                <span class="rowtit">ISSN：</span>-->
-<!--                <span class="abstract-text">{{searchResult.issn}}</span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if="searchResult.isbn!=null">-->
-<!--                <span class="rowtit">ISBN：</span>-->
-<!--                <span class="abstract-text">{{searchResult.isbn}}</span>-->
-<!--            </div>-->
-<!--            <div class="details" v-if="searchResult.lang!=null">-->
-<!--                <span class="rowtit">语言：</span>-->
-<!--                <span class="abstract-text">{{searchResult.lang}}</span>-->
-<!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.doi!=null">-->
+            <!--                <span class="rowtit">DOI：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.doi}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.n_citation!=null">-->
+            <!--                <span class="rowtit">被引量：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.n_citation}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.pdf!=null">-->
+            <!--                <span class="rowtit">原文链接：</span>-->
+            <!--                <span :href="searchResult.pdf" class="paper_url"-->
+            <!--                      @click=open(searchResult.pdf)>{{searchResult.pdf}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.url!=null">-->
+            <!--                <span class="rowtit">相关链接：</span>-->
+            <!--                <span :href="searchResult.url" class="paper_url" v-for="(url,i) in searchResult.url" :key="url.length"-->
+            <!--                      @click=open(searchResult.url[i])>-->
+            <!--                    <span v-if="i===searchResult.url.length-1" class="paper_url">{{searchResult.url[i]}}</span>-->
+            <!--                    <span v-if="i!==searchResult.url.length-1" class="paper_url">{{searchResult.url[i]}}<br></span>-->
+            <!--                </span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.venue!=null">-->
+            <!--                <span class="rowtit">所属期刊：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.venue.name}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.year!=null">-->
+            <!--                <span class="rowtit">出版年份：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.year}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.volume!=null">-->
+            <!--                <span class="rowtit">所属卷数：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.volume}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.issue!=null">-->
+            <!--                <span class="rowtit">所属期数：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.issue}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if='searchResult.page_end!=""&&searchResult.page_start!=""'>-->
+            <!--                <span class="rowtit">页码：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.page_start}}-{{searchResult.page_end}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.issn!=null">-->
+            <!--                <span class="rowtit">ISSN：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.issn}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.isbn!=null">-->
+            <!--                <span class="rowtit">ISBN：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.isbn}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="details" v-if="searchResult.lang!=null">-->
+            <!--                <span class="rowtit">语言：</span>-->
+            <!--                <span class="abstract-text">{{searchResult.lang}}</span>-->
+            <!--            </div>-->
         </div>
     </div>
 
@@ -163,6 +170,7 @@
         },
         data() {
             return {
+                subscribe: false,
                 searchResult: {},
                 colorList: ["background: #87d068", "background: #c9bcd6", "background:#edadad",
                     "background:#108ee9", "background: #ff5500", "background: #2db7f5"],
@@ -193,6 +201,28 @@
             }
         },
         methods: {
+            subscribePaper() {
+                let id = this.searchResult.id;
+                this.axios({
+                    headers: {
+                        token:'xx',
+                    },
+                    method: 'post',
+                    url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/paper',
+                    data: {
+                        'paper_id': id
+                    }
+                }).then(
+                    (res) => {
+                        let result = res.data;
+                        console.log(result);
+                        this.subscribe = true;
+                        this.$message.success("收藏成功");
+                    }
+                ).catch((e) => {
+                    console.log(e);
+                });
+            },
             handleClick() {
                 this.loading = !this.loading;
             },
@@ -256,23 +286,22 @@
     }
 
     #components-layout-demo-basic .ant-layout-content {
-        background: rgb(43, 46, 59);
+        background: #2c2e3b;
         color: #fff;
+        min-width:100%;
         height: fit-content;
         font-size: 20px;
     }
 
     #components-layout-demo-basic .topic {
-        display: block;
         /*float: left;*/
         /*margin-bottom: 15px;*/
+        text-align:left;
         font-weight: 400;
         color: #ffffff;
-        line-height: 50px;
         font-size: 40px;
         /*margin-top: 15px;*/
         /*margin-left: 50px;*/
-        margin: 50px auto;
         /*padding-left:50px;*/
         max-width: 80%;
         /*width: 600px;*/
@@ -298,7 +327,7 @@
         font-family: Georgia;
         font-weight: 200;
         padding: 5px 0;
-        text-align: center;
+        text-align: left;
         max-width: 85%;
     }
 
@@ -353,4 +382,22 @@
         color: #6aaddf
     }
 
+    .test {
+        white-space: nowrap;
+        width: auto;
+        max-width: 12em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-family: Book Antiqua;
+    }
+
+    
+  .keyword {
+    height: 24px;
+    max-width: 250px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
+  }
 </style>

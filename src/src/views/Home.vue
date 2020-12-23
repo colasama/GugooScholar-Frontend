@@ -2,107 +2,133 @@
   <a-layout>
     <a-layout-header class="headtext">论文在做了，在做了</a-layout-header>
     <a-layout-header class="homemain"></a-layout-header>
-    <a-layout-content>
+    <a-layout-content style="background:#fff">
       <div class="homemain">
-        <div style="height:64px"></div>
         <div class="img"></div>
-        <div class="search" style="margin-bottom:24px">
+        <div class="search">
           <a-input-group compact>
-            <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify" change-on-select 
-              expand-trigger="hover"  style="width: 120px;" size="large" />
-            <a-input v-on:keyup.enter.native="onSearch()" placeholder="搜索你想要的" style="width: 40%" size="large"
+            <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify" change-on-select
+              expand-trigger="hover" style="width: 120px;" size="large" />
+            <a-input v-on:keyup.enter.native="onSearch()" placeholder="搜索你想要的" style="width: 40%;" size="large"
               v-model="searchContent" />
             <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
             <a-button class="searchbutton" size="large" @click="onSearch">搜索
             </a-button>
           </a-input-group>
         </div>
-        <div class="keywords">
-          <a-button type="link" class="keyword" @click="searchKeyword(0)">{{keywords[0]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(1)">{{keywords[1]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(2)">{{keywords[2]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(3)">{{keywords[3]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(4)">{{keywords[4]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(5)">{{keywords[5]}}</a-button>
+        <div class="keywords" style="margin-bottom:48px">
+          <a-icon type="fire"></a-icon>
+          <b> 热点：</b>
+          <a-button type="primary" class="keyword" @click="searchKeyword(0)">
+            <div class="test">{{keywords[0]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(1)">
+            <div class="test">{{keywords[1]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(2)">
+            <div class="test">{{keywords[2]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(3)">
+            <div class="test">{{keywords[3]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(4)">
+            <div class="test">{{keywords[4]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(5)">
+            <div class="test">{{keywords[5]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(6)">
+            <div class="test">{{keywords[6]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(7)">
+            <div class="test">{{keywords[7]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(8)">
+            <div class="test">{{keywords[8]}}</div>
+          </a-button>
+          <a-button type="primary" class="keyword" @click="searchKeyword(9)">
+            <div class="test">{{keywords[9]}}</div>
+          </a-button>
         </div>
-        <div class="keywords">
-          <a-button type="link" class="keyword" @click="searchKeyword(6)">{{keywords[6]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(7)">{{keywords[7]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(8)">{{keywords[8]}}</a-button>
-          <a-button type="link" class="keyword" @click="searchKeyword(9)">{{keywords[9]}}</a-button>
+
+        <div class="sum">
+          <a-row type="flex" justify="center">
+            <a-col :span="4" class="suminfo">
+              <div style="font-size:24px;color:white;text-align:center">8,657,431</div>
+              <div style="font-size:18px;color:white;text-align:center">论文数量</div>
+            </a-col>
+            <a-col :span="4" class="suminfo">
+              <div style="font-size:24px;color:white;text-align:center">3,141,874</div>
+              <div style="font-size:18px;color:white;text-align:center">科研人员</div>
+            </a-col>
+            <a-col :span="4" class="suminfo">
+              <div style="font-size:24px;color:white;text-align:center">11,203</div>
+              <div style="font-size:18px;color:white;text-align:center">科研项目</div>
+            </a-col>
+            <a-col :span="4" class="suminfo">
+              <div style="font-size:24px;color:white;text-align:center">412,546,129</div>
+              <div style="font-size:18px;color:white;text-align:center">引用关系</div>
+            </a-col>
+          </a-row>
         </div>
       </div>
-      <a-layout>
-        <a-layout-sider width="50%" class="rank" style="background-color: #2f3141;">
-          <div class="rankName" style="
-          height: 80px;
-          text-align: left;
-          text-indent: 1.5em;
-          line-height: 80px;
-          color: #9feaf9;
-          font-size: 30px;
-          font-weight: 600;
-          background-color: #2f3141;
-          ">
-            <a-icon style="margin-right: 12px;" type="file" />热门论文
-          </div>
-          <div v-for="paper in rankData[0]" :key="paper.key">
-            <div class="rank-content" v-if="paper.key < 11">
-              <div style="height: 40px;">
-                <div class="seq" style="background-color: gold;font-size: 20px; color: red;" v-if="paper.key == 1">1
-                </div>
-                <div class="seq" style="background-color: #c8d2e2;font-size: 20px; color: blue;"
-                  v-else-if="paper.key == 2">2</div>
-                <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
-                  v-else-if="paper.key == 3">3</div>
-                <div class="seq" style="background-color: gray; color: white;" v-else> {{paper.key}} </div>
-                <div class="title rankLink" @click="toPaper(paper.id)"> {{paper.title}} </div>
-              </div>
-              <div class="description">
-                <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
-                  {{author.name}};&nbsp; </span>
-                <span> {{paper.year}} </span>
-              </div>
-              <div class="citation"> 被引量：{{paper.n_citation}} </div>
+
+      <div style="margin:0 300px 0 250px;min-width:calc(100% - 32%)">
+        <a-row>
+          <a-col :span="14" class="rank">
+            <div class="rank-name">
+              <a-icon style="margin-right: 12px;" type="file" />热门论文
             </div>
-          </div>
-        </a-layout-sider>
-        <a-layout-content style="background-color: #2f3141;" class="rank">
-          <div class="rankName" style="
-          height: 80px;
-          text-align: left;
-          line-height: 80px;
-          color: #9feaf9;
-          font-size: 30px;
-          font-weight: 600;
-          text-indent: 1.5em;
-          background-color: #2f3141;
-          ">
-            <a-icon style="margin-right: 12px;" type="team" />热门学者
-          </div>
-          <div v-for="author in rankData[1]" :key="author.key">
-            <div class="rank-content" v-if="author.key < 11">
-              <div style="height: 40px;">
-                <div class="seq" style="background-color: gold;font-size: 20px; color: red;" v-if="author.key == 1">1
+            <div v-for="paper in rankData[0]" :key="paper.key">
+              <div class="rank-content" v-if="paper.key < 11">
+                <div style="height: 40px;">
+                  <div class="seq" style="background-color: gold;font-size: 20px; color: red;" v-if="paper.key == 1">1
+                  </div>
+                  <div class="seq" style="background-color: #c8d2e2;font-size: 20px; color: blue;"
+                    v-else-if="paper.key == 2">2</div>
+                  <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
+                    v-else-if="paper.key == 3">3</div>
+                  <div class="seq" style="background-color: gray; color: white;" v-else> {{paper.key}} </div>
+                  <div class="title rankLink" @click="toPaper(paper.id)"> {{paper.title}} </div>
                 </div>
-                <div class="seq" style="background-color: #c8d2e2;font-size: 20px; color: blue;"
-                  v-else-if="author.key == 2">2</div>
-                <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
-                  v-else-if="author.key == 3">3</div>
-                <div class="seq" style="background-color: gray; color: white;" v-else> {{author.key}} </div>
-                <div class="title rankLink" @click="toAuthor(author.id)"> {{author.name}} </div>
+                <div class="description">
+                  <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
+                    {{author.name}};&nbsp; </span>
+                  <span> {{paper.year}} </span>
+                </div>
+                <div class="citation"> 被引量：{{paper.n_citation}} </div>
               </div>
-              <div class="description">
-                <!-- <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
-                  {{author.name}};&nbsp; </span>
-                <span> {{paper.year}} </span> -->
-                <span>发表了{{author.n_pubs}}篇论文，被引用了{{author.n_citation}}次</span>
-              </div>
-              <div class="citation"> H指数：{{author.h_index}} </div>
             </div>
-          </div>
-        </a-layout-content>
-      </a-layout>
+          </a-col>
+
+          <a-col :span="10" class="rank">
+            <div class="rank-name">
+              <a-icon style="margin-right: 12px;" type="team" />热门学者
+            </div>
+            <div v-for="author in rankData[1]" :key="author.key">
+              <div class="rank-content" v-if="author.key < 11">
+                <div style="height: 40px;">
+                  <div class="seq" style="background-color: gold;font-size: 20px; color: red;" v-if="author.key == 1">1
+                  </div>
+                  <div class="seq" style="background-color: #c8d2e2;font-size: 20px; color: blue;"
+                    v-else-if="author.key == 2">2</div>
+                  <div class="seq" style="background-color: #d5b59f;font-size: 20px; color: white;"
+                    v-else-if="author.key == 3">3</div>
+                  <div class="seq" style="background-color: gray; color: white;" v-else> {{author.key}} </div>
+                  <div class="title rankLink" style="width: 230px;" @click="toAuthor(author.id)"> {{author.name}} </div>
+                </div>
+                <div class="description">
+                  <!-- <span class="rankLink" v-for="author in paper.authors" :key="author" @click="toAuthor(author.id)">
+                    {{author.name}};&nbsp; </span>
+                  <span> {{paper.year}} </span> -->
+                  <span>发表了{{author.n_pubs}}篇论文，被引用了{{author.n_citation}}次</span>
+                </div>
+                <div class="citation"> H指数：{{author.h_index}} </div>
+              </div>
+            </div>
+          </a-col>
+        </a-row>
+      </div>
     </a-layout-content>
   </a-layout>
 
@@ -119,11 +145,10 @@
         searchType: "abstract",
         searchContent: "",
         searchClassify: ['all'],
-        options: [
-          {
+        options: [{
             value: 'all',
             label: '全部'
-          },{
+          }, {
             value: 'paper',
             label: '论文',
             children: [{
@@ -163,16 +188,18 @@
           },
         ],
         keywords: [
-          "新冠肺炎",
-          "机器学习",
-          "心理健康",
-          "大数据",
-          "人工智能",
-          "机械",
-          "电子信息",
-          "数据挖掘",
-          "AI赋能教育",
+          "artificial intelligence",
+          "CT",
+          "DBR",
+          "dietary",
           "FMRI",
+          "Internet",
+          "Mechanical Engineer",
+          "Medication",
+          "Rabies",
+          "Spiral CT scan",
+
+
           // "关键词11",
           // "关键词12",
           // "关键词13",
@@ -379,20 +406,20 @@
   .homemain {
     width: 100%;
     text-align: center;
-    background-color: #2f3141;
-    padding-bottom: 50px;
+    background-color: #2c2e3b;
+    padding-bottom: 36px;
   }
 
   .homemain .img {
-    width: 250px;
-    height: 250px;
-    margin: 0 auto 40px;
-    background: url(../assets/logo_s.png) no-repeat;
+    width: 1080px;
+    height: 282px;
+    margin: 0 auto 48px;
+    background: url(../assets/banner_1080.png) no-repeat;
   }
 
   .homemain .search {
     width: 100%;
-    height: 50px;
+    height: 64px;
     margin: 0 auto;
   }
 
@@ -401,7 +428,12 @@
   }
 
   .keywords .keyword {
-    margin: 0 3px;
+    height: 20px;
+    max-width: 250px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
   }
 
   .searchbutton {
@@ -417,18 +449,17 @@
     border-color: #3A585F;
   }
 
-  .a-layout>.a-layout>.rank {
-    width: 30%;
-    height: 100px;
+  .rank {
+    margin-top: 24px;
   }
 
   .rank .rank-name {
     height: 80px;
     text-align: left;
+    text-indent: 1.5em;
     line-height: 80px;
-    color: #9feaf9;
-    background-color: black;
-    font-size: 24px !important;
+    color: #4078c0;
+    font-size: 28px !important;
     font-weight: 400;
   }
 
@@ -436,11 +467,14 @@
     position: relative;
     width: 90%;
     margin: 10px auto;
-    background-color: #f3f3f2;
+    border: 2px solid #f3f3f2;
     height: 90px;
     text-align: left;
-    border-radius: 15px;
   }
+
+  /* .rank .rank-content:hover {
+    box-shadow: darkgrey 1px 2px 5px 3px ;
+  } */
 
   .rank .rank-content .seq {
     display: inline-block;
@@ -456,10 +490,10 @@
 
   .rank .rank-content .title {
     display: inline-block;
-    width: 500px;
+    width: 330px;
     height: 40px;
     line-height: 40px;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 500;
     vertical-align: top;
     margin-left: 10px;
@@ -475,7 +509,7 @@
   }
 
   .rank .rank-content .description {
-    width: 500px;
+    width: 350px;
     height: 40px;
     line-height: 40px;
     margin-left: 60px;
@@ -487,7 +521,32 @@
 
   .rank .rank-content .citation {
     position: absolute;
-    right: 20px;
-    top: 20px;
+    right: 12px;
+    top: 12px;
+    font-size: 13px;
+  }
+
+  .test {
+    white-space: nowrap;
+    width: auto;
+    max-width: 12em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: Book Antiqua;
+  }
+
+  .suminfo {
+    width: 150px;
+    height: 64px;
+    background: rgb(73, 96, 106);
+    color: white;
+    margin: 0 24px 0 24px;
+  }
+
+  .sum>>>.ant-row>div {
+    background: transparent;
+    margin: 0 16% 0 16%;
+    min-width: calc(100% - 32%);
+    border: 0;
   }
 </style>

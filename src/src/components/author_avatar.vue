@@ -1,7 +1,7 @@
 <template>
         <div class="avatar">
-            <a-avatar :size="64" class="profile" :style="color">{{name.charAt(0).toUpperCase()}}</a-avatar>
-            <p class="au_name">{{name}}</p>
+            <a-avatar :size="48" class="profile" :style="color">{{name.charAt(0).toUpperCase()}}</a-avatar>
+            <span class="au_name">{{name}}</span>
 <!--            :src="[this.link]"-->
         </div>
 </template>
@@ -21,16 +21,13 @@
     .avatar {
         display: block;
         float: left;
-        min-width: 15%;
         height: 100px;
-        margin: 10px 20px 20px;
+        margin: 10px 5px 5px;
     }
 
     .avatar .au_name {
-        display: block;
-        float: bottom;
-        line-height: 50px;
-        margin: 0 20px 0 20px;
+        color:#f1f1f1;
+        margin: 0 5px 0 5px;
     }
     .avatar .profile {
         font-size: 25px;

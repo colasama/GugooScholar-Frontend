@@ -92,7 +92,7 @@ Vue.use(VueRouter)
     component:() => import('../views/content/Paper.vue')
   },
     {
-      path: '/list',
+      path: '/fieldlist',
       name: 'List',
       meta: {title:'学科领域列表 - 咕鸽学术'},
       component:() => import('../views/field/List.vue')
