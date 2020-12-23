@@ -3,7 +3,7 @@
         <a-layout id="components-layout-demo-basic">
             <!--            <a-layout-content v-if="isEmpty">当前暂无数据！</a-layout-content>-->
             <a-layout-content>
-                <div class="topic">
+                <div class="topic" v-if="searchResult.title!=null">
                     {{searchResult.title}}
                     <a-icon type="star" v-show="!subscribe" @click="subscribePaper"/>
                     <a-icon style="color: yellow" type="star" theme="filled" v-show="subscribe"
@@ -202,11 +202,16 @@
         },
         methods: {
             subscribePaper() {
-                console.log(this.searchResult.id)
+                let id = this.searchResult.id;
                 this.axios({
+                    headers: {
+                        token:'xx',
+                    },
                     method: 'post',
                     url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/subscribe/paper',
-                    data: {'paper_id': this.searchResult.id}
+                    data: {
+                        'paper_id': id
+                    }
                 }).then(
                     (res) => {
                         let result = res.data;
