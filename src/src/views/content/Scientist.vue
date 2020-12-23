@@ -239,7 +239,7 @@
 <script>
     import VueApexCharts from 'vue-apexcharts'
     export default {
-
+        inject: ['reload'],
         components: {
             VueApexCharts
         },
@@ -546,6 +546,7 @@
                         this.confirmLoading = false;
                         this.modalVisible2 = false;
                         this.isClaim = true;
+                        this.reload();
                         this.$message.success("认领成功");
                     }).catch((e) => {
                         this.confirmLoading = false;
