@@ -265,6 +265,7 @@
                                 <a-table :columns="report_columns" :data-source="report_list">
                                     <a class="usernameLink" slot="username" slot-scope="username">{{ username }}</a>
                                     <span slot="customTitle"><a-icon type="user"/> 用户名</span>
+                                    <span slot="author" slot-scope="authorname">{{authorname}}</span>
                                     <span slot="description" slot-scope="description">{{description}}</span>
                                     <span slot="status" slot-scope="status">{{status}}</span>
                                     <span slot="action" slot-scope="report, key, index">
@@ -604,6 +605,7 @@
                         this.report_all_list = res.data.data;
                         for (var i = 0; i < this.report_all_list.length; i++) {
                             this.report_all_list[i]['status'] = this.report_all_list[i]['status'] == 0 ? "未处理" : "已处理";
+                            this.report_all_list[i]['authorname'] = this.report_all_list[i]['author']['name'];
                         }
                         console.log(res);
                     }).catch((error) => {
@@ -696,6 +698,7 @@
                     this.report_list.splice(index, 1);
                     if(res.data.success == true){
                         this.$message.success("已成功通过此申诉");
+                        location.reload();
                     }
                     else if(res.data.success == false){
                         this.$message.error("此学者以取消绑定");
@@ -722,6 +725,7 @@
                     this.report_list.splice(index, 1);
                     if(res.data.success == true){
                         this.$message.success("拒绝此申诉成功");
+                        location.reload();
                     }
                     else if(res.data.success == false){
                         this.$message.error("此学者以取消绑定");
