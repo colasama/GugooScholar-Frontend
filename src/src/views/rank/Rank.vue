@@ -299,14 +299,14 @@
 
   .ant-layout .headtext {
     width: 100%;
-    height: 120px;
-    line-height: 120px;
+    min-height: 180px;
+    line-height: 180px;
     color: #cae8ef;
     background-color: black;
     font-size: 30px;
     font-weight: 500;
     text-align: left;
-    text-indent: 4em;
+    text-indent: 5em;
   }
 
   .ant-layout-content {

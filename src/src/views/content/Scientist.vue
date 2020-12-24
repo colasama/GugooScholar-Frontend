@@ -103,13 +103,13 @@
                     </a-menu>
 
                     <div class="sum">
-                    <a-row type="flex" justify="center">
-                    <a-col :span="12" style="text-align:center">
+                    <a-row type="flex" justify="center" style="text-align:center">
+                    <a-col :flex="3" style="text-align:center">
                         <a-spin v-if="isPaperCompleted===false" size="large"
                                 style="margin-top:10px;margin-left: 10px" tip="加载论文中"/>
-                        <div  v-if="isPaperCompleted">
+                        <div v-if="isPaperCompleted">
                             <div style="margin-left: 10px" v-show="this.pubList.length === 0 && isPaper">
-                                <a style="color: #74b1be">暂无相关论文</a>
+                                <a-card class="leftCard" style="color: #74b1be;text-align:center">暂无相关论文</a-card>
                             </div>
                             <a-card
                                 class="leftCard"
@@ -165,7 +165,7 @@
                                     </p>
                             </a-card>
                             <div style="margin-left: 10px" v-show="this.fundList.length === 0 && !isPaper">
-                                <a style="color: #74b1be">暂无相关科研项目</a>
+                                <a-card class="leftCard" style="color: #74b1be;text-align:center">暂无相关科研项目</a-card>
                             </div>
                             <a-card class="leftCard" :hoverable="true"  v-show="!isPaper" @click="toPaper(article.id)" v-for="(fund,index) in fundList" :key="index">
                                 <p class="p1">
@@ -221,8 +221,7 @@
                             <a style="color: #74b1be" @click="toSearch">查看更多科研项目</a>
                         </div>
                     </a-col>
-                    <a-col :span="1"/>
-                    <a-col :span="4">
+                    <a-col :flex="2">
                     <div >
                         <a-spin v-if="!isAvatarCompleted" size="large"
                                 style="margin-left: 50px" tip="加载相关作者图片中"/>
@@ -554,11 +553,48 @@
             },
             handleOk(num){
                 if (num === 0) {
-                    this.modalVisible0 = false;
-                    this.modalVisible1 = true;
+                    if (this.pubList.length > 0) {
+                        this.modalVisible0 = false;
+                        this.modalVisible1 = true;
+                    } else {
+                        this.confirmLoading = true;
+                        this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/bindauthor',
+                            {author_id: this.$route.params.id},
+                            {headers: {token: window.sessionStorage.getItem('token')}}
+                        ).then(() => {
+                            this.confirmLoading = false;
+                            this.modalVisible0 = false;
+                            this.isClaim = true;
+                            this.reload();
+                            this.$message.success("认领成功");
+                        }).catch((e) => {
+                            this.confirmLoading = false;
+                            this.modalVisible0 = false;
+                            this.$message.error(e.response.data.message);
+                        });
+                    }
                 } else if (num === 1) {
-                    this.modalVisible1 = false;
-                    this.modalVisible2 = true;
+                    if (this.otherAuthors.length > 0) {
+                        this.modalVisible1 = false;
+                        this.modalVisible2 = true;
+                    } else {
+                        this.confirmLoading = true;
+                        this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/bindauthor',
+                            {author_id: this.$route.params.id},
+                            {headers: {token: window.sessionStorage.getItem('token')}}
+                        ).then(() => {
+                            this.confirmLoading = false;
+                            this.modalVisible1 = false;
+                            this.isClaim = true;
+                            this.reload();
+                            this.$message.success("认领成功");
+                        }).catch((e) => {
+                            this.confirmLoading = false;
+                            this.modalVisible1 = false;
+                            this.$message.error(e.response.data.message);
+                        });
+                    }
+
                 } else {
                     this.confirmLoading = true;
                     this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/bindauthor',
@@ -687,11 +723,13 @@
     width: 50%;
     margin-top: 50px;
 }
+
 .leftDownContent {
     margin-top: 40px;
     float: left;
     margin-left: 7%;
 }
+
 .rightDownContent {
     margin-top: 40px;
     float: left;
@@ -759,6 +797,7 @@
     border: 0;
 }
 .sum {
-    margin-top: 50px;
+    max-width:68%;
+    margin: 50px 16% 0 16%;
 }
 </style>
