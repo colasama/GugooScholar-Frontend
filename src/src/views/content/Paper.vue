@@ -32,7 +32,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div style="overflow:auto;text-align:left">
                     <div style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1;margin-bottom:12px;"
                         v-if="searchResult.keywords!=null">关键词
@@ -55,7 +55,7 @@
                           v-if="searchResult.keywords!=null">详细信息</span>
                           <a-row style="margin-top:12px">
                             <a-col :span="6">
-                                <div style="font-size:16px" v-if="searchResult.venue.name!=null"><b>所属期刊 </b> {{searchResult.venue.name}}</div>
+                                <div style="font-size:16px" v-if="searchResult.venue!=null"><b>所属期刊 </b> {{searchResult.venue.name}}</div>
                                 </a-col>
                             <a-col :span="6">
                                 <div style="font-size:16px" v-if="searchResult.issue!=null"><b>所属期数 </b> {{searchResult.issue}}</div>
