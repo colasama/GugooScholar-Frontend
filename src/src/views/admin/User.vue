@@ -337,7 +337,7 @@
   </a-layout>
 </template>
 
-<style>
+<style scoped>
 
 #components-layout-demo-fixed-sider .logo {
   height: 32px;

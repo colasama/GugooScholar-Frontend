@@ -309,7 +309,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     .w {
         /*background-color: #fef2da;*/
     }
