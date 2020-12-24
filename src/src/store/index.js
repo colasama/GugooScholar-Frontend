@@ -14,6 +14,7 @@ const state = {
     introduction:'',
     message: [],
     messageRead:[],
+    bind_author: '',
 };
 export default new Vuex.Store({
     state,

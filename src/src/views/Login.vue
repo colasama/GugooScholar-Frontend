@@ -131,6 +131,12 @@ export default {
               that.$store.state.introduction = response.data.data.introduction;
               that.$store.state.location = response.data.data.location;
               that.$store.state.activate = response.data.data.activate;
+
+              if(response.data.data.bind_author != null){
+                that.$store.state.bind_author = response.data.data.bind_author;
+                window.sessionStorage.setItem('bind_author',that.$store.state.bind_author);
+              }
+
               window.sessionStorage.setItem('token',that.$store.state.token)
               window.sessionStorage.setItem('name',that.$store.state.name)
               window.sessionStorage.setItem('username',that.$store.state.username)
