@@ -2,6 +2,7 @@
 
   <a-layout>
     <a-layout-header class="headtext">
+      <div style="font-size:25px;margin-top:24px;">搜索</div>
       <div class="search">
         <a-input-group compact>
           <a-cascader
@@ -13,8 +14,8 @@
             expand-trigger="hover"
             style="width: 120px;" size="large"
             />
-          <a-input v-on:keyup.enter.native="onSearch()" style="width: 30%;" placeholder="搜索你想要的" size="large" v-model="searchContent" />
-          <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large" @click="onSearch()">搜索
+          <a-input v-on:keyup.enter.native="onSearch()" style="width: 30%;" placeholder="请输入搜索内容" size="large" v-model="searchContent" />
+          <a-button style="width: 80px; font-size: 14px;" size="large" @click="onSearch()">搜索
           </a-button>
         </a-input-group>
       </div>
@@ -74,7 +75,7 @@
                 style="font-family:Book Antiqua;margin-top:3px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;overflow: hidden;">
               </p>
             </div>
-            <div slot="actions" v-if="index==currentHover && showText==true">              
+            <!--div slot="actions" v-if="index==currentHover && showText==true">              
               <a-row>
                 <a-col :span="18" >
                 </a-col>
@@ -88,7 +89,7 @@
                   <a-icon key="ellipsis" type="share-alt" />
                 </a-col>
               </a-row>
-            </div>
+            </div-->
           </a-card>
         </div>
         <div v-for="(fund,index7) in fundResult" :key="index7+'fund'">
@@ -548,15 +549,12 @@
   }
 
   .headtext {
-    width: 100%;
-    height: 120px;
-    line-height: 80px;
-    color: #9feaf9;
+    height: 180px;
+    color: white;
     background-color: black;
   }
 
   .homemain {
-    width: 100%;
     text-align: center;
     background-color: white;
   }
@@ -580,9 +578,7 @@
 
   .headtext .search {
     width: 100%;
-    height: 50px;
     margin: 0 auto;
-    margin-top: 35px;
   }
 
   .keywords {

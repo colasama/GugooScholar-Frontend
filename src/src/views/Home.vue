@@ -9,9 +9,9 @@
           <a-input-group compact>
             <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify" change-on-select
               expand-trigger="hover" style="width: 120px;" size="large" />
-            <a-input v-on:keyup.enter.native="onSearch()" placeholder="搜索你想要的" style="width: 40%;" size="large"
+            <a-input v-on:keyup.enter.native="onSearch()" placeholder="请输入搜索内容" style="width: 40%;" size="large"
               v-model="searchContent" />
-            <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="搜索你想要的" size="large" v-model="searchContent" /-->
+            <!--a-input style="width: 40%;background-color: #3A585F;border-color:#3A585F;" placeholder="请输入搜索内容" size="large" v-model="searchContent" /-->
             <a-button class="searchbutton" size="large" @click="onSearch">搜索
             </a-button>
           </a-input-group>
@@ -394,9 +394,9 @@
 
   .headtext {
     width: 100%;
-    height: 80px;
+    height: 72px;
     text-align: center;
-    line-height: 80px;
+    line-height: 72px;
     color: #9feaf9;
     background-color: black;
     font-size: 14px;

@@ -66,14 +66,14 @@ export default {
 <style scoped>
 .ant-layout .headtext {
     width: 100%;
-    height: 120px;
-    line-height: 120px;
+    height: 180px;
+    line-height: 180px;
     color: #cae8ef;
     background-color: black;
     font-size: 30px;
     font-weight: 500;
     text-align: left;
-    text-indent: 8em;
+    text-indent: 10em;
 }
 
 .ant-layout-footer {

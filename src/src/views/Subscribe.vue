@@ -1,6 +1,6 @@
 <template>
     <a-layout style="minHeight:auto">
-        <a-layout-content style="padding: 50px 100px 50px 100px">
+        <a-layout-content style="padding: 50px 0 50px 0;margin:0 16% 0 16%;max-width:68%">
             <a-layout class="subscribeBox">
                 <a-layout-sider v-model="collapsed" :trigger="null" collapsible>
                     <a-menu mode="inline" :default-selected-keys="['1']" style="height: 100%">
