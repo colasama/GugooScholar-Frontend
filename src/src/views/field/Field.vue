@@ -67,7 +67,7 @@
                                     </p>
                                     <p style="margin-top:3px;font-family:Georgia;font-weight:200;">
                                         <template v-for="(field,fieldIndex) in essayData.Fields">
-                                            <a-button color="#BDD9E1" type="primary" style="height:25px;width:auto;padding-left:5px;padding-right:5px" :key="fieldIndex">
+                                            <a-button color="#BDD9E1" type="primary" style="height:25px;width:auto;padding-left:5px;padding-right:5px;margin-top:3px" :key="fieldIndex">
                                                 <div class="test" style="text-overflow:ellipsis;"><a-icon style="padding-right:3px" type="experiment" />
                                                     {{field}}
                                                 </div>

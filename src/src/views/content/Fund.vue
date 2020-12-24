@@ -23,9 +23,16 @@
                 </div>
                 <div style="overflow:auto;max-width:calc(100% - 32%)" v-if="searchResult.author!=null">
                     <div style="margin:24px 0 0 0">
-                        <div class="avatar">
+
+                    <div class="avatar" v-if="!searchResult.author.id">
+                    
                             <a-avatar :size="48" class="profile" :style="colorList[2]">{{searchResult.author.name[0].toUpperCase()}}</a-avatar>
-                            <span class="au_name">{{searchResult.author.name}}</span>
+                            <span class="au_name" >{{searchResult.author.name}}</span>
+                        </div>
+                        
+                        <div class="avatar_link" @click="toScientist(searchResult.author.id)" v-if="searchResult.author.id">
+                            <a-avatar :size="48" class="profile" :style="colorList[2]">{{searchResult.author.name[0].toUpperCase()}}</a-avatar>
+                            <span class="au_name" >{{searchResult.author.name}}</span>
                         </div>
 <!--                        <author_avatar :name=searchResult.author.name :color="colorList[2]"></author_avatar>-->
                     </div>
@@ -109,6 +116,12 @@
             }
         },
         methods: {
+            toScientist(scientistId) {
+                let routeData = this.$router.resolve({
+                path: '/scientist/show/'+scientistId,
+                })
+                window.open(routeData.href, '_blank')
+            },
             subscribeFund(bool) {
                 let token = window.sessionStorage.getItem('token');
                 if (!token) {
@@ -337,6 +350,22 @@
         margin: 0 5px 0 5px;
     }
     .avatar .profile {
+        font-size: 25px;
+    }
+
+    .avatar_link {
+        display: block;
+        float: left;
+        margin: 10px 5px 24px 5px;
+        cursor:pointer;
+    }
+
+     .avatar_link .au_name {
+        color:#9FEAF9;
+        margin: 0 5px 0 5px;
+    }
+
+    .avatar_link .profile {
         font-size: 25px;
     }
 </style>
