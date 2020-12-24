@@ -8,12 +8,12 @@
                     </div>
                     <a-menu
                             mode="inline"
-                            :default-selected-keys="['1']"
-                            :default-open-keys="['sub1']"
+                            :default-selected-keys="['3']"
+                            :default-open-keys="['sub2']"
                             style="height: 90%"
                             @click="handleClick"
                     >
-                        <a-sub-menu key="sub1">
+                        <!-- <a-sub-menu key="sub1">
                             <span slot="title"><a-icon type="file"/>论文管理</span>
                             <a-menu-item key="1">
                                 所有论文
@@ -21,7 +21,7 @@
                             <a-menu-item key="2">
                                 个人论文
                             </a-menu-item>
-                        </a-sub-menu>
+                        </a-sub-menu> -->
                         <a-sub-menu key="sub2">
                             <span slot="title"><a-icon type="user"/>用户管理</span>
                             <a-menu-item key="3">
@@ -36,9 +36,9 @@
                             <a-menu-item key="9">
                                 申诉
                             </a-menu-item>
-                            <a-menu-item key="10">
+                            <!-- <a-menu-item key="10">
                                 取消认证
-                            </a-menu-item>
+                            </a-menu-item> -->
                         </a-sub-menu>
                     </a-menu>
                 </a-layout-sider>
@@ -259,7 +259,7 @@
                         </div>
                     </a-breadcrumb>
 
-                    <div style="margin:20px">
+                    <div class="reportTab" style="margin:20px">
                         <a-tabs default-active-key="1" @change="callback">
                             <a-tab-pane key="1" tab="未处理申诉">
                                 <a-table :columns="report_columns" :data-source="report_list">
@@ -384,10 +384,14 @@
         color: black;
     }
 
-    .ant-tabs-nav-scroll {
+    .reportTab .ant-tabs-nav-scroll {
         overflow: hidden;
         white-space: nowrap;
         text-align: left;
+    }
+
+    .reportTab .ant-tabs-bar {
+        margin: 0 0 0px 0;
     }
 
     .ant-tabs-bar {
@@ -475,7 +479,7 @@
         name: 'Admin',
         data() {
             return {
-                sider_status: 1,
+                sider_status: 3,
                 searchPaperType: "title",
                 searchPaperValue: "",
                 searchAuthorPaperValue: "",
@@ -756,16 +760,15 @@
                 } else {
                     this.loading = true;
                     this.$axios({
-                        method: 'get',
-                        url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/paper/search',
-                        params: {
-                            words: "a",
-                            type: "title"
-                        }
+                        headers: {
+                            'token': window.sessionStorage.getItem('token')
+                        },
+                        method: 'post',
+                        url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/admin/user/all'
                     }).then((res) => {
-                        console.log(res.data);
-                        this.loading = false;
-                        this.paper_list = res.data.data;
+                        this.loading == false;
+                        console.log(res);
+                        this.user_list = res.data.data;
                     })
                 }
             }).catch((res) => {

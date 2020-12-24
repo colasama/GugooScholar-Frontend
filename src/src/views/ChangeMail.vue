@@ -51,11 +51,11 @@
             <a-result
               status="success"
               title="你的邮箱已经成功修改!"
-              sub-title="请尽情享受咕鸽学术带给您的便捷吧！"
+              sub-title="请返回激活！"
             >
               <template #extra>
-                <a-button key="buy" @click="toLogin">
-                  登录
+                <a-button key="buy" @click="toUser">
+                  返回
                 </a-button>
               </template>
             </a-result>
@@ -125,6 +125,9 @@ export default {
   methods: {
     toIndex() {
       this.$router.push({ path: "/" });
+    },
+    toUser() {
+      this.$router.push({ path: "/admin/user"});
     },
     register() {
       console.log(this.email);

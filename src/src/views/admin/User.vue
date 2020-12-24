@@ -182,10 +182,12 @@
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="mail"/> 邮箱
+                
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userEmail}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="changeMail(5)"/></a-col>
+            <a-col v-if="userInfo_orig.isActive" :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="changeMail(5)"/></a-col>
+            <a-col v-if="!userInfo_orig.isActive" :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="bulb" @click="activeUser"></a-button></a-col>
             <a-modal
               title="修改邮箱"
               :visible="modal_visible==5&&mailsended==true"
@@ -198,8 +200,26 @@
               <div v-if="mailsended==true">
                   <a-result
                     status="success"
-                    title="一封激活邮件已发送!"
+                    title="一封修改邮件已发送!"
                     sub-title="请您查看您原来邮箱，根据邮件中的步骤完成邮箱修改最后一步操作。"
+                  >
+                  </a-result>
+              </div>
+            </a-modal>
+            <a-modal
+              title="激活邮箱"
+              :visible="modal_visible==5&&activeModel==true"
+              :confirm-loading="confirmLoading"
+              okText="确定"
+              cancelText="关闭"
+              @ok="handleCancel"
+              @cancel="handleCancel"
+            >
+              <div v-if="activeModel==true">
+                  <a-result
+                    status="success"
+                    title="一封激活邮件已发送!"
+                    sub-title="请查看邮箱来激活您的邮箱"
                   >
                   </a-result>
               </div>
@@ -402,7 +422,9 @@ export default {
 		loading_visible: 0,
     confirmLoading: false,
     mailsended: false,
+    activeModel: false,
 		userInfo:{
+      isActive:"",
 			userId:"",
 			userName:"",
 			password:"",
@@ -415,6 +437,7 @@ export default {
 			location:"",
 		},
 		userInfo_orig:{
+      isActive:"",
 			userId:"",
 			userName:"",
 			password:"",
@@ -446,13 +469,14 @@ export default {
 			this.userInfo.description = "";
       this.modal_visible = 0;
       this.mailsended = false;
+      this.activeModel = false;
 		},
 		modifyPwd() {
       console.log("Modify pwd");
       console.log(this.userInfo_orig.password);
       console.log(this.userInfo.password);
       console.log(this.userInfo.checkPassword);
-      
+
 		},
 		modifyUserInfo(type) {
 			console.log(type);
@@ -481,7 +505,8 @@ export default {
 			}).then((res) => {
 				console.log(res);
 				this.userTemp = res.data.data
-				let user = res.data.data;
+        let user = res.data.data;
+        this.userInfo_orig.isActive = user.activate;
 				this.userInfo_orig.userId = user.username;
 				this.userInfo_orig.userName = user.name==null? "": user.name;
 				this.userInfo_orig.userEmail = user.email==null? "": user.email;
@@ -516,7 +541,26 @@ export default {
       }).catch(()=>{
         this.$message.error("发送验证邮件失败")
       })
-		}
+    },
+    activeUser() {
+      this.modal_visible = 5;
+      console.log(this.userInfo_orig.userEmail);
+      this.$axios({
+        method: "post",
+        url: "https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/sendmail",
+        data: {
+          username: this.userInfo_orig.userId,
+          email: this.userInfo_orig.userEmail,
+          url: "https://gugoo.fewings.xyz/#/auth",
+        },
+      }).then((res) => {
+        console.log(res);
+        this.activeModel = true;
+      }).catch((res) => {
+        console.log(res);
+        this.$message.error("发送验证邮件失败");
+      })
+    }
 	},
 	mounted() {
 		this.sider_status = 0;
@@ -532,7 +576,8 @@ export default {
 			console.log(res.data);
 			this.sider_status = 1;
 			this.loading = false;
-			let user = res.data.data;
+      let user = res.data.data;
+      this.userInfo_orig.isActive = user.activate;
 			this.userInfo_orig.userId = user.username;
 			this.userInfo_orig.userName = user.name==null? "": user.name;
 			this.userInfo_orig.userEmail = user.email==null? "": user.email;
