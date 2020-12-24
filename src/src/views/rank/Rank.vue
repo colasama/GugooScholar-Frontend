@@ -19,8 +19,10 @@
         <span class="rankLink" slot="paperTitle" slot-scope="title, record"
           @click="toPaper(record['id'])">{{ title }}</span>
         <div slot="authors" slot-scope="authors">
-          <span v-for="author in authors" :key="author['id']" class="rankLink"
-            @click="toAuthor(author['id'])">{{author['name']}}<br></span>
+          <div v-for="author in authors" :key="author">
+            <span class="rankLink" @click="toAuthor(author['id'])" v-if="author['id']!=null">{{author['name']}}</span>
+            <span v-else>{{author['name']}}</span>
+          </div>
         </div>
       </a-table>
       </a-layout-content>
