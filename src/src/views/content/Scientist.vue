@@ -554,11 +554,48 @@
             },
             handleOk(num){
                 if (num === 0) {
-                    this.modalVisible0 = false;
-                    this.modalVisible1 = true;
+                    if (this.pubList.length > 0) {
+                        this.modalVisible0 = false;
+                        this.modalVisible1 = true;
+                    } else {
+                        this.confirmLoading = true;
+                        this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/bindauthor',
+                            {author_id: this.$route.params.id},
+                            {headers: {token: window.sessionStorage.getItem('token')}}
+                        ).then(() => {
+                            this.confirmLoading = false;
+                            this.modalVisible0 = false;
+                            this.isClaim = true;
+                            this.reload();
+                            this.$message.success("认领成功");
+                        }).catch((e) => {
+                            this.confirmLoading = false;
+                            this.modalVisible0 = false;
+                            this.$message.error(e.response.data.message);
+                        });
+                    }
                 } else if (num === 1) {
-                    this.modalVisible1 = false;
-                    this.modalVisible2 = true;
+                    if (this.otherAuthors.length > 0) {
+                        this.modalVisible1 = false;
+                        this.modalVisible2 = true;
+                    } else {
+                        this.confirmLoading = true;
+                        this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/bindauthor',
+                            {author_id: this.$route.params.id},
+                            {headers: {token: window.sessionStorage.getItem('token')}}
+                        ).then(() => {
+                            this.confirmLoading = false;
+                            this.modalVisible1 = false;
+                            this.isClaim = true;
+                            this.reload();
+                            this.$message.success("认领成功");
+                        }).catch((e) => {
+                            this.confirmLoading = false;
+                            this.modalVisible1 = false;
+                            this.$message.error(e.response.data.message);
+                        });
+                    }
+
                 } else {
                     this.confirmLoading = true;
                     this.$http.post('https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/bindauthor',
