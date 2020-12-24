@@ -476,6 +476,27 @@ export default {
       console.log(this.userInfo_orig.password);
       console.log(this.userInfo.password);
       console.log(this.userInfo.checkPassword);
+      if(this.userInfo.password!=this.userInfo.checkPassword){
+        this.$message.error("两次密码不一致");
+        return;
+      }
+      this.$axios({
+        headers: {
+                    'token': window.sessionStorage.getItem('token')
+                },
+        method: 'post',
+        url: 'https://gugooscholar-k5yn3ahzxq-df.a.run.app/user/changepassword',
+        params: {
+          old_password: this.userInfo_orig.password,
+          new_password: this.userInfo.password
+        }
+      }).then((res)=>{
+        console.log(res);
+        this.$message.success("修改密码成功");
+      }).catch((res)=>{
+        console.log(res);
+        this.$message.error("原密码不正确，修改密码失败");
+      })
 
 		},
 		modifyUserInfo(type) {
