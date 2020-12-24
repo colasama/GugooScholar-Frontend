@@ -88,7 +88,7 @@ export default {
   components: {},
   data() {
     return {
-        isActivate:false,
+        isActivate:true,
     };
   },
   methods: {
@@ -126,6 +126,7 @@ export default {
           console.log(response);
           that.isActivate = true;
       }).catch((e)=>{
+          that.isActivate = false;
           console.log(e);
       });
     },
