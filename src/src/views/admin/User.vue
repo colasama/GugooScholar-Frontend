@@ -1,7 +1,7 @@
 <template>
   <a-layout style="minHeight:auto">
 
-    <a-layout-content style="padding: 50px 100px 50px 100px" >
+    <a-layout-content style="padding: 50px 0 50px 0" >
       <a-layout class="profileBox">
         <a-layout-sider width="250" style="background: #fff">
 
