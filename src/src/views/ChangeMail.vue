@@ -51,11 +51,11 @@
             <a-result
               status="success"
               title="你的邮箱已经成功修改!"
-              sub-title="请返回激活！"
+              sub-title="请重新登录并激活！"
             >
               <template #extra>
-                <a-button key="buy" @click="toUser">
-                  返回
+                <a-button key="buy" @click="toLogin">
+                  登录
                 </a-button>
               </template>
             </a-result>
@@ -126,8 +126,8 @@ export default {
     toIndex() {
       this.$router.push({ path: "/" });
     },
-    toUser() {
-      this.$router.push({ path: "/admin/user"});
+    toLogin() {
+      this.$router.push({ path: "/login"});
     },
     register() {
       console.log(this.email);
