@@ -54,25 +54,25 @@
                         <span style="font-size:19px;color: #b3cbd0;font-weight:700;height:25px;flex:1"
                           v-if="searchResult.keywords!=null">详细信息</span>
                           <a-row style="margin-top:12px">
-                            <a-col :span="6">
-                                <div style="font-size:16px" v-if="searchResult.venue!=null"><b>所属期刊 </b> {{searchResult.venue.name}}</div>
+                            <a-col :span="6" v-if="searchResult.venue!=null">
+                                <div style="font-size:16px" ><b>所属期刊 </b> {{searchResult.venue.name}}</div>
                                 </a-col>
-                            <a-col :span="6">
-                                <div style="font-size:16px" v-if="searchResult.issue!=null"><b>所属期数 </b> {{searchResult.issue}}</div>
+                            <a-col :span="6" v-if="searchResult.issue!=null&&searchResult.issue!==''">
+                                <div style="font-size:16px" ><b>所属期数 </b> {{searchResult.issue}}</div>
                                 </a-col>
-                            <a-col :span="6">
-                                <div style="font-size:16px" v-if="searchResult.volume!=null"> <b>所属卷数 </b> {{searchResult.volume}}</div>
+                            <a-col :span="6" v-if="searchResult.volume!=null&&searchResult.volume!==''">
+                                <div style="font-size:16px" > <b>所属卷数 </b> {{searchResult.volume}}</div>
                             </a-col>
-                            <a-col :span="6">
-                                <div style="font-size:16px" v-if="searchResult.n_citation!=null"><b>被引用量 </b> {{searchResult.n_citation}}</div>
+                            <a-col :span="6" v-if="searchResult.n_citation!=null">
+                                <div style="font-size:16px" ><b>被引用量 </b> {{searchResult.n_citation}}</div>
                                 </a-col>
                         </a-row>
                         <a-row>
-                            <a-col :span="6">
-                                <div style="font-size:16px" v-if="searchResult.lang!=null"><b>语言 </b> {{searchResult.lang}}</div>
+                            <a-col :span="6" v-if="searchResult.lang!=null">
+                                <div style="font-size:16px" ><b>语言 </b> {{searchResult.lang}}</div>
                             </a-col>
-                            <a-col :span="6">
-                                <div style="font-size:16px" v-if="searchResult.year!=null"><b>出版年份 </b> {{searchResult.year}}</div>
+                            <a-col :span="6" v-if="searchResult.year!=null">
+                                <div style="font-size:16px" ><b>出版年份 </b> {{searchResult.year}}</div>
                             </a-col>
                             <a-col :span="6">
                                 <div style="font-size:16px" v-if="searchResult.doi!=null"><b>DOI </b> {{searchResult.doi}}</div>
