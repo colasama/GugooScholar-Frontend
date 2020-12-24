@@ -46,7 +46,7 @@
         <br>
         <span style="font-size:40px; "><b>用户信息</b></span>
         <br>
-        <span style="font-size:15px">您在Gugoo学术的个人信息，例如名字和电话</span>
+        <span style="font-size:15px">您在咕鸽学术的个人信息，例如名字和电话</span>
         <br>
         <br>
         <br>
@@ -83,21 +83,21 @@
           <br>
           <a-row style="margin-top:0px">
             <a-col :span="8" class="profile_col_title">
-              <b>
+              <b style="font-size: 16px;">
                 <a-icon type="idcard"/> 账号
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userId}}</span></a-col>
+            <a-col :span="14" class="profile_col_content"><span >{{userInfo_orig.userId}}</span></a-col>
           </a-row>
           <a-divider class="divider"/>
           <a-row style="margin-top:0px; vertical-align:middle">
             <a-col :span="8" class="profile_col_title">
-              <b>
+              <b style="font-size: 16px;">
                 <a-icon type="user"/> 名字
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userName}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(2)"/></a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 16px;">{{userInfo_orig.userName}}</span></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="link" style="color:#74b1be;margin-left:-15px" @click="set_modal_visible(2)">编辑</a-button></a-col>
             <a-modal
               title="修改名字"
               :visible="modal_visible==2"
@@ -121,8 +121,8 @@
                 <a-icon type="man"/> 性别
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userSex}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(3)"/></a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 16px;">{{userInfo_orig.userSex}}</span></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="link" style="color:#74b1be" icon="edit" @click="set_modal_visible(3)"/></a-col>
             <a-modal
               title="修改性别"
               :visible="modal_visible==3"
@@ -152,8 +152,8 @@
                 <a-icon type="gift" /> 生日
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userBirth}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(4)"/></a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 16px;">{{userInfo_orig.userBirth}}</span></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="link" style="color:#74b1be" icon="edit" @click="set_modal_visible(4)"/></a-col>
             <a-modal
               title="修改生日"
               :visible="modal_visible==4"
@@ -174,13 +174,13 @@
 
         <a-card class='infoCard'>
           <div class="cardTitle">
-            <span >联系方式</span>
+            <span>联系方式</span>
           </div>
           <br>
           <br>
           <a-row style="margin-top:24px">
             <a-col :span="8" class="profile_col_title">
-              <b>
+              <b style="font-size: 16px;">
                 <a-icon type="mail"/> 邮箱
                 <a-tooltip v-if="!userInfo_orig.isActive">
                   <template slot="title">
@@ -190,9 +190,13 @@
                 </a-tooltip>
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userEmail}}</span></a-col>
-            <a-col v-if="userInfo_orig.isActive" :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="changeMail(5)"/></a-col>
-            <a-col v-if="!userInfo_orig.isActive" :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="bulb" @click="activeUser"></a-button></a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 16px;">{{userInfo_orig.userEmail}}<span v-if="!userInfo_orig.isActive" style="color:red">[未激活]</span></span></a-col>
+            <a-col v-if="userInfo_orig.isActive" :span="1" class="profile_col_edit"><a-button type="link" style="color:#74b1be;margin-left:-15px" @click="changeMail(5)">编辑</a-button></a-col>
+            <a-col v-if="!userInfo_orig.isActive" :span="1" class="profile_col_edit">
+              <a-button type="link" style="color:#74b1be;margin-left:-15px" @click="activeUser">
+                激活
+              </a-button>
+            </a-col>
             <a-modal
               title="修改邮箱"
               :visible="modal_visible==5&&mailsended==true"
@@ -233,12 +237,12 @@
           <a-divider class="divider"/>
           <a-row style="margin-top:0px">
             <a-col :span="8" class="profile_col_title">
-              <b>
+              <b style="font-size: 16px;">
                 <a-icon type="environment"/> 住址
               </b>
             </a-col>
-            <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.location}}</span></a-col>
-            <a-col :span="1" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(7)"/></a-col>
+            <a-col :span="14" class="profile_col_content"><span style="font-size: 16px;">{{userInfo_orig.location}}</span></a-col>
+            <a-col :span="1" class="profile_col_edit"><a-button type="link" style="color:#74b1be;margin-left:-15px" @click="set_modal_visible(7)">编辑</a-button></a-col>
             <a-modal
               title="修改住址"
               :visible="modal_visible==7"
@@ -267,9 +271,9 @@
           <br>
           <a-row style="margin-top:24px">
           <a-col :span="22">
-            <div style=" work-break: keep-all; max-width:90%; margin:auto; text-align:left;">{{userInfo_orig.description}}</div>
+            <div style=" work-break: keep-all; max-width:90%; margin:auto; text-align:left;font-size:16px">{{userInfo_orig.description}}</div>
           </a-col>
-          <a-col :span="2" class="profile_col_edit"><a-button type="primary" shape="circle" icon="edit" @click="set_modal_visible(6)"/></a-col>
+          <a-col :span="2" class="profile_col_edit"><a-button type="link" style="color:#74b1be;margin-left:-15px" @click="set_modal_visible(6)">编辑</a-button></a-col>
           </a-row>
           <a-modal
               title="修改个人简介"
@@ -307,7 +311,7 @@
         <br>
         <span style="font-size:40px; "><b>密码修改</b></span>
           <br>
-        <span style="font-size:15px">修改您用于登陆Gugoo学术的密码</span>
+        <span style="font-size:15px">修改您用于登陆咕鸽学术的密码</span>
         <br>
         <br>
         <br>
@@ -394,6 +398,8 @@
 
 .profileBox{
   padding: 24px 0; 
+  max-width:68%;
+  margin: 0 16% 0 16%;
   background: #fff;
   box-shadow: 0 0 5px hsla(0, 0%, 0%, 0.1);
 }
