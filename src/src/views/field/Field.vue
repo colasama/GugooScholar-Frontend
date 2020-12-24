@@ -3,7 +3,7 @@
         <a-layout>
             <a-layout-header class="ant-layout-header">
                 <div class="ant-layout-header-title">
-                    {{this.fieldName}}详细介绍
+                    领域 / {{this.fieldName}}
                 </div>
                 <a-input-group compact class="ant-layout-header-search">
                     <a-cascader :options="options" :allowClear="false" trigger="hover" v-model="searchClassify" change-on-select
@@ -22,9 +22,9 @@
 <!--                            作者-->
 <!--                        </a-select-option>-->
 <!--                    </a-select>-->
-                    <a-input v-on:keyup.enter.native="onSearch2()" placeholder="搜索你想要的" style="width: 40%;" size="large"
+                    <a-input v-on:keyup.enter.native="onSearch2()" placeholder="请输入搜索内容" style="width: 30%;" size="large"
                              v-model="searchContent" />
-                    <a-button style="width: 80px;background-color: #9feaf9; font-size: 14px;" size="large"
+                    <a-button style="width: 80px; font-size: 14px;" size="large"
                               @click="onSearch2(searchContent)">搜索
                     </a-button>
                 </a-input-group>
@@ -535,14 +535,18 @@
     }
 
     .ant-layout-header {
-        width: 100%;
-        height: 150px;
-        line-height: 80px;
-        color: #9feaf9;
-        background-color: black;
+        background: black;
+        color: #fff;
+        height: 180px;
+        font-size: 25px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        text-align: left;
+        text-align: center;
     }
 
     .ant-layout-header-title {
+        margin-top: 24px;
         font-size: 25px;
         color: #ffffff;
         background-color: black;
