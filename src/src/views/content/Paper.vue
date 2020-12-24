@@ -26,9 +26,14 @@
                     <div style="margin:24px 0 0 0" v-for="(author,i) in searchResult.authors.slice(0,10)"
                         :key="author.length">
 
-                        <div class="avatar">
+                        <div class="avatar" v-if="!author.id">
                             <a-avatar :size="48" class="profile" :style="colorList[i%6]">{{author.name[0].toUpperCase()}}</a-avatar>
-                            <span class="au_name">{{author.name}}</span>
+                            <span class="au_name" >{{author.name}}</span>
+                        </div>
+                        
+                        <div class="avatar_link" @click="toScientist(author.id)" v-if="author.id">
+                            <a-avatar :size="48" class="profile" :style="colorList[i%6]">{{author.name[0].toUpperCase()}}</a-avatar>
+                            <span class="au_name" >{{author.name}}</span>
                         </div>
                     </div>
                 </div>
@@ -39,12 +44,13 @@
                     </div>
 
                     <template v-for="(keyword,index3) in searchResult.keywords">
-                        <span style="display: inline-block; height:25px;max-width:250px;padding-left:10px;padding-right:10px; margin:5px 5px; background-color: #74b1be;border-radius: 4px;
-                        " :key="index3">
+                        <a-button style="color:white;display: inline-block; height:25px;max-width:250px;padding-left:10px;padding-right:10px; margin:5px 5px; background-color: #74b1be;border-color:#74b1be;border-radius: 4px;
+                        " :key="index3"
+                        @click="searchKeywords(keyword)">
                             <div class="test" style="text-overflow:ellipsis;">
                                 {{keyword}}
                             </div>
-                        </span>
+                        </a-button>
                         <template v-if="index3 < searchResult.keywords.length-1 && index3 < 2">{{'&nbsp;'}}</template>
                     </template>
                 </div>
@@ -204,9 +210,28 @@
                 colorList: ["background: #87d068", "background: #c9bcd6", "background:#edadad",
                     "background:#108ee9", "background: #ff5500", "background: #2db7f5"],
                 loading: true,
+                searchClassify:['paper','keywords']
             }
         },
         methods: {
+            searchKeywords(content) {
+                if (content != "") {
+                this.$router.push({
+                    name: "search",
+                    query: {
+                    searchClassify: this.searchClassify,
+                    searchContent: content
+                    }
+                });
+                } else
+                this.$message.error("请输入搜索内容哦~");
+            },
+            toScientist(scientistId) {
+                let routeData = this.$router.resolve({
+                path: '/scientist/show/'+scientistId,
+                })
+                window.open(routeData.href, '_blank')
+            },
             subscribePaper(bool) {
                 let token = window.sessionStorage.getItem('token');
                 if (!token) {
@@ -426,6 +451,22 @@
         margin: 0 5px 0 5px;
     }
     .avatar .profile {
+        font-size: 25px;
+    }
+
+    .avatar_link {
+        display: block;
+        float: left;
+        margin: 10px 5px 24px 5px;
+        cursor:pointer;
+    }
+
+     .avatar_link .au_name {
+        color:#9FEAF9;
+        margin: 0 5px 0 5px;
+    }
+
+    .avatar_link .profile {
         font-size: 25px;
     }
 </style>

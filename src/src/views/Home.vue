@@ -307,7 +307,7 @@
             }
           });
         } else
-          this.$router.push('/search');
+          this.$message.error("请输入搜索内容哦~");
       },
       searchKeyword(num) {
         this.$router.push({
@@ -418,7 +418,7 @@
 
   .homemain .search {
     width: 100%;
-    height: 64px;
+    height: 60px;
     margin: 0 auto;
   }
 
@@ -437,6 +437,7 @@
     padding-right: 10px;
     margin-right: 5px;
     margin-left: 5px;
+    margin-top: 5px;
   }
 
   .searchbutton {
