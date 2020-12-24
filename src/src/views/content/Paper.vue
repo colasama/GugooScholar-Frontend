@@ -216,13 +216,14 @@
         methods: {
             searchKeywords(content) {
                 if (content != "") {
-                this.$router.push({
+                let routeData = this.$router.resolve({
                     name: "search",
                     query: {
                     searchClassify: this.searchClassify,
                     searchContent: content
                     }
                 });
+                window.open(routeData.href, '_blank')
                 } else
                 this.$message.error("请输入搜索内容哦~");
             },
