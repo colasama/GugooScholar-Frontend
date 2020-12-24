@@ -182,7 +182,12 @@
             <a-col :span="8" class="profile_col_title">
               <b>
                 <a-icon type="mail"/> 邮箱
-                
+                <a-tooltip v-if="!userInfo_orig.isActive">
+                  <template slot="title">
+                    邮箱未激活
+                  </template>
+                  <a-icon type="exclamation-circle" style="color:red; height:0.8em; width:0.8em"/>
+                </a-tooltip>
               </b>
             </a-col>
             <a-col :span="14" class="profile_col_content"><span style="font-size: 20px;">{{userInfo_orig.userEmail}}</span></a-col>
