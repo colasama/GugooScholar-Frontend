@@ -102,7 +102,7 @@ const routes = [
     // 会匹配所有路径
     path: '/fund*',
     name: 'Fund',
-    meta: {title: '论文 - 咕鸽学术'},
+    meta: {title: '项目 - 咕鸽学术'},
     component: () => import('../views/content/Fund.vue')
   },
     {

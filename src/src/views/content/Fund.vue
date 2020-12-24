@@ -5,7 +5,7 @@
             <a-layout-content style="margin:48px 16% 0 16%">
                 <div class="topic" v-if="searchResult.title!=null">
                     <a-tooltip>
-                        <template slot="title">点击收藏论文</template>
+                        <template slot="title">点击收藏项目</template>
                         <a-icon type="star" v-show="!subscribe" @click="subscribeFund(true)"/>
                     </a-tooltip>
                     <a-tooltip>
