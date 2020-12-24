@@ -25,7 +25,8 @@
       <a-menu style="margin-top:4px" slot="overlay">
           <a-menu-item key="1" @click="toUserIndex">账户信息</a-menu-item>
           <a-menu-item key="2" @click="toAdmin" v-if="showAdmin">系统管理</a-menu-item>
-          <a-menu-item key="3" @click="exit">退出</a-menu-item>
+          <a-menu-item key="3" @click="toScientist" v-if="showPersonal">个人门户</a-menu-item>
+          <a-menu-item key="4" @click="exit">退出</a-menu-item>
         </a-menu>
       <a-button type="link" @click="toUserIndex" style="margin-right:16%;color:#9feaf9" v-if="$store.state.token!=null">
           <a-avatar
@@ -102,6 +103,7 @@ export default {
   },
   data() {
     return {
+      showPersonal: false,
       showLogin: true,
       showAdmin: false,
       color: colorList[0],
@@ -158,6 +160,9 @@ export default {
   computed: {},
   mounted: function () {
     var that = this;
+    if(window.sessionStorage.getItem('bind_author') != null){
+      that.showPersonal = true;
+    }
     if(window.sessionStorage.getItem('token') != null)
       Vue.axios({
               headers: {
@@ -185,6 +190,9 @@ export default {
   },
   watch: {},
   methods: {
+    toScientist() {
+      this.$router.push({ path: "/scientist/show/"+window.sessionStorage.getItem('bind_author') });
+    },
     toRegister() {
       this.$router.push({ path: "/register"});
     },
