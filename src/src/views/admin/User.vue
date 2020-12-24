@@ -292,11 +292,13 @@
                   'oldpassword',
                   { rules: [{ required: true, message: '原密码不能为空' }] },
                 ]"
+                type="password"
                 placeholder="请输入原密码"
                 class="formInput"
                 size="large"
+                v-model="userInfo_orig.password"
               >
-                <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
+                <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
               </a-input></div>
               <div><a-input
                 v-decorator="[
@@ -307,6 +309,7 @@
                 placeholder="请输入新密码"
                 class="formInput"
                 size="large"
+                v-model="userInfo.password"
               >
                 <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
               </a-input></div>
@@ -320,6 +323,7 @@
                 class="formInput"
                 size="large"
                 :required="true"
+                v-model="userInfo.checkPassword"
               >
                 <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
               </a-input></div>
@@ -402,6 +406,7 @@ export default {
 			userId:"",
 			userName:"",
 			password:"",
+      checkPassword:"",
 			avatarSrc:"",
 			userBirth:"",
 			userSex:"",
@@ -443,7 +448,11 @@ export default {
       this.mailsended = false;
 		},
 		modifyPwd() {
-			console.log("Modify pwd");
+      console.log("Modify pwd");
+      console.log(this.userInfo_orig.password);
+      console.log(this.userInfo.password);
+      console.log(this.userInfo.checkPassword);
+      
 		},
 		modifyUserInfo(type) {
 			console.log(type);

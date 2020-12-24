@@ -188,10 +188,10 @@
                         </div>
                     </a-breadcrumb>
 
-                    <div style="text-align:left">
+                    <!-- <div style="text-align:left">
                         <a-input-search style="margin: 30px 0 0px 20px; width:35%" placeholder="搜索用户" enter-button
                                         @search="searchUser"/>
-                    </div>
+                    </div> -->
                     <a-divider style="width:80%; margin-bottom:0px"/>
                     <div style="text-align:center">
                         <a-table :columns="columns" :data-source="user_list">
