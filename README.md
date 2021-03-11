@@ -8,3 +8,12 @@
 ~~https://gugoo.xyz/ (CloudFlare CDN)~~
 
 http://fewings.xyz/
+
+## 部署方式
+
+```
+
+npm i
+npm run serve
+
+```
